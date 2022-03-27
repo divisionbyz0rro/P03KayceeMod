@@ -1,0 +1,21 @@
+Name: Tech_SplinterCells
+maxDifficulty: 6
+minDifficulty: 0
+powerLevel: 0
+powerLevelString: 
+oldPreviewDifficulty: 0
+regionSpecific: True
+dominantTribes: []
+redundantAbilities: []
+unlockedCardPrerequisites: []
+randomReplacementCards: []
+overclockBlueprint: []
+CellTri,NONE -> Automaton 6
+NullConduit -> AttackConduit 4,NullConduit
+Automaton -> CellBuff 2,NONE -> Bombbot 3
+NullConduit -> AttackConduit 1,NONE -> CellBuff 4
+NONE -> CellTri 5
+NullConduit
+NONE -> CellBuff 3
+Automaton -> CellBuff 3,LeapBot -> Shieldbot 2
+NONE -> CloserBot 6

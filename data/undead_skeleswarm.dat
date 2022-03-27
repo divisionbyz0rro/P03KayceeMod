@@ -1,0 +1,21 @@
+Name: Undead_SkeleSwarm
+maxDifficulty: 6
+minDifficulty: 0
+powerLevel: 0
+powerLevelString: 
+oldPreviewDifficulty: 0
+regionSpecific: True
+dominantTribes: []
+redundantAbilities: []
+unlockedCardPrerequisites: []
+randomReplacementCards: []
+overclockBlueprint: []
+RoboSkeleton,RoboSkeleton,NONE -> SentryBot 1,NONE -> SentryBot 3
+NONE -> RoboSkeleton 5
+RoboSkeleton,RoboSkeleton -> Insectodrone 3
+NONE -> RoboSkeleton 5
+RoboSkeleton,RoboSkeleton -> Insectodrone 6,NONE -> RoboSkeleton 2
+Insectodrone
+RoboSkeleton -> Insectodrone 4,RoboSkeleton -> Insectodrone 6
+NONE -> RoboSkeleton 4
+NONE -> CloserBot 6

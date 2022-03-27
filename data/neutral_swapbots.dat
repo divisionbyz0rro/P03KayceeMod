@@ -1,0 +1,20 @@
+Name: Neutral_Swapbots
+maxDifficulty: 6
+minDifficulty: 0
+powerLevel: 0
+powerLevelString: 
+oldPreviewDifficulty: 0
+regionSpecific: True
+dominantTribes: []
+redundantAbilities: []
+unlockedCardPrerequisites: []
+randomReplacementCards: [Automaton,Bombbot,MineCart]
+overclockBlueprint: [D:5/T:3,D:3/T:5]
+SentryBot,NONE -> SwapBot 4,NONE -> SentryBot 1
+SwapBot -> CloserBot 6,NONE -> Bombbot 4
+Automaton,LeapBot -> Automaton 2,Automaton -> SwapBot 4
+NONE -> Automaton 2
+SwapBot,NONE -> SwapBot 6
+NONE -> Automaton 2,NONE -> Insectodrone 6
+NONE -> Automaton 6
+NONE -> Automaton 4,NONE -> Automaton 6

@@ -1,0 +1,20 @@
+Name: Neutral_BridgeBattle
+maxDifficulty: 6
+minDifficulty: 0
+powerLevel: 0
+powerLevelString: 
+oldPreviewDifficulty: 0
+regionSpecific: True
+dominantTribes: []
+redundantAbilities: []
+unlockedCardPrerequisites: []
+randomReplacementCards: [Automaton,Bombbot,MineCart,AlarmBot]
+overclockBlueprint: [D:1/T:0,D:3/T:1,D:5/T:3]
+AlarmBot -> Shieldbot 4
+NONE -> Bombbot 2
+Automaton -> CloserBot 4
+NONE -> Bombbot 20
+SwapBot -> CloserBot 2
+NONE -> RANDOM 200%
+SwapBot -> CloserBot 4
+SwapBot -> CloserBot 6

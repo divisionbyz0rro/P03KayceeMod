@@ -1,0 +1,21 @@
+Name: Wizard_GemExploder
+maxDifficulty: 6
+minDifficulty: 0
+powerLevel: 0
+powerLevelString: 
+oldPreviewDifficulty: 0
+regionSpecific: True
+dominantTribes: []
+redundantAbilities: []
+unlockedCardPrerequisites: []
+randomReplacementCards: []
+overclockBlueprint: [D:1/T:0,D:5/T:3,D:3/T:4]
+Automaton -> Shieldbot 6,NONE -> EmptyVessel_OrangeGem 1
+EmptyVessel_OrangeGem,GemExploder
+EmptyVessel_OrangeGem,Bombbot -> GemExploder 2
+Shieldbot -> GemRipper 4
+EmptyVessel_OrangeGem -> Bombbot 2
+NONE -> Automaton 2
+NONE -> GemRipper 2
+NONE -> Insectodrone 4,NONE -> GemExploder 4
+NONE -> GemRipper 6,NONE -> GemExploder 6,NONE -> EmptyVessel_OrangeGem 6

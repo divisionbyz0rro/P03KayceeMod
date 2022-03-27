@@ -1,0 +1,21 @@
+Name: PhotographerBossP1
+maxDifficulty: 6
+minDifficulty: 0
+powerLevel: 0
+powerLevelString: 
+oldPreviewDifficulty: 0
+regionSpecific: True
+dominantTribes: []
+redundantAbilities: []
+unlockedCardPrerequisites: []
+randomReplacementCards: []
+overclockBlueprint: []
+
+Shutterbug,Shutterbug,Shutterbug,Shutterbug,Shutterbug
+NONE -> Shutterbug 5
+BoltHound,NONE -> AlarmBot 3
+XformerBatBot -> XformerBatBeast 1,XformerBatBeast
+XformerPorcupineBeast,XformerPorcupineBot -> XformerPorcupineBeast -> 1
+NONE -> Shutterbug 4
+Shutterbug,Shutterbug,NONE -> Shutterbug 3
+BoltHound -> CloserBot 6

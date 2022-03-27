@@ -1,0 +1,50 @@
+Name: P03FinalBoss
+maxDifficulty: 10
+minDifficulty: 0
+powerLevel: 0
+powerLevelString: 
+oldPreviewDifficulty: 0
+regionSpecific: True
+dominantTribes: []
+redundantAbilities: []
+unlockedCardPrerequisites: []
+randomReplacementCards: [Automaton,Thickbot,AlarmBot,Insectodrone]
+overclockBlueprint: []
+SentryBot,RoboSkeleton,SentryBot,RoboSkeleton
+LatcherBrittle,Thickbot,Steambot
+RoboSkeleton,RoboSkeleton
+Steambot,Thickbot
+Automaton -> RANDOM 100%
+Automaton -> RANDOM 100%,Automaton -> RANDOM 100%
+GemRipper
+CloserBot
+RoboSkeleton,RoboSkeleton
+Automaton -> RANDOM 100%
+Automaton -> RANDOM 100%,Automaton -> RANDOM 100%
+GemRipper
+CloserBot
+RoboSkeleton,RoboSkeleton
+Automaton -> RANDOM 100%
+Automaton -> RANDOM 100%,Automaton -> RANDOM 100%
+GemRipper
+CloserBot
+RoboSkeleton,RoboSkeleton
+Automaton -> RANDOM 100%
+Automaton -> RANDOM 100%,Automaton -> RANDOM 100%
+GemRipper
+CloserBot
+RoboSkeleton,RoboSkeleton
+Automaton -> RANDOM 100%
+Automaton -> RANDOM 100%,Automaton -> RANDOM 100%
+GemRipper
+CloserBot
+CloserBot,CloserBot
+CloserBot,CloserBot,CloserBot,CloserBot
+CloserBot,CloserBot,CloserBot,CloserBot,CloserBot,CloserBot
+CloserBot,CloserBot,CloserBot,CloserBot,CloserBot,CloserBot
+CloserBot,CloserBot,CloserBot,CloserBot,CloserBot,CloserBot
+CloserBot,CloserBot,CloserBot,CloserBot,CloserBot,CloserBot
+CloserBot,CloserBot,CloserBot,CloserBot,CloserBot,CloserBot
+CloserBot,CloserBot,CloserBot,CloserBot,CloserBot,CloserBot
+CloserBot,CloserBot,CloserBot,CloserBot,CloserBot,CloserBot
+CloserBot,CloserBot,CloserBot,CloserBot,CloserBot,CloserBot

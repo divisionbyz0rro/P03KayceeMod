@@ -1,0 +1,22 @@
+Name: Tech_AttackConduits
+maxDifficulty: 6
+minDifficulty: 0
+powerLevel: 0
+powerLevelString: 
+oldPreviewDifficulty: 0
+regionSpecific: True
+dominantTribes: []
+redundantAbilities: []
+unlockedCardPrerequisites: []
+randomReplacementCards: []
+overclockBlueprint: []
+AttackConduit,NullConduit -> AttackConduit 3,Automaton -> Insectodrone 5
+LeapBot -> Shieldbot 6,LeapBot -> Automaton 2
+Insectodrone -> Shieldbot 4,NONE -> AttackConduit 3
+LeapBot -> Automaton 2,NONE -> Bombbot 4
+NONE -> AttackConduit 2,NONE -> AttackConduit 6
+NONE -> Insectodrone 5
+NONE -> AttackConduit 6,NullConduit,NONE -> Insectodrone 4
+NONE -> CloserBot 4
+LeapBot -> Automaton 4,LeapBot -> MineCart 2
+NONE -> CloserBot 6

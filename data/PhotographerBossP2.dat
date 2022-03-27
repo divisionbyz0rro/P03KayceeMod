@@ -1,0 +1,19 @@
+Name: PhotographerBossP2
+maxDifficulty: 10
+minDifficulty: 10
+powerLevel: 0
+powerLevelString: 
+oldPreviewDifficulty: 0
+regionSpecific: True
+dominantTribes: []
+redundantAbilities: []
+unlockedCardPrerequisites: []
+randomReplacementCards: []
+overclockBlueprint: []
+XformerGrizzlyBot -> XformerGrizzlyBeast 2,XformerGrizzlyBot
+NONE -> XformerPorcupineBot 6
+Shutterbug,NONE -> Shutterbug 3
+Shutterbug,NONE -> Shutterbug 2
+Shutterbug,NONE -> Shutterbug 5
+NONE -> Shutterbug 4
+XformerGrizzlyBot -> XformerGrizzlyBeast 1,XformerGrizzlyBot

@@ -1,0 +1,20 @@
+Name: Neutral_SentryWall
+maxDifficulty: 6
+minDifficulty: 0
+powerLevel: 0
+powerLevelString: 
+oldPreviewDifficulty: 0
+regionSpecific: True
+dominantTribes: []
+redundantAbilities: []
+unlockedCardPrerequisites: []
+randomReplacementCards: [Shieldbot,Insectodrone,Bombbot]
+overclockBlueprint: []
+SentryBot,SentryBot -> RoboSkeleton 6,SentryBot -> RoboSkeleton 4,SentryBot -> RANDOM 200%,NONE -> SentryBot 4
+RoboSkeleton -> Shieldbot 1,NONE -> RoboSkeleton 4
+NONE -> RoboSkeleton 3,NONE -> RoboSkeleton 6
+NONE -> RoboSkeleton 2,NONE -> RoboSkeleton 5
+SentryBot,NONE -> SentryBot 2,NONE -> SentryBot 4,NONE -> SentryBot 6
+NONE -> Insectodrone 5
+NONE -> RANDOM 100%
+NONE -> Insectodrone 2,NONE -> Insectodrone 4

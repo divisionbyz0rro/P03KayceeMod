@@ -1,0 +1,15 @@
+bin/
+obj/
+
+# lib is ignored. You have to supply your own game files 
+lib/
+
+# I'm keeping copies of my save files locally to help with testing
+# Right now I'm not putting them in git
+saves/
+package/
+
+compiled/
+
+*.dll
+*.pdb

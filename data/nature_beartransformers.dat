@@ -1,0 +1,20 @@
+Name: Nature_BearTransformers
+maxDifficulty: 6
+minDifficulty: 0
+powerLevel: 0
+powerLevelString: 
+oldPreviewDifficulty: 0
+regionSpecific: True
+dominantTribes: []
+redundantAbilities: []
+unlockedCardPrerequisites: []
+randomReplacementCards: []
+overclockBlueprint: [D:1/T:0,D:3/T:1,D:5/T:3]
+XformerGrizzlyBot
+XformerPorcupineBot -> XformerBatBeast 4
+NONE -> Bombbot 2,NONE -> Bombbot 4
+NONE -> Bombbot 4
+XformerGrizzlyBot -> XformerGrizzlyBeast 4,Shieldbot -> XformerGrizzlyBot 6
+NONE -> XformerGrizzlyBot 6,NONE -> Shieldbot 2
+Bombbot -> BoltHound 4
+XformerBatBeast -> XformerGrizzlyBeast 6

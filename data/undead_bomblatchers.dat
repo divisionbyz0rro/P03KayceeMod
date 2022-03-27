@@ -1,0 +1,21 @@
+Name: Undead_BombLatchers
+maxDifficulty: 6
+minDifficulty: 0
+powerLevel: 0
+powerLevelString: 
+oldPreviewDifficulty: 0
+regionSpecific: True
+dominantTribes: []
+redundantAbilities: []
+unlockedCardPrerequisites: []
+randomReplacementCards: []
+overclockBlueprint: [D:5/T:0,D:3/T:2]
+LatcherBomb,LeapBot -> Automaton 1
+NONE -> Bombbot 2,NONE -> Automaton 5
+LatcherBomb,Bombbot -> Insectodrone 3
+BoltHound -> CloserBot 5
+NONE -> Shieldbot 6,NONE -> LatcherBomb 4
+NONE -> LatcherBomb 2,NONE -> Shieldbot 4
+LatcherBomb
+NONE -> Shieldbot 4
+LeapBot -> CloserBot 6

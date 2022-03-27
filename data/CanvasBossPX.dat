@@ -1,0 +1,20 @@
+Name: CanvasBossPX
+maxDifficulty: 6
+minDifficulty: 0
+powerLevel: 0
+powerLevelString: 
+oldPreviewDifficulty: 0
+regionSpecific: True
+dominantTribes: []
+redundantAbilities: []
+unlockedCardPrerequisites: []
+randomReplacementCards: [Automaton,MineCart,AlarmBot,Insectodrone]
+overclockBlueprint: [D:6/T:6,D:5/T:7]
+NONE -> SwapBot 2,Automaton -> RANDOM 100%
+NONE -> Insectodrone 1
+Automaton -> RANDOM 100%
+Automaton -> RANDOM 100%,NONE -> Automaton 3
+NONE -> SwapBot 4
+NONE -> GemRipper 6
+LeapBot
+Automaton -> RANDOM 100%,NONE -> MineCart 3

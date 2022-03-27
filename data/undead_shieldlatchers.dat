@@ -1,0 +1,21 @@
+Name: Undead_ShieldLatchers
+maxDifficulty: 6
+minDifficulty: 0
+powerLevel: 0
+powerLevelString: 
+oldPreviewDifficulty: 0
+regionSpecific: True
+dominantTribes: []
+redundantAbilities: []
+unlockedCardPrerequisites: []
+randomReplacementCards: []
+overclockBlueprint: [D:3/T:7,D:1/T:1,D:5/T:3]
+LatcherShield,LeapBot -> Automaton 1
+MineCart -> Amoebot 3
+LatcherShield -> Shieldbot 5,Bombbot -> Insectodrone 4
+CloserBot
+NONE -> Insectodrone 6,NONE -> LatcherShield 4
+NONE -> LatcherShield 2,NONE -> Insectodrone 4
+LatcherShield -> CloserBot 4
+NONE -> Insectodrone 2
+LeapBot -> CloserBot 6

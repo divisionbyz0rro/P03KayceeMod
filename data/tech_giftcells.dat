@@ -1,0 +1,21 @@
+Name: Tech_GiftCells
+maxDifficulty: 6
+minDifficulty: 0
+powerLevel: 0
+powerLevelString: 
+oldPreviewDifficulty: 0
+regionSpecific: True
+dominantTribes: []
+redundantAbilities: []
+unlockedCardPrerequisites: []
+randomReplacementCards: []
+overclockBlueprint: []
+AttackConduit,NullConduit -> AttackConduit 3,CellGift
+CellGift -> Shieldbot 6
+NullConduit,NONE -> CellGift 2,NONE -> FactoryConduit 3,NONE -> AttackConduit 5
+CellGift -> Automaton 1,NONE -> Bombbot 6
+NONE -> Insectodrone 5,CellGift
+NONE -> AttackConduit 4,AttackConduit,NONE -> Insectodrone 2
+CellGift -> CellBuff 4
+GiftBot -> CellGift 2,LeapBot -> MineCart 4,NONE -> AttackConduit 3
+NONE -> CloserBot 6

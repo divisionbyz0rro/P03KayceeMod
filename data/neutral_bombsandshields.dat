@@ -1,0 +1,20 @@
+Name: Neutral_BombsAndShields
+maxDifficulty: 6
+minDifficulty: 0
+powerLevel: 0
+powerLevelString: 
+oldPreviewDifficulty: 0
+regionSpecific: True
+dominantTribes: []
+redundantAbilities: []
+unlockedCardPrerequisites: []
+randomReplacementCards: [Shieldbot,Bombbot,SentryBot]
+overclockBlueprint: [D:3/T:2,D:5/T:4]
+Shieldbot,NONE -> Shieldbot 2,NONE -> SentryBot 4,NONE -> Bombbot 6
+Automaton -> Shieldbot 6,Bombbot
+Bombbot -> CloserBot 6,NONE -> Bombbot 1
+NONE -> Bombbot 2,NONE -> Bombbot 4
+Shieldbot -> CloserBot 4
+NONE -> CloserBot 2,Shieldbot,NONE -> Bombbot 4
+EMPTY TURN
+NONE -> CloserBot 6

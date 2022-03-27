@@ -1,0 +1,72 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Infiniscryption.P03KayceeRun</AssemblyName>
+    <Description>P03 in Kaycee's Mod</Description>
+    <Version>1.0.0</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>9.0</LangVersion>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+  </PropertyGroup>
+
+  <ItemGroup>
+      <PackageReference Include="BepInEx.Analyzers" Version="1.0.8">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="BepInEx.Core" Version="5.4.19" />
+      <PackageReference Include="HarmonyX" Version="2.9.0" />
+      <PackageReference Include="Inscryption.GameLibs" Version="1.9.0-r.0" />
+      <PackageReference Include="UnityEngine.Modules" Version="2019.4.24" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DeckEditor" Private="false">
+      <HintPath>.\lib\DeckEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="PackManager" Private="false">
+      <HintPath>.\lib\Infiniscryption.PackManager.dll</HintPath>
+    </Reference>
+    <Reference Include="InscryptionAPI" Private="false">
+      <HintPath>.\lib\InscryptionAPI.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.2" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Compiled\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="$(ProjectDir)\assets\*.png" />
+    <EmbeddedResource Include="$(ProjectDir)\assets\*.wav" />
+    <EmbeddedResource Include="$(ProjectDir)\data\*.csv" />
+    <EmbeddedResource Include="$(ProjectDir)\data\*.dat" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /Y $(ProjectDir)\lib\*.dll $(TargetDir)" />
+    <Exec Command="xcopy /Y $(ProjectDir)\lib\*.dll $(TargetDir)" />
+    <!--
+    <Exec Command="$(PkgILRepack)\tools\ILRepack /out:$(ProjectDir)\Compiled\Infiniscryption.P03KayceeRun.dll $(TargetPath) $(ProjectDir)../Core/Compiled/Infiniscryption.Core.dll /lib:$(TargetDir)" />
+    -->
+    <Exec Command="xcopy /Y $(TargetPath) &quot;C:\Program Files (x86)\Steam\steamapps\common\Inscryption\BepInEx\plugins&quot;" />
+    <!--
+    <Exec Command="xcopy /Y $(ProjectDir)\assets\*.png &quot;C:\Program Files (x86)\Steam\steamapps\common\Inscryption\BepInEx\plugins\Infiniscryption\assets&quot;" />
+    <Exec Command="xcopy /Y $(ProjectDir)\assets\*.wav &quot;C:\Program Files (x86)\Steam\steamapps\common\Inscryption\BepInEx\plugins\Infiniscryption\assets&quot;" />
+    -->
+    <Exec Command="xcopy /Y $(TargetPath) $(ProjectDir)\package" />
+    <!--
+    <Exec Command="xcopy /Y $(ProjectDir)\assets\*.png $(ProjectDir)\package\BepInEx\plugins\Infiniscryption\assets" />
+    <Exec Command="xcopy /Y $(ProjectDir)\assets\*.wav $(ProjectDir)\package\BepInEx\plugins\Infiniscryption\assets" />
+    -->
+    <Exec Command="xcopy /Y $(ProjectDir)\README.md $(ProjectDir)\package" />
+    <Exec Command="xcopy /Y $(ProjectDir)\icon.png $(ProjectDir)\package" />
+    <Exec Command="xcopy /Y $(ProjectDir)\manifest.json $(ProjectDir)\package" />
+  </Target>
+</Project>

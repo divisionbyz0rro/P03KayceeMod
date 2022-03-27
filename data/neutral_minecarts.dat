@@ -1,0 +1,21 @@
+Name: Neutral_Minecarts
+maxDifficulty: 6
+minDifficulty: 0
+powerLevel: 0
+powerLevelString: 
+oldPreviewDifficulty: 0
+regionSpecific: True
+dominantTribes: []
+redundantAbilities: []
+unlockedCardPrerequisites: []
+randomReplacementCards: []
+overclockBlueprint: [D:5/T:0,D:6/T:2,D:3/T:6]
+MineCart -> Shieldbot 6,NONE -> Automaton 2
+LeapBot -> Automaton 2,Bombbot -> MineCart 2
+Insectodrone -> CloserBot 4
+LeapBot -> Automaton 2,NONE -> Bombbot 6
+NONE -> Bombbot 1
+NONE -> MineCart 2,NONE -> Bombbot 4,NONE -> Insectodrone 6
+NONE -> CloserBot 2
+NONE -> Automaton 4,NONE -> MineCart 4
+NONE -> CloserBot 6

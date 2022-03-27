@@ -1,0 +1,20 @@
+Name: Nature_Hounds
+maxDifficulty: 6
+minDifficulty: 0
+powerLevel: 0
+powerLevelString: 
+oldPreviewDifficulty: 0
+regionSpecific: True
+dominantTribes: []
+redundantAbilities: []
+unlockedCardPrerequisites: []
+randomReplacementCards: []
+overclockBlueprint: [D:1/T:1,D:3/T:0,D:5/T:6]
+XformerPorcupineBeast -> XformerPorcupineBot 2
+BoltHound,NONE -> AlarmBot 4
+NONE -> XformerBatBot 2,NONE -> Bombbot 4
+XformerPorcupineBeast -> XformerPorcupineBot 2,NONE -> Bombbot 4
+Bombbot -> XformerPorcupineBeast 0,Shieldbot -> XformerGrizzlyBot 4
+NONE -> XformerPorcupineBeast 6
+Bombbot -> BoltHound 4
+XformerPorcupineBeast -> XformerGrizzlyBot 6
