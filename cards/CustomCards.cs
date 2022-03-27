@@ -252,7 +252,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             //     .temple = CardTemple.Tech;
 
             CardManager.New(P03Plugin.CardPrefx, FIREWALL, "Firewall", 0, 3)
-                .SetPortrait(TextureHelper.GetImageAsTexture("portrait_firewall"))
+                .SetPortrait(TextureHelper.GetImageAsTexture("portrait_firewall.png", typeof(CustomCards).Assembly))
                 .AddAbilities(Ability.PreventAttack)
                 .temple = CardTemple.Tech;
 

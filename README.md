@@ -116,6 +116,7 @@ Art for the following cards were made by Nevernamed
 - You start with a Wiseclock instead of a Shield Generator now
 - Replaced some of the temporary card portraits with kickass new art by Makako and Nevernamed
 - Used some serious hacks to make the Deck Editor mod compatible with this mod
+- Moved project to its own repo to make collaboration with other modders easier
 
 1.0.7
 - Patch 1.0.5 broke Build-A-Card. This should fix it.

@@ -1,7 +1,7 @@
 {
     "name": "P03_In_Kaycees_Mod",
     "version_number": "1.0.8",
-    "website_url": "https://github.com/divisionbyz0rro/Infiniscryption",
+    "website_url": "https://github.com/divisionbyz0rro/P03KayceeMod",
     "description": "Had enough of Leshy? Play through Botopia and face P03 inside of Kaycee's Mod!",
     "dependencies": [
         "BepInEx-BepInExPack_Inscryption-5.4.1701",
