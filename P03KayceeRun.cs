@@ -1,9 +1,11 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 using BepInEx;
 using BepInEx.Bootstrap;
 using BepInEx.Logging;
 using HarmonyLib;
 using Infiniscryption.P03KayceeRun.Patchers;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Infiniscryption.P03KayceeRun
@@ -28,6 +30,9 @@ namespace Infiniscryption.P03KayceeRun
 
             Harmony harmony = new Harmony(PluginGuid);
             harmony.PatchAll();
+
+            foreach (Type t in typeof(P03Plugin).Assembly.GetTypes())
+                System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(t.TypeHandle);
             
             CustomCards.RegisterCustomCards(harmony);
             StarterDecks.RegisterStarterDecks();
@@ -35,6 +40,8 @@ namespace Infiniscryption.P03KayceeRun
             BossManagement.RegisterBosses();
 
             SceneManager.sceneLoaded += this.OnSceneLoaded;
+
+            EncounterBlueprintHelper.TestAllKnownEncounterData();
 
             Initialized = true;
 

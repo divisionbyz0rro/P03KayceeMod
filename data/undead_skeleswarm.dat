@@ -10,12 +10,12 @@ redundantAbilities: []
 unlockedCardPrerequisites: []
 randomReplacementCards: []
 overclockBlueprint: []
-RoboSkeleton,RoboSkeleton,NONE -> SentryBot 1,NONE -> SentryBot 3
-NONE -> RoboSkeleton 5
+RoboSkeleton,RoboSkeleton,NONE -> SentryBot 1,NONE -> SentryBot 3,NONE -> P03KCM_FIREWALL_BATTLE 6
+NONE -> RoboSkeleton 5,NONE -> LatcherBrittle 3
 RoboSkeleton,RoboSkeleton -> Insectodrone 3
-NONE -> RoboSkeleton 5
+NONE -> RoboSkeleton 5,NONE -> LatcherBrittle 4
 RoboSkeleton,RoboSkeleton -> Insectodrone 6,NONE -> RoboSkeleton 2
-Insectodrone
+Insectodrone,NONE -> LatcherBrittle 3
 RoboSkeleton -> Insectodrone 4,RoboSkeleton -> Insectodrone 6
 NONE -> RoboSkeleton 4
 NONE -> CloserBot 6

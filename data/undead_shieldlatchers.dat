@@ -10,11 +10,11 @@ redundantAbilities: []
 unlockedCardPrerequisites: []
 randomReplacementCards: []
 overclockBlueprint: [D:3/T:7,D:1/T:1,D:5/T:3]
-LatcherShield,LeapBot -> Automaton 1
-MineCart -> Amoebot 3
+LatcherShield,LeapBot -> Automaton 1,NONE -> P03KCM_FIREWALL_BATTLE 6
+MineCart,NONE -> LatcherBrittle 3
 LatcherShield -> Shieldbot 5,Bombbot -> Insectodrone 4
-CloserBot
-NONE -> Insectodrone 6,NONE -> LatcherShield 4
+CloserBot,NONE -> LatcherBrittle 4
+NONE -> Insectodrone 6,NONE -> LatcherShield 4,NONE -> LatcherBrittle 3
 NONE -> LatcherShield 2,NONE -> Insectodrone 4
 LatcherShield -> CloserBot 4
 NONE -> Insectodrone 2

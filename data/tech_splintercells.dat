@@ -10,10 +10,10 @@ redundantAbilities: []
 unlockedCardPrerequisites: []
 randomReplacementCards: []
 overclockBlueprint: []
-CellTri,NONE -> Automaton 6
+CellTri,NONE -> Automaton 6,NONE -> NullConduit 3,NONE -> P03KCM_FIREWALL_BATTLE 6
 NullConduit -> AttackConduit 4,NullConduit
-Automaton -> CellBuff 2,NONE -> Bombbot 3
-NullConduit -> AttackConduit 1,NONE -> CellBuff 4
+Automaton -> CellBuff 2,NONE -> Bombbot 3,NONE -> NullConduit 3
+NullConduit -> AttackConduit 1,NONE -> CellBuff 4,NONE -> AttackConduit 3
 NONE -> CellTri 5
 NullConduit
 NONE -> CellBuff 3

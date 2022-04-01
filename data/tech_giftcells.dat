@@ -10,12 +10,12 @@ redundantAbilities: []
 unlockedCardPrerequisites: []
 randomReplacementCards: []
 overclockBlueprint: []
-AttackConduit,NullConduit -> AttackConduit 3,CellGift
-CellGift -> Shieldbot 6
+AttackConduit,NullConduit -> AttackConduit 3,CellGift,NONE -> P03KCM_FIREWALL_BATTLE 6
+CellGift -> Shieldbot 6,NONE -> NullConduit 3
 NullConduit,NONE -> CellGift 2,NONE -> FactoryConduit 3,NONE -> AttackConduit 5
-CellGift -> Automaton 1,NONE -> Bombbot 6
+CellGift -> Automaton 1,NONE -> Bombbot 6,NONE -> NullConduit 4
 NONE -> Insectodrone 5,CellGift
-NONE -> AttackConduit 4,AttackConduit,NONE -> Insectodrone 2
+NONE -> AttackConduit 4,AttackConduit,NONE -> Insectodrone 2,NONE -> NullConduit 3
 CellGift -> CellBuff 4
 GiftBot -> CellGift 2,LeapBot -> MineCart 4,NONE -> AttackConduit 3
 NONE -> CloserBot 6

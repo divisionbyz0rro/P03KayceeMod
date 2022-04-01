@@ -2,12 +2,38 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DiskCardGame;
+using Infiniscryption.P03KayceeRun.Helpers;
 using UnityEngine;
 
 namespace Infiniscryption.P03KayceeRun.Patchers
 {
     public class EncounterBlueprintHelper
     {
+        public static readonly string[] ALL_KNOWN_ENCOUNTERS = new string[] {
+            "CanvasBossPX",
+            "nature_battransformers",
+            "nature_beartransformers",
+            "nature_hounds",
+            "neutral_alarmbots",
+            "neutral_bombsandshields",
+            "neutral_bridgebattle",
+            "neutral_minecarts",
+            "neutral_sentrywall",
+            "neutral_swapbots",
+            "P03FinalBoss",
+            "PhotographerBossP1",
+            "PhotographerBossP2",
+            "tech_attackconduits",
+            "tech_giftcells",
+            "tech_splintercells",
+            "undead_bomblatchers",
+            "undead_shieldlatchers",
+            "undead_skeleswarm",
+            "wizard_bigripper",
+            "wizard_gemexploder",
+            "wizard_shieldgems"
+        };
+
         public string name;
         public List<string> dominantTribes;
         public int maxDifficulty;
@@ -171,6 +197,22 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
 
             return data;
+        }
+
+        public static void TestAllKnownEncounterData()
+        {
+            foreach (string encounterName in ALL_KNOWN_ENCOUNTERS)
+            {
+                try
+                {
+                    (new EncounterBlueprintHelper(DataHelper.GetResourceString(encounterName, "dat"))).AsBlueprint();
+                }
+                catch (Exception ex)
+                {
+                    P03Plugin.Log.LogError($"ERROR PARSING {encounterName}");
+                    P03Plugin.Log.LogError(ex);
+                }
+            }
         }
     }
 }

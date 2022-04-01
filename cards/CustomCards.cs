@@ -36,6 +36,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
         public const string PROGRAMMER = "P03KCM_PROGRAMMER";
         public const string ARTIST = "P03KCM_ARTIST";
         public const string FIREWALL = "P03KCM_FIREWALL";
+        public const string FIREWALL_NORMAL = "P03KCM_FIREWALL_BATTLE";
 
         private static List<string> PackCardNames = new();
 
@@ -48,7 +49,13 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             if (P03AscensionSaveData.IsP03Run || ScreenManagement.ScreenState == CardTemple.Tech)
             {
                 if (__result.name.ToLowerInvariant().StartsWith("sentinel") || __result.name == "TechMoxTriple")
-                    __result.mods.Add(new() { gemify = true });
+                {
+                    if (__result.name.ToLowerInvariant().StartsWith("sentinel"))
+                        __result.energyCost = 3;
+
+                    if (!__result.Gemified)
+                        __result.mods.Add(new() { gemify = true });
+                }
 
                 else if (__result.name.ToLowerInvariant().Equals("automaton"))
                     __result.energyCost = 2;
@@ -173,8 +180,13 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                     PackCardNames.Add(cols[0]);
             }
 
-            CardManager.BaseGameCards.CardByName("PlasmaGunner")
-                .AddAppearances(ForceRevolverAppearance.ID);
+            CardManager.BaseGameCards.CardByName("PlasmaGunner").AddAppearances(ForceRevolverAppearance.ID);
+
+            CardManager.BaseGameCards.CardByName("TechMoxTriple").AddDecal(
+                TextureHelper.GetImageAsTexture("portrait_triplemox_color_decal_1.png", typeof(CustomCards).Assembly),
+                TextureHelper.GetImageAsTexture("portrait_triplemox_color_decal_1.png", typeof(CustomCards).Assembly),
+                TextureHelper.GetImageAsTexture("portrait_triplemox_color_decal_2.png", typeof(CustomCards).Assembly)
+            );
 
             // This creates all the sprites behind the scenes so we're ready to go
             RandomStupidAssApePortrait.RandomApePortrait.GenerateApeSprites();
@@ -239,6 +251,11 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             CardManager.New(P03Plugin.CardPrefx, VIRUS_SCANNER, "VIRSCAN.EXE", 1, 7)
                 .SetPortrait(TextureHelper.GetImageAsTexture("portrait_virusscanner.png", typeof(CustomCards).Assembly))
                 .AddAbilities(Ability.Deathtouch, Ability.StrafeSwap)
+                .AddDecal(
+                    TextureHelper.GetImageAsTexture("portrait_triplemox_color_decal_1.png", typeof(CustomCards).Assembly),
+                    TextureHelper.GetImageAsTexture("portrait_triplemox_color_decal_1.png", typeof(CustomCards).Assembly),
+                    TextureHelper.GetImageAsTexture("portrait_virusscanner_decal.png", typeof(CustomCards).Assembly)
+                )
                 .temple = CardTemple.Tech;
 
             CardManager.New(P03Plugin.CardPrefx, PROGRAMMER, "Programmer", 0, 2)
@@ -256,7 +273,12 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 .AddAbilities(Ability.PreventAttack)
                 .temple = CardTemple.Tech;
 
-            // This should patch the rulebook
+            CardManager.New(P03Plugin.CardPrefx, FIREWALL_NORMAL, "Firewall", 0, 3)
+                .SetPortrait(TextureHelper.GetImageAsTexture("portrait_firewall.png", typeof(CustomCards).Assembly))
+                .AddAbilities(Ability.PreventAttack, Ability.StrafeSwap)
+                .temple = CardTemple.Tech;
+
+            // This should patch the rulebook. Also fixes a little bit of the game balance
             AbilityManager.ModifyAbilityList += delegate(List<AbilityManager.FullAbility> abilities)
             {
                 List<Ability> allP3Abs = CardManager.AllCardsCopy.Where(c => c.temple == CardTemple.Tech).SelectMany(c => c.abilities).Distinct().ToList();
@@ -265,6 +287,9 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 {
                     if (allP3Abs.Contains(ab.Id))
                         ab.Info.AddMetaCategories(AbilityMetaCategory.Part3Rulebook);
+
+                    if (ab.Id == Ability.CellBuffSelf || ab.Id == Ability.CellTriStrike)
+                        ab.Info.powerLevel += 2;
                 }
                 return abilities;
             };

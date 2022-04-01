@@ -14,7 +14,7 @@ A handful of people have played this mod, but I expect the number of bugs discov
 
 Please feel free to give me feedback on the Inscryption modding discord - @divisionbyzorro
 
-Or submit issues on GitHub: [Infiniscryption Issues List](https://github.com/divisionbyz0rro/Infiniscryption/issues)
+Or submit issues on GitHub: [P03 Issues List](https://github.com/divisionbyz0rro/P03KayceeMod/issues)
 
 ## How does this mod work?
 
@@ -95,6 +95,7 @@ Art for the following cards were made by Makako
 - Gamblo Bot
 - Thick Droid
 - Steam Bot
+- (secret cards)
 
 Art for the following cards were made by Nevernamed
 - Curve Hopper
@@ -109,14 +110,21 @@ Art for the following cards were made by Nevernamed
 <details>
 <summary>Changelog</summary>
 
-1.0.8
-- Registered all of the custom metacategories created by this mod with the Pack Management mod to improve compatibility with cards that are missing 
+1.1.0
+- Previous versions of this mod would leave your save file in a state where unloading the mod would permanently corrupt your save file. This has now been fixed. If you load up this version of the mod and take any action that would cause the game to save your file to the disk, your save file should now be able to handle this mod being uninstalled.
 - Fixed an issue where sometimes the trading sequence would activate multiple times at once
 - Replaced the Transformer event
-- You start with a Wiseclock instead of a Shield Generator now
+- Added some new items and replaced some of the items that you start with.
 - Replaced some of the temporary card portraits with kickass new art by Makako and Nevernamed
 - Used some serious hacks to make the Deck Editor mod compatible with this mod
 - Moved project to its own repo to make collaboration with other modders easier
+- Fixed an issue where tranferring Transformer via the shredder made the recipient turn into an Add3r permanently.
+- Filled the main challenge screen with a bunch of new challenges
+- Random balance tweaks to some cards
+- Rebalanced a lot of the encounters to be harder at higher difficulties, and hopefully fixed some issues with a couple of encounters being too difficult at low difficulties.
+- Registered all of the custom metacategories created by this mod with the Pack Management mod to improve compatibility with cards that are missing 
+- Preparing myself for the inevitable amount of bugs that will appear once I release this.
+
 
 1.0.7
 - Patch 1.0.5 broke Build-A-Card. This should fix it.

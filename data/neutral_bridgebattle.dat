@@ -10,10 +10,10 @@ redundantAbilities: []
 unlockedCardPrerequisites: []
 randomReplacementCards: [Automaton,Bombbot,MineCart,AlarmBot]
 overclockBlueprint: [D:1/T:0,D:3/T:1,D:5/T:3]
-AlarmBot -> Shieldbot 4
-NONE -> Bombbot 2
-Automaton -> CloserBot 4
-NONE -> Bombbot 20
+AlarmBot -> Shieldbot 4,NONE -> SentryBot 3,NONE -> P03KCM_FIREWALL_BATTLE 6
+NONE -> Bombbot 2,NONE -> SentryBot 4
+Automaton -> CloserBot 4,NONE -> SentryBot 3
+NONE -> Bombbot 2,NONE -> SentryBot 3
 SwapBot -> CloserBot 2
 NONE -> RANDOM 200%
 SwapBot -> CloserBot 4

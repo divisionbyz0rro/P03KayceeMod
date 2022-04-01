@@ -151,14 +151,6 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 default:
                     break;
             }
-
-            // Now for debug purposes, all of the encounters are going to get written to disk
-            // foreach (string encounter in new string[] {"ArchivistBossP1", "ArchivistBossP2", "CanvasBossPX", "PhotographerBossP1", "PhotographerBossP2", "TelegrapherBossP1"})
-            // {
-            //     EncounterBlueprintData data = Resources.Load<EncounterBlueprintData>($"data/encounterblueprints/part3/{encounter}");
-            //     string filePath = Path.Combine(BepInEx.Paths.BepInExRootPath, $"{encounter}.dat");
-            //     File.WriteAllText(filePath, (new EncounterBlueprintHelper(data)).ToString());
-            // }
         }
     }
 }

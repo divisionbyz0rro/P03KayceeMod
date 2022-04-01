@@ -38,11 +38,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                         yield return P03LivesFace.ShowChangeLives(-livesToDrop, true);
                         EventManagement.NumberOfLivesRemaining = 1;
 
-                        if (!StoryEventsData.EventCompleted(EventManagement.ONLY_ONE_BOSS_LIFE))
-                        {
-                            yield return TextDisplayer.Instance.PlayDialogueEvent("P03OnlyOneBossLife", TextDisplayer.MessageAdvanceMode.Input, TextDisplayer.EventIntersectMode.Wait, null, null);
-                            StoryEventsData.SetEventCompleted(EventManagement.ONLY_ONE_BOSS_LIFE);
-                        }
+                        yield return EventManagement.SayDialogueOnce("P03OnlyOneBossLife", EventManagement.ONLY_ONE_BOSS_LIFE);
                     }
                     hasShownLivesDrop = true;
                 }
