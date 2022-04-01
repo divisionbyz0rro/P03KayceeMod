@@ -37,7 +37,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             StarterDeckManager.Add(P03Plugin.PluginGuid, CreateStarterDeckInfo("Gems", "starterdeck_icon_gems", new string[] {"SentinelBlue", "SentinelGreen", "SentinelOrange"}), unlockLevel: 8);
             StarterDeckManager.Add(P03Plugin.PluginGuid, CreateStarterDeckInfo("FullDraft", "starterdeck_icon_token", new string[] {CustomCards.UNC_TOKEN, CustomCards.DRAFT_TOKEN, CustomCards.DRAFT_TOKEN }), unlockLevel: 8);
 
-            StarterDeckManager.ModifyDeckList += delegate(List<StarterDeckManager.FullStarterDeck> decks)
+            StarterDeckManager.ModifyDeckList += delegate(List<StarterDeckManager.FullStarterDeck> decks )
             {
                 CardTemple acceptableTemple = ScreenManagement.ScreenState;
 

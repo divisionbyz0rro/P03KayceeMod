@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DiskCardGame;
 using HarmonyLib;
+using Infiniscryption.P03KayceeRun.Items;
 using Infiniscryption.P03KayceeRun.Patchers;
 using UnityEngine;
 
@@ -75,7 +76,7 @@ namespace Infiniscryption.P03KayceeRun.Sequences
         private List<ConsumableItemData> GetItems()
         {
             int randomSeed = P03AscensionSaveData.RandomSeed;
-            List<string> items = new() { "Battery", "ShieldGenerator", "BombRemote", "PocketWatch" };
+            List<string> items = new() { "Battery", ShockerItem.ItemData.name, "ShieldGenerator", LifeItem.ItemData.name, "BombRemote", "PocketWatch" };
             while (items.Count > 3)
                 items.RemoveAt(SeededRandom.Range(0, items.Count, randomSeed++));
 

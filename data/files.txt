@@ -1,0 +1,29 @@
+ Volume in drive C is Local Disk
+ Volume Serial Number is 402C-A0AD
+
+ Directory of C:\GIT\P03KayceeMod\data
+
+03/18/2022  11:57 AM               552 CanvasBossPX.dat
+04/01/2022  09:40 AM               746 nature_battransformers.dat
+04/01/2022  09:40 AM               711 nature_beartransformers.dat
+04/01/2022  09:40 AM               751 nature_hounds.dat
+04/01/2022  09:39 AM               795 neutral_alarmbots.dat
+04/01/2022  09:39 AM               695 neutral_bombsandshields.dat
+04/01/2022  09:39 AM               624 neutral_bridgebattle.dat
+04/01/2022  09:39 AM               705 neutral_minecarts.dat
+04/01/2022  09:39 AM               889 neutral_sentrywall.dat
+04/01/2022  09:39 AM               703 neutral_swapbots.dat
+03/18/2022  11:57 AM             1,584 P03FinalBoss.dat
+03/18/2022  11:57 AM               596 PhotographerBossP1.dat
+03/18/2022  11:57 AM               547 PhotographerBossP2.dat
+04/01/2022  09:40 AM               812 tech_attackconduits.dat
+04/01/2022  09:40 AM               777 tech_giftcells.dat
+04/01/2022  09:40 AM               658 tech_splintercells.dat
+04/01/2022  09:40 AM               677 undead_bomblatchers.dat
+04/01/2022  09:40 AM               692 undead_shieldlatchers.dat
+04/01/2022  09:40 AM               726 undead_skeleswarm.dat
+04/01/2022  09:40 AM               721 wizard_bigripper.dat
+04/01/2022  09:40 AM               831 wizard_gemexploder.dat
+04/01/2022  09:40 AM               872 wizard_shieldgems.dat
+              22 File(s)         16,664 bytes
+               0 Dir(s)  33,097,515,008 bytes free

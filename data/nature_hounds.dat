@@ -9,12 +9,12 @@ dominantTribes: []
 redundantAbilities: []
 unlockedCardPrerequisites: []
 randomReplacementCards: []
-overclockBlueprint: [D:1/T:1,D:3/T:0,D:5/T:6]
-XformerPorcupineBeast -> XformerPorcupineBot 2
+overclockBlueprint: [D:1/T:6,D:3/T:4,D:5/T:1]
+XformerPorcupineBeast -> XformerPorcupineBot 2,NONE -> P03KCM_FIREWALL_BATTLE 6
 BoltHound,NONE -> AlarmBot 4
-NONE -> XformerBatBot 2,NONE -> Bombbot 4
-XformerPorcupineBeast -> XformerPorcupineBot 2,NONE -> Bombbot 4
+NONE -> XformerBatBot 2,NONE -> Bombbot 4,NONE -> CXformerAdder 3
+XformerPorcupineBeast -> XformerPorcupineBot 2,NONE -> Bombbot 4,NONE -> CXformerAdder 4
 Bombbot -> XformerPorcupineBeast 0,Shieldbot -> XformerGrizzlyBot 4
 NONE -> XformerPorcupineBeast 6
-Bombbot -> BoltHound 4
+Bombbot -> BoltHound 4,NONE -> CXformerAdder 3
 XformerPorcupineBeast -> XformerGrizzlyBot 6

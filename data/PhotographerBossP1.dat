@@ -12,10 +12,10 @@ randomReplacementCards: []
 overclockBlueprint: []
 
 Shutterbug,Shutterbug,Shutterbug,Shutterbug,Shutterbug
-NONE -> Shutterbug 5
+NONE -> Shutterbug 5,NONE -> Shutterbug 4
 BoltHound,NONE -> AlarmBot 3
-XformerBatBot -> XformerBatBeast 1,XformerBatBeast
-XformerPorcupineBeast,XformerPorcupineBot -> XformerPorcupineBeast -> 1
+XformerBatBot -> XformerBatBeast 1,XformerBatBeast,NONE -> Shutterbug 3
+XformerPorcupineBeast,XformerPorcupineBot -> XformerPorcupineBeast 1
 NONE -> Shutterbug 4
 Shutterbug,Shutterbug,NONE -> Shutterbug 3
 BoltHound -> CloserBot 6

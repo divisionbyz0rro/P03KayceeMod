@@ -556,6 +556,11 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 CardBattleNodeData bossData = bossNode.Data as CardBattleNodeData;
                 bossData.specialBattleId = BossBattleSequencer.GetSequencerIdForBoss(bp.opponent);
 
+                // Destroy all of the loot nodes
+                foreach (HoloMapNode node in bossNode.lootNodes)
+                    GameObject.Destroy(node.gameObject);
+                bossNode.lootNodes.Clear();
+
                 P03Plugin.Log.LogInfo($"Setting special battle id {bossData.specialBattleId} for opponent {bp.opponent.ToString()}");
 
                 retval.SetActive(false);

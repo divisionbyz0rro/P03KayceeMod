@@ -30,10 +30,8 @@ namespace Infiniscryption.P03KayceeRun.Patchers
         {
             //P03Plugin.Log.LogInfo($"Creating dialogue {id}, {string.Join(",", lines)}");
 
-            bool leshy = faces.Any(s => s.ToLowerInvariant() == "leshy");
-
             DialogueEvent.Speaker speaker = DialogueEvent.Speaker.P03;
-            if (leshy)
+            if (faces.Exists(s => s.ToLowerInvariant().Contains("leshy")))
                 speaker = DialogueEvent.Speaker.Leshy;
             else if (faces.Exists(s => s.ToLowerInvariant().Contains("telegrapher")))
                 speaker = DialogueEvent.Speaker.P03Telegrapher;
@@ -43,6 +41,10 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 speaker = DialogueEvent.Speaker.P03Photographer;
             else if (faces.Exists(s => s.ToLowerInvariant().Contains("canvas")))
                 speaker = DialogueEvent.Speaker.P03Canvas;
+            else if (faces.Exists(s => s.ToLowerInvariant().Contains("goo")))
+                speaker = DialogueEvent.Speaker.Goo;
+
+            bool leshy = speaker == DialogueEvent.Speaker.Leshy || speaker == DialogueEvent.Speaker.Goo;
 
             if (string.IsNullOrEmpty(id))
                 return;

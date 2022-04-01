@@ -87,6 +87,9 @@ namespace Infiniscryption.P03KayceeRun.Sequences
             }
 
             StoryEventsData.SetEventCompleted(EventManagement.SAW_P03_INTRODUCTION);
+
+            if (AscensionSaveData.Data.ChallengeIsActive(AscensionChallengeManagement.BOUNTY_HUNTER))
+                ChallengeActivationUI.Instance.ShowActivation(AscensionChallengeManagement.BOUNTY_HUNTER );
         }
     }
 }

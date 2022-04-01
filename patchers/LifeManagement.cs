@@ -21,10 +21,27 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             }
         }
 
+        [HarmonyPatch(typeof(Part3SaveData), "OnRespawn")]
+        [HarmonyPostfix]
+        public static void BountHunterChallenge()
+        {
+            if (SaveFile.IsAscension && AscensionSaveData.Data.ChallengeIsActive(AscensionChallengeManagement.BOUNTY_HUNTER))
+            {
+                ChallengeActivationUI.Instance.ShowActivation(AscensionChallengeManagement.BOUNTY_HUNTER);
+                Part3SaveData.Data.bounty = 45 * AscensionSaveData.Data.GetNumChallengesOfTypeActive(AscensionChallengeManagement.BOUNTY_HUNTER); // good fucking luck
+            }
+        }
+
         [HarmonyPatch(typeof(Part3GameFlowManager), "PlayerRespawnSequence")]
         [HarmonyPostfix]
         public static IEnumerator ShowLivesAtStartOfRespawn(IEnumerator sequence)
         {
+            if (!SaveFile.IsAscension)
+            {
+                yield return sequence;
+                yield break;
+            }
+
             bool hasShownLivesLost = false;
             while (sequence.MoveNext())
             {

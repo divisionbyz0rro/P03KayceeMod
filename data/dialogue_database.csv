@@ -113,3 +113,9 @@ P03PhaseThreeSevenSlots1,Happy,,Your tiny brain cannot comprehend gameplay of th
 P03AscensionTransformer,Default,,This is [c:bR]Transformation Machine 2.0[c:]
 ,,,Gone are those foul beasts from before.
 ,,,"Here, you will choose one of your bots to transform into another."
+P03AscensionLifeItem,Happy,,That really looked bigger before you used it
+GoobertConfused,Goo,,Please! You've got to help me get out of here!
+P03GoobertAnnoyed,Default,,I have no idea how he managed to escape the sewers
+,,,Don’t worry - I'll put him back for you
+P03GoobertShutUp,Angry,,[c:bR]SILENCE![c:]
+,,,You have no purpose here!

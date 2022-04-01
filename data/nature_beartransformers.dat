@@ -10,11 +10,11 @@ redundantAbilities: []
 unlockedCardPrerequisites: []
 randomReplacementCards: []
 overclockBlueprint: [D:1/T:0,D:3/T:1,D:5/T:3]
-XformerGrizzlyBot
+XformerGrizzlyBot,NONE -> P03KCM_FIREWALL_BATTLE 6
 XformerPorcupineBot -> XformerBatBeast 4
-NONE -> Bombbot 2,NONE -> Bombbot 4
+NONE -> Bombbot 2,NONE -> Bombbot 4,NONE -> CXformerAdder 3
 NONE -> Bombbot 4
-XformerGrizzlyBot -> XformerGrizzlyBeast 4,Shieldbot -> XformerGrizzlyBot 6
-NONE -> XformerGrizzlyBot 6,NONE -> Shieldbot 2
+XformerGrizzlyBot -> XformerGrizzlyBeast 4,Shieldbot -> XformerGrizzlyBot 6,NONE -> CXformerAdder 4
+NONE -> XformerGrizzlyBot 6,NONE -> Shieldbot 2,NONE -> CXformerAdder 3
 Bombbot -> BoltHound 4
 XformerBatBeast -> XformerGrizzlyBeast 6

@@ -7,6 +7,7 @@ using System.IO.Compression;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Infiniscryption.P03KayceeRun.Items;
 
 namespace Infiniscryption.P03KayceeRun.Patchers
 {
@@ -139,20 +140,55 @@ namespace Infiniscryption.P03KayceeRun.Patchers
         }
 
         [HarmonyPatch(typeof(SaveManager), "SaveToFile")]
-        [HarmonyPrefix]
-        public static void SaveBothPart3SaveData()
+        public static class Part3SaveDataFixImprovement
         {
-            // What this does is save a copy of the current part 3 save data somewhere else
-            // The idea is that when you play part 3, every time you save we keep a copy of that data
-            // And whenever you play ascension part 3, same thing.
-            //
-            // That way, if you switch over to the other type of part 3, we can load the last time this happened.
-            // And whenever creating a new ascension part 3 run, we check to see if there is a copy of part 3 save yet
-            // If not, we will end up creating one
+            // Okay, I recognize that this is all kind of crazy.
 
-            P03Plugin.Log.LogInfo($"Saving {SaveKey}");
-            ModdedSaveManager.SaveData.SetValue(P03Plugin.PluginGuid, SaveKey, ToCompressedJSON(SaveManager.SaveFile.part3Data));
+            // Here's the problem: the game wants your Botopia save data to be in a specific place
+            // I don't want you to lose your original Part 3 save. Plus, **I** really don't want to lose that save either!
+            // Why? Because I want to be able to leave Kaycee's Mod and go explore original Botopia so I can
+            // check out how it behaves, etc.
+
+            // So what we do is we actually keep two Part3Save copies alive in the ModdedSaveFile, and we swap in whichever
+            // one is necessary based on context (see the patch for LoadFromFile)
+            
+            // But whenever the file is saved, only the original part 3 save data gets saved in the normal spot
+            // This fixes issues that arise when people unload the P03 KCM mod.
+
+            [HarmonyPrefix]
+            public static void Prefix(ref Part3SaveData __state)
+            {
+                // What this does is save a copy of the current part 3 save data somewhere else
+                // The idea is that when you play part 3, every time you save we keep a copy of that data
+                // And whenever you play ascension part 3, same thing.
+                //
+                // That way, if you switch over to the other type of part 3, we can load the last time this happened.
+                // And whenever creating a new ascension part 3 run, we check to see if there is a copy of part 3 save yet
+                // If not, we will end up creating one
+
+                P03Plugin.Log.LogInfo($"Saving {SaveKey}");
+                ModdedSaveManager.SaveData.SetValue(P03Plugin.PluginGuid, SaveKey, ToCompressedJSON(SaveManager.SaveFile.part3Data));
+
+                // Then, right before we actually save the data, we swap back in the original part3 data
+                __state = SaveManager.SaveFile.part3Data;
+
+                EnsurePart3Saved();
+                string originalPart3String = ModdedSaveManager.SaveData.GetValue(P03Plugin.PluginGuid, REGULAR_SAVE_KEY);
+                Part3SaveData originalPart3Data = FromCompressedJSON<Part3SaveData>(originalPart3String);
+                SaveManager.SaveFile.part3Data = originalPart3Data;
+
+                // SEE BELOW FOR WHAT HAPPENS NEXT: \/ \/ \/ 
+            }
+
+            [HarmonyPostfix]
+            public static void Postfix(Part3SaveData __state)
+            {
+                // Now that we've saved the file, we swap back whatever we had before
+                SaveManager.SaveFile.part3Data = __state;
+            }
         }
+
+        
 
         [HarmonyPatch(typeof(SaveManager), nameof(SaveManager.TestSaveFileCorrupted))]
         [HarmonyPrefix]
@@ -286,7 +322,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                     __instance.items = new List<string>();
 
                 if (NumberOfItems >= 1)
-                    __instance.items.Add("Battery");
+                    __instance.items.Add(ShockerItem.ItemData.name);
 
                 if (NumberOfItems >= 2)
                     __instance.items.Add("PocketWatch");
@@ -296,6 +332,9 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
                 __instance.reachedCheckpoints.Add("NorthNeutralPath"); // This makes bounty hunters work properly
                                                                        // Without this, your bounty can never reach tier 1
+
+                if (AscensionSaveData.Data.ChallengeIsActive(AscensionChallengeManagement.BOUNTY_HUNTER))
+                    __instance.bounty = 45 * AscensionSaveData.Data.GetNumChallengesOfTypeActive(AscensionChallengeManagement.BOUNTY_HUNTER); // Good fucking luck
             }
         }
 

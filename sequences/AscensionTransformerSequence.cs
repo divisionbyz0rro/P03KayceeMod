@@ -127,11 +127,7 @@ namespace Infiniscryption.P03KayceeRun.Sequences
             selectionConfirmed = false;
             yield return this.EnterComponents();
 
-            if (!StoryEventsData.EventCompleted(EventManagement.TRANSFORMER_CHANGES))
-            {
-                yield return TextDisplayer.Instance.PlayDialogueEvent("P03AscensionTransformer", TextDisplayer.MessageAdvanceMode.Input, TextDisplayer.EventIntersectMode.Wait, null, null);
-                StoryEventsData.SetEventCompleted(EventManagement.TRANSFORMER_CHANGES);
-            }
+            yield return EventManagement.SayDialogueOnce("P03AscensionTransformer", EventManagement.TRANSFORMER_CHANGES);
 
 	        this.leftSlot.CursorSelectStarted = (Action<MainInputInteractable>)Delegate.Combine(this.leftSlot.CursorSelectStarted, new Action<MainInputInteractable>(this.OnSlotSelected));
             this.rightSlot.CursorSelectStarted = (Action<MainInputInteractable>)Delegate.Combine(this.rightSlot.CursorSelectStarted, new Action<MainInputInteractable>(this.OnSlotSelected));

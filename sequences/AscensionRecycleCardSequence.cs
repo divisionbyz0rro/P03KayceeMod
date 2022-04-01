@@ -68,7 +68,12 @@ namespace Infiniscryption.P03KayceeRun.Sequences
             if (ShouldOverrideCardDisplayer)
             {
                 if (card.metaCategories.Contains(CardMetaCategory.Rare))
-                    __instance.currencyText.text = "RARE";
+                {
+                    if (card.ModAbilities.Count > 0)
+                        __instance.currencyText.text = "RARE++";
+                    else
+                        __instance.currencyText.text = "RARE";
+                }
                 else if (card.Gemified || card.mods.Count > 0)
                     __instance.currencyText.text = "TKN++";
                 else
@@ -83,7 +88,12 @@ namespace Infiniscryption.P03KayceeRun.Sequences
             if (ShouldOverrideCardDisplayer)
             {
                 if (info.metaCategories.Contains(CardMetaCategory.Rare))
-                    __result = 3;
+                {
+                    if (info.ModAbilities.Count > 0)
+                        __result = 4;
+                    else
+                        __result = 3;
+                }
                 else if (info.Gemified || info.mods.Count > 0)
                     __result = 2;
                 else
@@ -95,8 +105,17 @@ namespace Infiniscryption.P03KayceeRun.Sequences
 
         private CardInfo GetCardInfo()
         {
-            if (this.selectedCardValue == 3)
-                return CardLoader.GetCardByName(CustomCards.RARE_DRAFT_TOKEN);
+            if (this.selectedCardValue >= 3)
+            {
+                CardInfo rareCard = CardLoader.GetCardByName(CustomCards.DRAFT_TOKEN);
+                if (this.selectedCardInfo.ModAbilities.Count > 0)
+                {
+                    CardModificationInfo cardMod = new();
+                    cardMod.abilities = new List<Ability>(this.selectedCardInfo.ModAbilities);
+                    rareCard.mods.Add(cardMod);
+                }
+                return rareCard;
+            }
 
             CardInfo baseCard = CardLoader.GetCardByName(CustomCards.DRAFT_TOKEN);
             
