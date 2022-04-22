@@ -32,7 +32,16 @@ namespace Infiniscryption.P03KayceeRun
             harmony.PatchAll();
 
             foreach (Type t in typeof(P03Plugin).Assembly.GetTypes())
-                System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(t.TypeHandle);
+            {
+                try
+                {
+                    System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(t.TypeHandle);
+                } catch (TypeLoadException ex)
+                {
+                    Log.LogWarning("Failed to force load static constructor!");
+                    Log.LogWarning(ex);
+                }
+            }
             
             CustomCards.RegisterCustomCards(harmony);
             StarterDecks.RegisterStarterDecks();
@@ -58,12 +67,6 @@ namespace Infiniscryption.P03KayceeRun
         {
             if (Chainloader.PluginInfos.ContainsKey("inscryption_deckeditor"))
                 FixDeckEditor();
-        }
-
-        private void Start()
-        {
-            if (Chainloader.PluginInfos.ContainsKey("zorro.inscryption.infiniscryption.packmanager"))
-                CustomCards.WriteP03Pack();
         }
     }
 }

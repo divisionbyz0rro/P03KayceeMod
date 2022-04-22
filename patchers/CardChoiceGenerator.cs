@@ -1,20 +1,76 @@
 using HarmonyLib;
 using DiskCardGame;
 using System.Collections.Generic;
+using Infiniscryption.P03KayceeRun.Sequences;
+using System.Linq;
+using System;
 
 namespace Infiniscryption.P03KayceeRun.Patchers
 {
     [HarmonyPatch]
     public static class CardChoiceGenerator
     {
-        private static Dictionary<int, CardMetaCategory> selectionCategories = new()
+        private static Dictionary<RunBasedHoloMap.Zone, CardMetaCategory> selectionCategories = new()
         {
-            { RunBasedHoloMap.NEUTRAL, CustomCards.NeutralRegion },
-            { RunBasedHoloMap.MAGIC, CustomCards.WizardRegion },
-            { RunBasedHoloMap.UNDEAD, CustomCards.UndeadRegion },
-            { RunBasedHoloMap.NATURE, CustomCards.NatureRegion },
-            { RunBasedHoloMap.TECH, CustomCards.TechRegion }
+            { RunBasedHoloMap.Zone.Neutral, CustomCards.NeutralRegion },
+            { RunBasedHoloMap.Zone.Magic, CustomCards.WizardRegion },
+            { RunBasedHoloMap.Zone.Undead, CustomCards.UndeadRegion },
+            { RunBasedHoloMap.Zone.Nature, CustomCards.NatureRegion },
+            { RunBasedHoloMap.Zone.Tech, CustomCards.TechRegion }
         };
+
+        private static string GetNameContribution(CardInfo card)
+        {
+            string[] nameSplit = card.displayedName.Split(' ', '-');
+            if (nameSplit.Length > 1)
+            {
+                if (nameSplit[0].ToLowerInvariant().Contains("gem"))
+                    return nameSplit[1];
+                else
+                    return nameSplit[0];
+            }
+
+            if (card.displayedName.Contains("bot"))
+                return card.displayedName.Replace("bot", "");
+
+            return card.displayedName;
+        }
+
+        private static CardInfo GenerateMycoCard(int randomSeed)
+        {
+            List<CardInfo> allCards = ScriptableObjectLoader<CardInfo>.AllData.FindAll(x => TradeChipsSequencer.IsValidDraftCard(x) && !x.metaCategories.Contains(CardMetaCategory.Rare)).ToList();
+            CardInfo left = allCards[SeededRandom.Range(0, allCards.Count, randomSeed++)];
+            CardInfo right = allCards[SeededRandom.Range(0, allCards.Count, randomSeed++)];
+
+            string name = GetNameContribution(left) + "-" + GetNameContribution(right);
+
+            int health = Math.Max(left.Health, right.Health);
+            int attack = Math.Max(left.Attack, right.Attack);
+            List<Ability> abilities = new ();
+            abilities.AddRange(left.Abilities);
+            abilities.AddRange(right.Abilities);
+            int energyCost = Math.Max(left.energyCost, right.energyCost);
+
+            CardModificationInfo mod = new();
+            mod.nonCopyable = true;
+            mod.abilities = abilities;
+            mod.healthAdjustment = health;
+            mod.attackAdjustment = attack;
+            mod.energyCostAdjustment = energyCost;
+            mod.nameReplacement = name;
+            mod.gemify = left.Gemified || right.Gemified;
+            if (mod.abilities.Contains(Ability.Transformer))
+            {
+                if (left.evolveParams != null)
+                    mod.transformerBeastCardId = left.evolveParams.evolution.name;
+                else if (right.evolveParams != null)
+                    mod.transformerBeastCardId = right.evolveParams.evolution.name;
+            }
+
+            CardInfo retval = CardLoader.GetCardByName(CustomCards.FAILED_EXPERIMENT_BASE);
+            (retval.mods ??= new()).Add(mod);
+            return retval;
+        }
 
         [HarmonyPatch(typeof(Part3CardChoiceGenerator), "GenerateChoices")]
         [HarmonyPrefix]
@@ -22,15 +78,24 @@ namespace Infiniscryption.P03KayceeRun.Patchers
         {
             if (SaveFile.IsAscension && HoloMapAreaManager.Instance != null)
             {
-                int region = RunBasedHoloMap.GetRegionCodeFromWorldID(HoloMapAreaManager.Instance.CurrentWorld.name);
+                RunBasedHoloMap.Zone region = RunBasedHoloMap.GetRegionCodeFromWorldID(HoloMapAreaManager.Instance.CurrentWorld.name);
+
+                __result = new();
+
+                if (region == RunBasedHoloMap.Zone.Mycologist)
+                {
+                    int newRandomSeed = P03AscensionSaveData.RandomSeed;
+                    for (int i = 0; i < 3; i++)
+                        __result.Add(new () { CardInfo = GenerateMycoCard(newRandomSeed + 100 * i)});
+
+                    return false;
+                }
 
                 // We need one card specific to the region and two cards belonging to the neutral or specific region
 
                 // Don't allow rares
                 List<CardInfo> regionCards = ScriptableObjectLoader<CardInfo>.AllData.FindAll(x => x.metaCategories.Contains(selectionCategories[region]) && !x.metaCategories.Contains(CardMetaCategory.Rare));
                 List<CardInfo> regionAndNeutralCards = ScriptableObjectLoader<CardInfo>.AllData.FindAll(x => (x.metaCategories.Contains(selectionCategories[region]) || x.metaCategories.Contains(CustomCards.NeutralRegion)) && !x.metaCategories.Contains(CardMetaCategory.Rare));
-
-                __result = new();
 
                 if (regionCards.Count > 0)
                 {

@@ -2,6 +2,7 @@ using UnityEngine;
 using DiskCardGame;
 using System.Collections.Generic;
 using System.Linq;
+using Infiniscryption.P03KayceeRun.Helpers;
 
 namespace Infiniscryption.P03KayceeRun.Patchers
 {
@@ -126,31 +127,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
         private void Recolor(GameObject obj, Color color)
         {
-            Color halfMain = new Color(color.r, color.g, color.b);
-            halfMain.a = 0.5f;
-
-            foreach (Renderer renderer in obj.GetComponentsInChildren<Renderer>())
-            {
-                foreach (Material material in renderer.materials)
-                {
-                    material.shader = Shader.Find(_shaderKey);
-                    material.globalIlluminationFlags = MaterialGlobalIlluminationFlags.None;
-                    material.EnableKeyword("_EMISSION");
-
-                    // _METALLICGLOSSMAP
-                    // _DETAIL_MULX2
-
-                    if (material.HasProperty("_EmissionColor"))
-                        material.SetColor("_EmissionColor", color * 0.5f);
-
-                    if (material.HasProperty("_MainColor"))
-                        material.SetColor("_MainColor", color);
-                    if (material.HasProperty("_RimColor"))
-                        material.SetColor("_RimColor", color);
-                    if (material.HasProperty("_Color"))
-                        material.SetColor("_Color", halfMain);
-                }
-            }
+            MaterialHelper.RecolorAllMaterials(obj, color, _shaderKey, true);
             obj.tag = "HoloMapFixedColor"; // This is used to make sure the colors aren't overwritten.
         }
 
@@ -197,25 +174,28 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
         public static IEnumerable<HoloMapBlueprint> AdjacentTo(List<HoloMapBlueprint> map, HoloMapBlueprint node)
         {
+            if (node.isSecretRoom)
+                yield break;
+
             if ((node.arrowDirections & RunBasedHoloMap.NORTH) != 0)
             {
                 var bp = map.First(b => b.x == node.x && b.y == node.y - 1);
-                if (bp != null) yield return bp;
+                if (bp != null && !bp.isSecretRoom) yield return bp;
             }
             if ((node.arrowDirections & RunBasedHoloMap.SOUTH) != 0)
             {
                 var bp = map.First(b => b.x == node.x && b.y == node.y + 1);
-                if (bp != null) yield return bp;
+                if (bp != null && !bp.isSecretRoom) yield return bp;
             }
             if ((node.arrowDirections & RunBasedHoloMap.EAST) != 0)
             {
                 var bp = map.First(b => b.x == node.x + 1 && b.y == node.y);
-                if (bp != null) yield return bp;
+                if (bp != null && !bp.isSecretRoom) yield return bp;
             }
             if ((node.arrowDirections & RunBasedHoloMap.WEST) != 0)
             {
                 var bp = map.First(b => b.x == node.x - 1 && b.y == node.y);
-                if (bp != null) yield return bp;
+                if (bp != null && !bp.isSecretRoom) yield return bp;
             }
         }
 

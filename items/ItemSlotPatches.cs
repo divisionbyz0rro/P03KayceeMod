@@ -79,6 +79,10 @@ namespace Infiniscryption.P03KayceeRun.Items
         private static bool FillPage(ref ItemPage __instance, string headerText, params object[] otherArgs)
         {			
 			ConsumableItemData consumableByName = ItemsUtil.GetConsumableByName(otherArgs[0] as string);
+
+            if (SaveManager.SaveFile.IsPart3)
+                __instance.descriptionTextMesh.color = Color.white;
+
             if (!KNOWN_ITEMS.ContainsKey(consumableByName))
                 return true;
 
@@ -108,12 +112,21 @@ namespace Infiniscryption.P03KayceeRun.Items
 			{
 				__instance.iconRenderer.sprite = consumableByName.rulebookSprite;
 			}
-			__instance.nameTextMesh.text = Localization.Translate(consumableByName.rulebookName);
-			string text = RuleBookPage.ParseCardDefinition(consumableByName.rulebookDescription);
+
+            __instance.nameTextMesh.text = Localization.Translate(consumableByName.rulebookName);
+
+            string text = RuleBookPage.ParseCardDefinition(consumableByName.rulebookDescription);
+            if (consumableByName.name == GoobertHuh.ItemData.name)
+            {
+                Tuple<Color, string> goobertDialogue = GoobertHuh.GetGoobertRulebookDialogue();
+                text = goobertDialogue.Item2;
+                __instance.descriptionTextMesh.color = goobertDialogue.Item1;
+            }
+
 			string englishText;
 
 			if (__instance.itemModel != null)
-				englishText = text;
+				englishText = Localization.Translate(text);
 			else
 				englishText = string.Format(Localization.Translate("To the user: {0}"), text);
 			

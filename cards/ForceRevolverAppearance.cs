@@ -13,7 +13,7 @@ namespace Infiniscryption.P03KayceeRun.Cards
 				dac.SetWeaponMesh(DiskCardWeapon.Revolver);
         }
 
-        public static void Register()
+        static ForceRevolverAppearance()
         {
             ID = CardAppearanceBehaviourManager.Add(P03Plugin.PluginGuid, "ForceRevolverAppearance", typeof(ForceRevolverAppearance)).Id;
         }

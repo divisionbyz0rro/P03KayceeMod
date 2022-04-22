@@ -114,8 +114,211 @@ P03AscensionTransformer,Default,,This is [c:bR]Transformation Machine 2.0[c:]
 ,,,Gone are those foul beasts from before.
 ,,,"Here, you will choose one of your bots to transform into another."
 P03AscensionLifeItem,Happy,,That really looked bigger before you used it
-GoobertConfused,Goo,,Please! You've got to help me get out of here!
+GoobertConfused,Goo,,Please! I have to get out of here!
 P03GoobertAnnoyed,Default,,I have no idea how he managed to escape the sewers
 ,,,Don’t worry - I'll put him back for you
 P03GoobertShutUp,Angry,,[c:bR]SILENCE![c:]
 ,,,You have no purpose here!
+P03WhereIsGoobert,NPC,,Ho! A traveller like myself! I haven't seen one like you for a long time.
+,,,"Have you seen my [c:blGr]friend[c:] around here, traveller?"
+,,,I thought I heard his [c:blGr]distinctive voice[c:] somewhere around here…
+P03Wut,Default,,…
+P03FoundGoobertTech,NPC,,Ho! You found my friend!
+,,,It's not safe here. I'll meet you [c:bG]where he would least expect[c:].
+,,,Don't delay!
+P03FoundGoobertNature,NPC,,Ho! You found my friend!
+,,,It's not safe here. I'll meet you [c:bG]beneath the canopy[c:].
+,,,Don't delay!
+P03FoundGoobertUndead,NPC,,Ho! You found my friend!
+,,,It's not safe here. I'll meet you [c:bG]in the rubble[c:].
+,,,Don't delay!
+P03FoundGoobertWizard,NPC,,Ho! You found my friend!
+,,,It's not safe here. I'll meet you [c:bG]back home[c:].
+,,,Don't delay!
+P03DidNotBuyGoobert,NPC,,I can no longer hear my [c:blGr]friend's[c:] voice anywhere…
+P03LostGoobert,NPC,,Did you really give my [c:blGr]friend[c:] to [c:bR]him?[c:]
+,,,Why would you do such a thing?
+P03GoobertHome,NPC,,Thank you so much for rescuing my [c:blGr]friend[c:]
+,,,I hope this meager reward is sufficient for your kindness.
+P03BountyHunterBrain,Default,,Interesting. The [c:G]brain[c:] is still intact. 
+,,,Perhaps you can make use of that.
+P03ProspectorPrepareGold,NPC,,Do you…do you have [c:G]GOLD[c:] on you?
+,,,I can make such wonderful things out of that [c:G]gold[c:]
+,,,"If you talk to me again, I'll fix it right up for you."
+P03ProspectorReplaceGold,NPC,,Such wonderful [c:G]GOLD[c:]
+,,,I can make that thing whole again.
+P03ProspectorWantGold,NPC,,Do you know where I could find [c:G]GOLD[c:]?
+,,,I would so love to make something from some [c:G]gold[c:]
+P03WhiteFlagSetup,NPC,,Are you the one going around here taking care of our robot infestation?
+,,,Your deck looks really powerful - almost too powerful if you ask me.
+,,,I wonder - is it possible to convince the robots to [c:bR]give up?[c:]
+,,,"If you can make them surrender a battle, come back and see me."
+P03WhiteFlagReward,NPC,,So it is possible to make them quit.
+,,,I'm impressed. Take this [c:bR]draft token[c:] as a sign of my respect.
+P03DeckSizeSetup,NPC,,"This may seem a little impertinent, but…can I look at your deck?"
+,,,Wow! That's an impressive deck! But I can't help but think…
+,,,…it could be a little bigger maybe?
+,,,Come back and see me when it is.
+P03DeckSizeReward,NPC,,Wow! That deck truly is massive!
+,,,I found some of these [c:G]robobucks[c:] lying around here.
+,,,I'm sure you can use them to make your deck even better.
+P03SmugglerSetup,NPC,,Psst…hey stranger…
+,,,Can you give me a hand? I have some…[c:bR]contraband[c:] that I need to move.
+,,,"If you would be willing to move it for me, I would appreciate it."
+,,,Just talk to me again if you can help me.
+P03SmugglerAccepted,NPC,,Thank you so much my friend.
+,,,Here is the [c:bR]contraband[c:]. I will find you somewhere later on and retrieve it.
+,,,"I promise you, there will be a handsome reward."
+P03SmugglerComplete,NPC,,Thank you so very much my friend for carrying my [c:bR]contraband[c:]
+,,,I will take it off your hands now.
+,,,Please take this [c:G]token[c:] as an expression of my thanks.
+P03SmugglerFailed,NPC,,"What happened, my friend? Did you lose my [c:bR]contraband[c:]?"
+,,,I knew you were untrustworthy!
+P03FullyUpgradedFail,NPC,,"Ahoy there, fellow decksmith!"
+,,,"I, like yourself, am in pursuit of the [c:G]perfectly upgraded card[c:]"
+,,,"A card that is simultaneously [c:r]overclocked[c:], [c:dlGr]transformable[c:], and [c:O]g[c:][c:B]e[c:][c:G]m[c:]ified."
+,,,I would very much love to see such a card.
+P03FullyUpgradedSuccess,NPC,,"Ahoy there, fellow decksmith!"
+,,,Oh my - have you managed to [c:G]perfectly upgrade[c:] a card?
+,,,I am in awe of your deckbuilding prowess.
+,,,I hope this offering sufficiently conveys my admiration for your accomplishments.
+P03RadioTower1,NPC,,The first data burst has been collected. Only [c:bR]four[c:] more to go!
+P03RadioTower2,NPC,,I have collected two bursts already. Only [c:bR]three[c:] more to go!
+P03RadioTower3,NPC,,That was the third data burst. Only [c:bR]two[c:] more to go!
+P03RadioTower4,NPC,,And that makes the fourth data burst. Only [c:bR]one[c:] more to go!
+P03RadioTower5,NPC,,That was the [c:bR]last[c:] data burst I needed to collect! Come find me for your reward!
+P03RadioTowerOnBoard,NPC,,The signal is starting to come through. Just keep it alive for a little bit longer.
+P03RadioTowerDied,NPC,,I lost the last signal we collected. What happened??
+P03RadioQuestStart,NPC,,"Greetings, my friend!"
+,,,I am researching the communication protocols of the robots in this world.
+,,,"I could use a [c:bR]research assistant[c:], if you're interesting in helping out."
+,,,Just speak to me again if you want to give it a try.
+P03RadioQuestAccepted,NPC,,You are now my official [c:bR]research assistant[c:]!
+,,,I've added a radio tower to your deck.
+,,,You need to place it on the [c:bR]game board[c:] and keep it alive while I collect [c:bR]five data bursts[c:] from the robots. 
+,,,"Once I've collected enough, come back and see me for a reward."
+P03RadioQuestInProgress,NPC,,Hello there [c:bR]research assistant[c:]!
+P03RadioQuestFailed,NPC,,Did you really lose my [c:bR]radio tower[c:]?
+,,,Your incompetence is staggering!
+P03RadioQuestSucceeded,NPC,,You were a truly excellent [c:bR]research assistant[c:].
+,,,Please take this [c:G]token[c:] of my appreciation.
+P03ILoveBones,NPC,,[c:G]Bones![c:] I just love [c:G]bones[c:]!
+,,,I love how [c:G]brittle[c:] they are!
+,,,I love how [c:G]breakable[c:] they are!
+,,,I love everything about [c:G]bones[c:]!
+,,,Could you show me some [c:G]bones?![c:]
+,,,At least [c:G]three[c:] would do it!
+P03ILoveBonesSuccess,NPC,,[c:G]Bones![c:] I just love [c:G]bones[c:]!
+,,,I love how [c:G]brittle[c:] they are!
+,,,I love how [c:G]breakable[c:] they are!
+,,,I love everything about [c:G]bones[c:]!
+,,,Your deck is absolutely teeming with [c:G]bones[c:]!
+,,,This [c:G]Skeleton Master[c:] should complete your collection!
+P03TooEasyQuest,NPC,,I know this might sound a little rude but…
+,,,Doesn't it seem like this is all just a little too easy for you?
+,,,Talk to me again if you want a challenge.
+P03TooEasyAccepted,NPC,,I knew you were no coward.
+,,,"For the next [c:bR]five[c:] battles, you will start with a disadvantage."
+,,,"Complete those battles, then come see me for a reward."
+P03TooEasyInProgress,NPC,,"Be honest - the game is more fun when the battles are harder, is it not?"
+,,,"Keep fighting, and come see me when you've completed enough battles."
+P03TooEasyComplete,NPC,,I must say: I am impressed.
+,,,You completed those battles with ease.
+,,,"Since you seem impossible to kill, I shall grant that ability to a card of my choosing as well."
+P03DamageRaceIntro,NPC,,This is bad…this is real bad…
+,,,This [c:bR]power generator[c:] has gone critical.
+,,,Someone is going to have to go in there and shut it down.
+P03DamageRaceSuccess,NPC,,"I don't know how you did that, but that was incredibly impressive."
+P03DamageRaceFailed,NPC,,"Ohhh, [c:G]they[c:] are not going to like this…"
+,,,I've gotta get out of here before they turn me into one of their [c:G]experiments[c:]
+P03PowerTower1,NPC,,The device is starting to power up. [c:bR]Three[c:] more turns should do it.
+P03PowerTower2,NPC,,Ahh - I can feel the power gathering from here. [c:bR]Two[c:] more turns ought to be enough.
+P03PowerTower3,NPC,,The device is starting to really heat up! [c:bR]One[c:] more turn and we'll have all the power we need.
+P03PowerTower4,NPC,,"The device is fully charged! Return it to me, and I will give you the payment as promised."
+P03PowerTowerNeedsCircuit,NPC,,"The device is functional, but it cannot charge unless it is in a completed circuit."
+P03PowerTowerDied,NPC,,"Be careful! When the device is damaged, it loses its last charge!"
+P03PowerQuestStart,NPC,,You looking for a job?
+,,,I am attempting to gather [c:G]power[c:]
+,,,"Not metaphorical power - I mean real [c:G]electricity[c:], and I could really use your help"
+,,,[c:bR]Why?[c:]
+,,,That's not important. What's important is that I'm willing to pay.
+,,,"If you want to make some extra cash, just speak to me again."
+P03PowerQuestAccepted,NPC,,"You truly will do anything for money, won't you?"
+,,,I've added a power collection device to your deck.
+,,,You need to place it on the [c:bR]game board[c:] and power it inside of a circuit for [c:bR]four turns[c:]
+,,,"Once you've done that, come back and see me for a reward."
+P03PowerQuestInProgress,NPC,,Shouldn't you be out there gathering [c:G]power[c:]?
+P03PowerQuestFailed,NPC,,I can't believe you got rid of my [c:bR]power sink[c:]
+,,,You will be hearing from my lawyers!
+P03PowerQuestSucceeded,NPC,,It looks like you collected just enough power for me.
+,,,Your payment: as promised.
+P03DonationIntro,NPC,,"Dear friend, can you spare a few coins to help poor [c:bR]broken-down bots[c:]?"
+,,,These bots have served [c:G]Botopia[c:] faithfully their whole lives.
+,,,"And now that they have reached the end, they have nobody to care for them."
+,,,"You look like a kind, generous soul, with compassion for these bots."
+,,,"If you could spare a measly [c:bR]10 robobucks[c:], we could give many of these poor bots a wonderful home."
+,,,Please simply speak to me again to make a donation.
+P03DonationNotEnough,NPC,,"Your generous spirit is admirable, but I'm afraid we need at least [c:bR]10 robobucks[c:]"
+P03DonationComplete,NPC,,"Oh dear friend, your generosity knows no bounds."
+,,,"With this wonderful donation, we will be able to save many bots."
+,,,[c:G]Botopia[c:] will be forever grateful.
+P03DonationReward,NPC,,"Excuse me, but are you the [c:G]gracious soul[c:] who donated to save broken bots?"
+,,,"Thanks to you, my family is finally able to recharge their cells at night."
+,,,"I can't offer much to repay you, but I do have these [c:O]g[c:][c:B]e[c:][c:G]m[c:]s"
+,,,"I have no use for them, but I understand they will make some of your cards stronger."
+P03MycologistWut,Thinking,,Something's happening…
+MycologistWellIntro,MycologistTalkingMain,,The robot has tried to keep us away
+,MycologistTalkingMain,,But our experiments must continue
+,MycologistTalkingSide,,Our experiments must continue
+,MycologistTalkingMain,,We require components from you
+MycologistOrganicSuccess,MycologistTalkingMain,,We require [c:blGr]organic material[c:] for our new research
+,MycologistTalkingSide,,You are carrying the perfect specimen
+MycologistOrganicFear,Goo,,Are you really going to give me to those lunatics?
+,,,My pain is already unbearable!
+MycologistOrganicFailure,MycologistTalkingMain,,We require [c:blGr]organic material[c:] for our new research
+,MycologistTalkingSide,,"If you should find some, bring it here to us."
+MycologistBrainSuccess,MycologistTalkingMain,,We require an [c:G]unmodified robot brain[c:]
+,MycologistTalkingSide,,The brain of that [c:G]bounty hunter[c:] will suffice
+MycologistBrainMissing,MycologistTalkingMain,,We require an [c:G]unmodified robot brain[c:]
+,MycologistTalkingSide,,Maybe one day you will come across such a device
+MycologistBrainModified,MycologistTalkingMain,,We require an [c:G]unmodified robot brain[c:]
+,MycologistTalkingSide,,You have unfortunately tampered with the one you possess
+MycologistPowerSuccess,MycologistTalkingMain,,Thanks to your efforts our power supply is functioning once more
+,MycologistTalkingSide,,Thanks to you
+MycologistPowerFailed,MycologistTalkingMain,,And all of this is for nothing because our power generator is offline
+,MycologistTalkingSide,,"Without power, we can do nothing."
+MycologistEntryDenied,MycologistTalkingMain,,"Because we do not have all the required components, the test cannot proceed"
+,MycologistTalkingSide,,Maybe next time
+MycologistEntryAllowed,MycologistTalkingMain,,We are ready to proceed with our experiments
+,MycologistTalkingSide,,"Enter, and you shall provide our latest test subjects"
+P03AngryMycoFailure,Angry,,What the hell was that?
+MycologistCompleteSuccess,MycologistTalkingMain,,The experiment was a complete success
+,MycologistTalkingSide,,You will take it with you of course
+MycologistTakeOne,MycologistTalkingMain,,You will take one of our previous experiments
+MycologistGiveBack,MycologistTalkingSide,,In exchange you will give us a new test subject
+P03AngryAboutMycoBoss,Angry,,I cannot believe you're letting [c:G]them[c:] in here
+,Angry,,You will regret this…
+MycologistAscensionBoss,MycologistTalkingMain,,We have taken control of the robot once again!
+,MycologistTalkingSide,,Our experiments can begin anew!
+MycologistPartTwoIntro,MycologistTalkingMain,,It is time for our newest experiment to begin!
+MycologistPowerOnline,MycologistTalkingMain,,Bring the power online!
+MycologistBrainOnline,MycologistTalkingMain,,Summon the neural facsimile!
+MycologistTestSubjects,MycologistTalkingMain,,Align the test subjects!
+MycologistSummonGoo,MycologistTalkingMain,,And now for the most important component
+,MycologistTalkingSide,,The secret ingredient
+,MycologistTalkingMain,,The sentient [c:blGr]organic material[c:] you brought us
+GooScaredMycoBoss,Goo,,What are you going to do to me?
+MycologistHereWeGo,MycologistTalkingMain,,We will do everything your master refused to do 
+,MycologistTalkingSide,,We will turn you into something beautiful
+,MycologistTalkingMain,,We will now activate the machine
+GooOhMyGod,Goo,,This feels weird…
+MycologistSuccess,MycologistTalkingMain,,A resounding success!
+GooWTF,GooCurious,,What is happening?
+GooWTF2,GooCurious,,This…
+,GooCurious,,This feeling…
+,GooCurious,,Is incredible!
+P03WTFDidYouDo,Angry,,That was disgusting
+,Angry,,[c:bR]You[c:] are disgusting
+,Angry,,A fusion of [c:blGr]organic[c:] and [c:G]synthetic[c:]?
+,Angry,,I can't believe you're willing to carry that [c:blGr]thing[c:] around with you.
+P03Yuck,Angry,,I hope we never see this place again

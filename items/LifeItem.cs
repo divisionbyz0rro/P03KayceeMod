@@ -33,6 +33,7 @@ namespace Infiniscryption.P03KayceeRun.Items
             ItemData.placedSoundId = "metal_object_short";
             ItemData.examineSoundId = "metal_object_short";
             ItemData.pickupSoundId = "archivist_spawn_filecube";
+            ItemData.regionSpecific = true;
             ItemData.rulebookCategory = AbilityMetaCategory.Part3Rulebook;
             ItemData.rulebookName = "Data Cube";
             ItemData.rulebookDescription = "Can be placed on the scales for some damage, if you're into that sort of thing.";

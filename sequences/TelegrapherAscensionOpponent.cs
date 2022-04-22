@@ -1,10 +1,12 @@
 using System.Collections;
 using DiskCardGame;
+using HarmonyLib;
 using Infiniscryption.P03KayceeRun.Patchers;
 using UnityEngine;
 
 namespace Infiniscryption.P03KayceeRun.Sequences
 {
+    [HarmonyPatch]
     public class TelegrapherAscensionOpponent : TelegrapherBossOpponent
     {
         private CardInfo GetBlockchain()
@@ -83,6 +85,19 @@ namespace Infiniscryption.P03KayceeRun.Sequences
 
             // We do nothing in phase two; the sequencer handles that
             yield break;
+        }
+
+        [HarmonyPatch(typeof(FriendCardCreator), nameof(FriendCardCreator.FriendToCard))]
+        [HarmonyPrefix]
+        private static void MakeEarlierRoundsEasier(ref int statPoints)
+        {
+            if (SaveFile.IsAscension)
+            {
+                int zoneCount = EventManagement.CompletedZones.Count;
+                statPoints = statPoints - 3 + EventManagement.CompletedZones.Count;
+                if (zoneCount == 0 && statPoints > 3)
+                    statPoints = statPoints - 1;
+            }
         }
     }
 }

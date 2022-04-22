@@ -125,10 +125,12 @@ namespace Infiniscryption.P03KayceeRun.Helpers
 
             try
             {
-                if (log != null)
-                    log.LogInfo($"About to get audio clip at file://{manualPath}");
+                string url = $"file://{manualPath.Replace("#", "%23")}";
 
-                using (UnityWebRequest request = UnityWebRequestMultimedia.GetAudioClip($"file://{manualPath}", AudioType.WAV))
+                if (log != null)
+                    log.LogInfo($"About to get audio clip at {url}");
+
+                using (UnityWebRequest request = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.WAV))
                 {
                     request.SendWebRequest();
                     while (request.IsExecuting()); // Wait for this thing to finish

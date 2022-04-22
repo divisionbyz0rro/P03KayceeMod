@@ -93,7 +93,7 @@ namespace Infiniscryption.P03KayceeRun.Cards
             base.Card.renderInfo.hiddenCost = true;
         }
 
-        public static void Register()
+        static RandomStupidAssApePortrait()
         {
             ID = CardAppearanceBehaviourManager.Add(P03Plugin.PluginGuid, "RandomStupidAssApePortrait", typeof(RandomStupidAssApePortrait)).Id;
         }

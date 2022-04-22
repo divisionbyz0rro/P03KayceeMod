@@ -19,12 +19,13 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 Traverse.Create(__instance).Field("fastTravelHint").GetValue<GameObject>().SetActive(false);
         }
 
-        private static readonly Dictionary<string, int> fastTravelNodes = new()
+        private static readonly Dictionary<string, RunBasedHoloMap.Zone> fastTravelNodes = new()
         {
-            { "FastTravelMapNode_Wizard", RunBasedHoloMap.MAGIC },
-            { "FastTravelMapNode_Undead", RunBasedHoloMap.UNDEAD },
-            { "FastTravelMapNode_Nature", RunBasedHoloMap.NATURE },
-            { "FastTravelMapNode_Tech", RunBasedHoloMap.TECH }
+            { "FastTravelMapNode_Wizard", RunBasedHoloMap.Zone.Magic },
+            { "FastTravelMapNode_Undead", RunBasedHoloMap.Zone.Undead },
+            { "FastTravelMapNode_Nature", RunBasedHoloMap.Zone.Nature },
+            { "FastTravelMapNode_Tech", RunBasedHoloMap.Zone.Tech },
+            { "FastTravelMapNode_NorthPath", RunBasedHoloMap.Zone.Neutral }
         };
         
         [HarmonyPatch(typeof(FastTravelNode), "OnCursorSelectEnd")]
@@ -36,6 +37,12 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             // Instead, we will dynamically create a world based on that node
             if (SaveFile.IsAscension)
             {
+                if (fastTravelNodes[__instance.gameObject.name] == RunBasedHoloMap.Zone.Neutral)
+                {
+                    HoloGameMap.Instance.ToggleFastTravelActive(false, false);
+                    return false; 
+                }
+
                 EventManagement.AddVisitedZone(__instance.gameObject.name);
 
                 Traverse nodeTraverse = Traverse.Create(__instance);
@@ -54,7 +61,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 HoloMapAreaManager.Instance.StartCoroutine(HoloMapAreaManager.Instance.DroneFlyToArea(worldPosition, false));
                 Part3SaveData.Data.checkpointPos = worldPosition;
 
-                EventManagement.NumberOfZoneEnemiesKilled = 0;
+                //EventManagement.NumberOfZoneEnemiesKilled = 0; Separate key per zone - don't need to reset anymore
 
                 return false;
             }
@@ -122,7 +129,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             return true;
         }
 
-        public static IEnumerator ReturnToHomeBase() 
+        public static IEnumerator ReturnToLocation(Part3SaveData.WorldPosition worldPosition)
         {
             // We do our own special sequence when you complete a boss
             // ... we just play the drone and move you back to the hub world.
@@ -132,14 +139,21 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             HoloMapAreaManager.Instance.CurrentArea.OnAreaActive();
             HoloMapAreaManager.Instance.CurrentArea.OnAreaEnabled();
 
-            string worldId = RunBasedHoloMap.GetAscensionWorldID(RunBasedHoloMap.NEUTRAL);
-            Tuple<int, int> pos = RunBasedHoloMap.GetStartingSpace(RunBasedHoloMap.NEUTRAL);
-            Part3SaveData.WorldPosition worldPosition = new(worldId, pos.Item1, pos.Item2);
-
             HoloMapAreaManager.Instance.StartCoroutine(HoloMapAreaManager.Instance.DroneFlyToArea(worldPosition, false));
             Part3SaveData.Data.checkpointPos = worldPosition;
 
             yield return new WaitForSeconds(1.75f);
+
+            SaveManager.SaveToFile();
+        }
+
+        public static IEnumerator ReturnToHomeBase() 
+        {
+            string worldId = RunBasedHoloMap.GetAscensionWorldID(RunBasedHoloMap.Zone.Neutral);
+            Tuple<int, int> pos = RunBasedHoloMap.GetStartingSpace(RunBasedHoloMap.Zone.Neutral);
+            Part3SaveData.WorldPosition worldPosition = new(worldId, pos.Item1, pos.Item2);
+
+            yield return ReturnToLocation(worldPosition);
         }
 
         [HarmonyPatch(typeof(HoloGameMap), "ToggleFastTravelActive")]

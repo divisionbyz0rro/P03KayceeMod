@@ -252,7 +252,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             [HarmonyPostfix]
             private static IEnumerator Postfix(IEnumerator sequence, TargetSlotItem __state)
             {
-                if (SaveFile.IsAscension && AscensionSaveData.Data.ChallengeIsActive(ENERGY_HAMMER) && __state is HammerItem)
+                if (SaveFile.IsAscension && AscensionSaveData.Data.ChallengeIsActive(ENERGY_HAMMER) && __state is HammerItem && TurnManager.Instance.IsPlayerTurn)
                 {
                     if (ResourcesManager.Instance.PlayerEnergy < HAMMER_ENERGY_COST)
                     {
@@ -279,7 +279,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             [HarmonyPostfix]
             private static IEnumerator SpendHammerEnergy(IEnumerator sequence, HammerItem __state)
             {
-                if (SaveFile.IsAscension && AscensionSaveData.Data.ChallengeIsActive(ENERGY_HAMMER))
+                if (SaveFile.IsAscension && AscensionSaveData.Data.ChallengeIsActive(ENERGY_HAMMER) && TurnManager.Instance.IsPlayerTurn)
                 {
                     if (ResourcesManager.Instance.PlayerEnergy < HAMMER_ENERGY_COST)
                     {

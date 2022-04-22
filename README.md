@@ -110,6 +110,16 @@ Art for the following cards were made by Nevernamed
 <details>
 <summary>Changelog</summary>
 
+1.1.3
+- Okay - no more trying to be clever. The interoperability between this mod and the pack manager mod is now contained in a separate BepInEx plugin, so if it fails (because you don't have Pack Manager installed), nothing in the P03 plugin is affected.
+- Hopefully. Finally. Fixed the starter deck bug.
+
+1.1.2
+- Some additional convenience code that I wrote apparently re-introduced an old bug where this mod chokes if the Pack Management mod is not also installed. I think I have that fixed now.
+
+1.1.1
+- Fixed defect where the new P03 items would show up in Leshy's runs
+
 1.1.0
 - Previous versions of this mod would leave your save file in a state where unloading the mod would permanently corrupt your save file. This has now been fixed. If you load up this version of the mod and take any action that would cause the game to save your file to the disk, your save file should now be able to handle this mod being uninstalled.
 - Fixed an issue where sometimes the trading sequence would activate multiple times at once

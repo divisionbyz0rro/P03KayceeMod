@@ -1,0 +1,13 @@
+Name: Neutral_BridgeBattle
+maxDifficulty: 6
+minDifficulty: 0
+powerLevel: 0
+powerLevelString: 
+oldPreviewDifficulty: 0
+regionSpecific: True
+dominantTribes: []
+redundantAbilities: []
+unlockedCardPrerequisites: []
+randomReplacementCards: []
+overclockBlueprint: []
+SentryBot

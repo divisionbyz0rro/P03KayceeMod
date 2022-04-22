@@ -7,8 +7,6 @@ using InscryptionAPI.Guid;
 using System.Linq;
 using Infiniscryption.P03KayceeRun.Cards;
 using InscryptionAPI.Card;
-using Infiniscryption.PackManagement;
-using System.Runtime.CompilerServices;
 using InscryptionAPI.Helpers;
 using Infiniscryption.P03KayceeRun.Helpers;
 
@@ -17,11 +15,13 @@ namespace Infiniscryption.P03KayceeRun.Patchers
     [HarmonyPatch]
     public static class CustomCards
     {
-        public static readonly CardMetaCategory NeutralRegion = (CardMetaCategory)GuidManager.GetEnumValue<CardMetaCategory>(P03Plugin.PluginGuid, "NeutralRegionCards");
-        public static readonly CardMetaCategory WizardRegion = (CardMetaCategory)GuidManager.GetEnumValue<CardMetaCategory>(P03Plugin.PluginGuid, "WizardRegionCards");
-        public static readonly CardMetaCategory TechRegion = (CardMetaCategory)GuidManager.GetEnumValue<CardMetaCategory>(P03Plugin.PluginGuid, "TechRegionCards");
-        public static readonly CardMetaCategory NatureRegion = (CardMetaCategory)GuidManager.GetEnumValue<CardMetaCategory>(P03Plugin.PluginGuid, "NatureRegionCards");
-        public static readonly CardMetaCategory UndeadRegion = (CardMetaCategory)GuidManager.GetEnumValue<CardMetaCategory>(P03Plugin.PluginGuid, "UndeadRegionCards");
+        public static readonly CardMetaCategory NeutralRegion = GuidManager.GetEnumValue<CardMetaCategory>(P03Plugin.PluginGuid, "NeutralRegionCards");
+        public static readonly CardMetaCategory WizardRegion = GuidManager.GetEnumValue<CardMetaCategory>(P03Plugin.PluginGuid, "WizardRegionCards");
+        public static readonly CardMetaCategory TechRegion = GuidManager.GetEnumValue<CardMetaCategory>(P03Plugin.PluginGuid, "TechRegionCards");
+        public static readonly CardMetaCategory NatureRegion = GuidManager.GetEnumValue<CardMetaCategory>(P03Plugin.PluginGuid, "NatureRegionCards");
+        public static readonly CardMetaCategory UndeadRegion = GuidManager.GetEnumValue<CardMetaCategory>(P03Plugin.PluginGuid, "UndeadRegionCards");
+
+        public static readonly Trait Unrotateable = GuidManager.GetEnumValue<Trait>(P03Plugin.PluginGuid, "Unrotateable");
 
         public const string DRAFT_TOKEN = "P03KCM_Draft_Token";
         public const string UNC_TOKEN = "P03KCM_Draft_Token_Uncommon";
@@ -37,8 +37,16 @@ namespace Infiniscryption.P03KayceeRun.Patchers
         public const string ARTIST = "P03KCM_ARTIST";
         public const string FIREWALL = "P03KCM_FIREWALL";
         public const string FIREWALL_NORMAL = "P03KCM_FIREWALL_BATTLE";
-
-        private static List<string> PackCardNames = new();
+        public const string BRAIN = "P03KCM_BOUNTYBRAIN";
+        public const string BOUNTY_HUNTER_SPAWNER = "P03KCM_BOUNTY_SPAWNER";
+        public const string CONTRABAND = "P03KCM_CONTRABAND";
+        public const string RADIO_TOWER = "P03KCM_RADIO_TOWER";
+        public const string SKELETON_LORD = "P03KCM_SKELETON_LORD";
+        public const string GENERATOR_TOWER = "P03KCM_GENERATOR_TOWER";
+        public const string POWER_TOWER = "P03KCM_POWER_TOWER";
+        public const string FAILED_EXPERIMENT_BASE = "P03KCM_FAILED_EXPERIMENT";
+        public const string MYCO_HEALING_CONDUIT = "P03KCM_MYCO_HEALING_CONDUIT";
+        public const string MYCO_CONSTRUCT_BASE = "P03KCM_MYCO_CONSTRUCT_BASE";
 
         private readonly static List<CardMetaCategory> GBC_RARE_PLAYABLES = new() { CardMetaCategory.GBCPack, CardMetaCategory.GBCPlayable, CardMetaCategory.Rare, CardMetaCategory.ChoiceNode };
 
@@ -48,22 +56,58 @@ namespace Infiniscryption.P03KayceeRun.Patchers
         {
             if (P03AscensionSaveData.IsP03Run || ScreenManagement.ScreenState == CardTemple.Tech)
             {
-                if (__result.name.ToLowerInvariant().StartsWith("sentinel") || __result.name == "TechMoxTriple")
+                string compName = __result.name.ToLowerInvariant();
+                if (compName.StartsWith("sentinel") || __result.name == "TechMoxTriple")
                 {
-                    if (__result.name.ToLowerInvariant().StartsWith("sentinel"))
+                    if (compName.StartsWith("sentinel"))
                         __result.energyCost = 3;
+                    else
+                        __result.baseHealth = 1;
 
                     if (!__result.Gemified)
                         __result.mods.Add(new() { gemify = true });
                 }
 
-                else if (__result.name.ToLowerInvariant().Equals("automaton"))
+                else if (compName.Equals("automaton"))
                     __result.energyCost = 2;
 
-                else if (__result.name.ToLowerInvariant().Equals("thickbot"))
-                    __result.baseHealth = 6;
+                else if (compName.Equals("thickbot"))
+                    __result.baseHealth = 5;
 
-                else if (__result.name.ToLowerInvariant().Equals("energyconduit"))
+                else if (compName.Equals("steambot"))
+                    __result.abilities = new() { Ability.DeathShield };
+
+                else if (compName.Equals("bolthound"))
+                    __result.baseHealth = 3;
+
+                else if (compName.Equals("amoebot"))
+                    __result.energyCost = 3;
+
+                else if (compName.Equals("factoryconduit"))
+                    __result.energyCost = 2;
+
+                else if (compName.Equals("cellbuff"))
+                    __result.baseHealth = 1;
+
+                else if (compName.Equals("celltri"))
+                    __result.baseHealth = 1;
+
+                else if (compName.Equals("attackconduit"))
+                    __result.energyCost = 3;
+
+                else if (compName.Equals("gemshielder"))
+                    __result.baseAttack = 0;
+
+                else if (compName.Equals("gemexploder"))
+                    __result.baseHealth = 1;
+
+                else if (compName.Equals("insectodrone"))
+                    __result.energyCost = 2;
+
+                else if (compName.Equals("robomice"))
+                    __result.abilities = new () { Ability.DrawCopy, Ability.DrawCopy };
+
+                else if (compName.Equals("energyconduit"))
                 {
                     __result.baseAttack = 0;
                     __result.abilities = new () { NewConduitEnergy.AbilityID };
@@ -73,7 +117,27 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             }
         }
 
-        private static void UpdateExistingCard(string name, string textureKey, string pixelTextureKey, string regionCode, string decalTextureKey, string colorPortraitKey)
+        [HarmonyPatch(typeof(ActivatedRandomPowerEnergy), nameof(ActivatedRandomPowerEnergy.EnergyCost), MethodType.Getter)]
+        [HarmonyPostfix]
+        private static void MoreExpensiveOnAscension(ref int __result)
+        {
+            if (SaveFile.IsAscension)
+                __result = 3;
+        }
+
+        [HarmonyPatch(typeof(Ouroboros), nameof(Ouroboros.RespondsToDie))]
+        [HarmonyPrefix]
+        private static bool OnlyIfDiedInCombat(PlayableCard killer, ref bool __result)
+        {
+            if (SaveFile.IsAscension && SaveManager.SaveFile.IsPart3 && killer == null)
+            {
+                __result = false;
+                return false;
+            }
+            return true;
+        }
+
+        private static void UpdateExistingCard(string name, string textureKey, string pixelTextureKey, string regionCode, string decalTextureKey, string colorPortraitKey, bool isPackCard)
         {
             if (string.IsNullOrEmpty(name))
                 return;
@@ -107,66 +171,13 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
             if (!string.IsNullOrEmpty(decalTextureKey))
                 card.decals = new() { TextureHelper.GetImageAsTexture($"{decalTextureKey}.png", typeof(CustomCards).Assembly) };
-        }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void WriteP03PackInner(List<string> cardNames)
-        {
-            // Start by creating the pack:
-            PackInfo packInfo = PackManager.GetDefaultPackInfo(CardTemple.Tech);
-            packInfo.ValidFor.Add(PackInfo.PackMetacategory.LeshyPack);
-
-            // Awesome! Since there hasn't been an error, I can start modifying cards:
-            CardManager.ModifyCardList += delegate(List<CardInfo> cards)
-            {
-                if (P03Plugin.Initialized)
-                    if (ScreenManagement.ScreenState == CardTemple.Nature && PackManager.GetActivePacks().Contains(packInfo))
-                        foreach (CardInfo card in cards)
-                            if (card.temple == CardTemple.Tech)
-                                if (!card.metaCategories.Contains(CardMetaCategory.Rare))
-                                    if (cardNames.Contains(card.name))
-                                        card.AddMetaCategories(CardMetaCategory.ChoiceNode, CardMetaCategory.TraderOffer);
-
-                return cards;
-            };
-
-            // Also tell the pack manager about our metacategories
-            PackManager.TempleMetacategories[CardTemple.Tech].Add(NeutralRegion);
-            PackManager.TempleMetacategories[CardTemple.Tech].Add(WizardRegion);
-            PackManager.TempleMetacategories[CardTemple.Tech].Add(UndeadRegion);
-            PackManager.TempleMetacategories[CardTemple.Tech].Add(TechRegion);
-            PackManager.TempleMetacategories[CardTemple.Tech].Add(NatureRegion);
-        }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        internal static void WriteP03Pack()
-        {
-            try
-            {
-                WriteP03PackInner(PackCardNames);
-            } 
-            catch (Exception ex)
-            {
-                P03Plugin.Log.LogInfo("Failed to write the pack information. This probably means that the pack plugin doesn't exist; if that's the case, you can ignore this error.");
-                P03Plugin.Log.LogInfo(ex);
-            }
+            if (isPackCard)
+                (card.metaCategories ??= new()).Add(CardMetaCategory.TraderOffer);
         }
 
         internal static void RegisterCustomCards(Harmony harmony)
         {
-            // Register all the custom ability
-            ConduitSpawnCrypto.Register();
-            HighResAlternatePortrait.Register();
-            RandomStupidAssApePortrait.Register();
-            ForceRevolverAppearance.Register();
-            LoseOnDeath.Register();
-            NewPermaDeath.Register();
-            Artist.Register();
-            Programmer.Register();
-            RareDiscCardAppearance.Register();
-            EnergyConduitAppearnace.Register();
-            NewConduitEnergy.Register();
-
             // Load the custom cards from the CSV database
             string database = DataHelper.GetResourceString("card_database", "csv");
             string[] lines = database.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
@@ -174,10 +185,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             {
                 string[] cols = line.Split(new char[] { ',' }, StringSplitOptions.None);
                 //InfiniscryptionP03Plugin.Log.LogInfo($"I see line {string.Join(";", cols)}");
-                UpdateExistingCard(cols[0], cols[1], cols[2], cols[3], cols[4], cols[6]);
-
-                if (cols[5] == "Y")
-                    PackCardNames.Add(cols[0]);
+                UpdateExistingCard(cols[0], cols[1], cols[2], cols[3], cols[4], cols[6], cols[5] == "Y");
             }
 
             CardManager.BaseGameCards.CardByName("PlasmaGunner").AddAppearances(ForceRevolverAppearance.ID);
@@ -258,10 +266,10 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 )
                 .temple = CardTemple.Tech;
 
-            CardManager.New(P03Plugin.CardPrefx, PROGRAMMER, "Programmer", 0, 2)
-                .SetPortrait(TextureHelper.GetImageAsTexture("portrait_codemonkey.png", typeof(CustomCards).Assembly))
-                .AddAbilities(Programmer.AbilityID)
-                .temple = CardTemple.Tech;
+            // CardManager.New(P03Plugin.CardPrefx, PROGRAMMER, "Programmer", 0, 2)
+            //     .SetPortrait(TextureHelper.GetImageAsTexture("portrait_codemonkey.png", typeof(CustomCards).Assembly))
+            //     .AddAbilities(Programmer.AbilityID)
+            //     .temple = CardTemple.Tech;
 
             // CardManager.New(ARTIST, "Artist", 1, 2)
             //     .SetPortrait(TextureHelper.GetImageAsTexture("portrait_artist"))
@@ -278,6 +286,82 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 .AddAbilities(Ability.PreventAttack, Ability.StrafeSwap)
                 .temple = CardTemple.Tech;
 
+            CardManager.New(P03Plugin.CardPrefx, BRAIN, "Hunter Brain", 0, 2)
+                .SetPortrait(TextureHelper.GetImageAsTexture("portrait_bounty_hunter_brain.png", typeof(CustomCards).Assembly))
+                .AddAppearances(GoldPortrait.ID)
+                .SetCost(energyCost: 2)
+                .temple = CardTemple.Tech;
+
+            CardManager.New(P03Plugin.CardPrefx, BOUNTY_HUNTER_SPAWNER, "Activated Hunter", 0, 0)
+                .SetPortrait(TextureHelper.GetImageAsTexture("portrait_bounty_hunter_brain.png", typeof(CustomCards).Assembly))
+                .AddAppearances(ConditionalDynamicPortrait.ID, ForceRevolverAppearance.ID, GoldPortrait.ID)
+                .AddAbilities(RandomBountyHunter.AbilityID)
+                .temple = CardTemple.Tech;
+
+            CardManager.New(P03Plugin.CardPrefx, CONTRABAND, "yarr.torrent", 0, 1)
+                .SetPortrait(Resources.Load<Texture2D>("art/cards/part 3 portraits/portrait_captivefile"))
+                .AddAbilities(Ability.PermaDeath)
+                .temple = CardTemple.Tech;
+
+            CardInfo radio = CardManager.New(P03Plugin.CardPrefx, RADIO_TOWER, "Radio Tower", 0, 3);
+            radio.AddSpecialAbilities(ListenToTheRadio.AbilityID, RerenderOnBoard.AbilityID);
+            radio.SetCost(energyCost: 3);
+            radio.SetPortrait(TextureHelper.GetImageAsTexture("portrait_radio.png", typeof(CustomCards).Assembly));
+            radio.AddAppearances(OnboardHoloPortrait.ID);
+            radio.temple = CardTemple.Tech;
+            radio.holoPortraitPrefab = Resources.Load<GameObject>("prefabs/cards/hologramportraits/TerrainHologram_AnnoyTower");
+
+            CardInfo gentower = CardManager.New(P03Plugin.CardPrefx, GENERATOR_TOWER, "Generator", 0, 3);
+            gentower.temple = CardTemple.Tech;
+            gentower.AddAppearances(CardAppearanceBehaviour.Appearance.HologramPortrait);
+            gentower.holoPortraitPrefab = Resources.Load<GameObject>("prefabs/cards/hologramportraits/TerrainHologram_AnnoyTower");
+
+            CardInfo powerTower = CardManager.New(P03Plugin.CardPrefx, POWER_TOWER, "Power Sink", 0, 2);
+            powerTower.AddSpecialAbilities(RerenderOnBoard.AbilityID, PowerUpTheTower.AbilityID);
+            powerTower.SetCost(energyCost: 3);
+            powerTower.SetPortrait(TextureHelper.GetImageAsTexture("portrait_radio.png", typeof(CustomCards).Assembly));
+            powerTower.AddAppearances(OnboardDynamicHoloPortrait.ID);
+            powerTower.SetExtendedProperty(OnboardDynamicHoloPortrait.PREFAB_KEY, "prefabs/specialnodesequences/teslacoil");
+            powerTower.SetExtendedProperty(OnboardDynamicHoloPortrait.OFFSET_KEY, "0,-.39,0");
+            powerTower.SetExtendedProperty(OnboardDynamicHoloPortrait.SCALE_KEY, ".6,.6,.6");
+            powerTower.temple = CardTemple.Tech;
+
+            CardManager.New(P03Plugin.CardPrefx, FAILED_EXPERIMENT_BASE, "Failed Experiment", 0, 0)
+                .SetPortrait(Resources.Load<Texture2D>("art/cards/part 3 portraits/portrait_mycobot"))
+                .temple = CardTemple.Tech;
+
+            CardInfo mycoHealConduit = CardManager.New(P03Plugin.CardPrefx, MYCO_HEALING_CONDUIT, "Heal Conduit", 0, 3);
+            mycoHealConduit.AddAbilities(Ability.ConduitHeal);
+            mycoHealConduit.AddAppearances(OnboardDynamicHoloPortrait.ID);
+            mycoHealConduit.SetExtendedProperty(OnboardDynamicHoloPortrait.PREFAB_KEY, "prefabs/specialnodesequences/teslacoil");
+            mycoHealConduit.SetExtendedProperty(OnboardDynamicHoloPortrait.OFFSET_KEY, "0,-.39,0");
+            mycoHealConduit.SetExtendedProperty(OnboardDynamicHoloPortrait.SCALE_KEY, ".6,.6,.6");
+            mycoHealConduit.temple = CardTemple.Tech;
+
+            CardInfo goobertCardBase = CardManager.New(P03Plugin.CardPrefx, MYCO_CONSTRUCT_BASE, "Experiment #1", 0, 5);
+            goobertCardBase.SetCost(energyCost:6);
+            goobertCardBase.SetPortrait(TextureHelper.GetImageAsTexture("portrait_goobot.png", typeof(CustomCards).Assembly));
+            goobertCardBase.AddAppearances(GooDiscCardAppearance.ID);
+            goobertCardBase.AddSpecialAbilities(GoobertCenterCardBehaviour.AbilityID);
+            goobertCardBase.AddAbilities(TripleCardStrike.AbilityID, PowerDrain.AbilityID);
+            goobertCardBase.AddTraits(Unrotateable);
+            goobertCardBase.temple = CardTemple.Tech;
+
+            CardManager.New(P03Plugin.CardPrefx, SKELETON_LORD, "Skeleton Master", 0, 4)
+                .SetPortrait(TextureHelper.GetImageAsTexture("portrait_skeleton_lord.png", typeof(CustomCards).Assembly))
+                .AddAbilities(BrittleGainsUndying.AbilityID)
+                .SetCost(energyCost:2)
+                .AddDecal(
+                    TextureHelper.GetImageAsTexture("portrait_triplemox_color_decal_1.png", typeof(CustomCards).Assembly),
+                    TextureHelper.GetImageAsTexture("portrait_triplemox_color_decal_1.png", typeof(CustomCards).Assembly),
+                    TextureHelper.GetImageAsTexture("portrait_skeleton_lord_decal.png", typeof(CustomCards).Assembly)
+                )
+                .temple = CardTemple.Tech;
+
+            // CardManager.New(P03Plugin.CardPrefx, MYCO_CONSTRUCT_PONTOON, "PONTOON", 0, 1)
+            //     .AddAppearances(InvisibleCard.ID)
+            //     .temple = CardTemple.Tech;
+
             // This should patch the rulebook. Also fixes a little bit of the game balance
             AbilityManager.ModifyAbilityList += delegate(List<AbilityManager.FullAbility> abilities)
             {
@@ -290,6 +374,12 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
                     if (ab.Id == Ability.CellBuffSelf || ab.Id == Ability.CellTriStrike)
                         ab.Info.powerLevel += 2;
+
+                    if (ab.Id == Ability.ActivatedRandomPowerEnergy && P03AscensionSaveData.IsP03Run)
+                        ab.Info.rulebookDescription = ab.Info.rulebookDescription.Replace("1 Energy", "3 Energy");
+
+                    if (ab.Id == Ability.DrawCopy && P03AscensionSaveData.IsP03Run)
+                        ab.Info.canStack = true;
                 }
                 return abilities;
             };
@@ -307,12 +397,14 @@ namespace Infiniscryption.P03KayceeRun.Patchers
         {
             info.AddMetaCategories(CardMetaCategory.ChoiceNode);
             info.AddMetaCategories(NeutralRegion);
+            info.temple = CardTemple.Tech;
             return info;
         }
 
         public static CardInfo SetRegionalP03Card(this CardInfo info, CardTemple region)
         {
             info.AddMetaCategories(CardMetaCategory.ChoiceNode);
+            info.temple = CardTemple.Tech;
             switch (region)
             {
                 case CardTemple.Nature:
@@ -329,6 +421,133 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                     break;
             }
             return info;
+        }
+
+        public static CardInfo RemoveAbility(this CardInfo info, Ability ability)
+        {
+            (info.mods ??= new()).Add(new() { negateAbilities = new() { ability }});
+            return info;
+        }
+
+        public static CardInfo ChangeName(this CardInfo info, string newName)
+        {
+            (info.mods ??= new()).Add(new() { nameReplacement = newName });
+            return info;
+        }
+
+        private static string GetModCode(CardModificationInfo info)
+        {
+            string retval = "";
+            foreach (Ability ab in info.abilities)
+            {
+                retval += $"+{ab}";
+                if (ab == Ability.Transformer)
+                {
+                    if (!string.IsNullOrEmpty(info.transformerBeastCardId))
+                    {
+                        retval += "(" + info.transformerBeastCardId.Replace('+', '&').Replace('@', '#') + ")";
+                    }
+                }
+            }
+            if (info.gemify)
+                retval += "+Gemify";
+            return retval;
+        }
+
+        private static CardModificationInfo GetMod(string modCode)
+        {
+            CardModificationInfo retval = new();
+            retval.nonCopyable = true;
+            retval.abilities = new();
+            if (modCode.Contains("("))
+            {
+                string[] codePieces = modCode.Replace(")", "'").Split('(');
+                Ability ab = (Ability)Enum.Parse(typeof(Ability), codePieces[0]);
+                if (ab == Ability.Transformer)
+                {
+                    string newCode = codePieces[1].Replace('&', '+').Replace('#', '@');
+                    retval.transformerBeastCardId = newCode;
+                }
+                retval.abilities.Add(ab);
+            }
+            else if (modCode.ToLowerInvariant().Equals("gemify"))
+                retval.gemify = true;
+            else
+                retval.abilities.Add((Ability)Enum.Parse(typeof(Ability), modCode));
+
+            if (retval.abilities.Contains(Ability.PermaDeath) || retval.abilities.Contains(NewPermaDeath.AbilityID))
+            {
+                retval.attackAdjustment = 1;
+            }
+            return retval;
+        }
+
+        public static string ConvertCardToCompleteCode(CardInfo card)
+        {
+            return "@" + card.name + string.Join("", card.Mods.Select(GetModCode));
+        }
+
+        public static CardInfo ConvertCodeToCard(string code)
+        {
+            string[] codePieces = code.Replace("@", "").Split('+');
+            CardInfo retval = CardLoader.GetCardByName(codePieces[0]);
+            for (int i = 1; i < codePieces.Length; i++)
+                retval.mods.Add(GetMod(codePieces[i]));
+            return retval;
+        }
+
+        [HarmonyPatch(typeof(PlayableCard), nameof(PlayableCard.EnergyCost), MethodType.Getter)]
+        [HarmonyPostfix]
+        private static void AdjustCostForTempMods(ref PlayableCard __instance, ref int __result)
+        {
+            if (__instance.temporaryMods != null)
+                foreach (CardModificationInfo tMod in __instance.temporaryMods)
+                    __result += tMod.energyCostAdjustment;
+
+            __result = Mathf.Max(0, __result);
+        }
+
+        public static bool SlotHasTripleCard(this CardSlot slot)
+        {
+            return slot.Card != null && slot.Card.Info.SpecialAbilities.Contains(GoobertCenterCardBehaviour.AbilityID);
+        }
+
+        public static bool SlotCoveredByTripleCard(this CardSlot slot)
+        {
+            List<CardSlot> container = BoardManager.Instance.GetSlots(slot.IsPlayerSlot);
+
+            if (slot.Index > 0 && container[slot.Index - 1].SlotHasTripleCard())
+                return true;
+
+            if (slot.Index + 1 < container.Count && container[slot.Index + 1].SlotHasTripleCard())
+                return true;
+
+            return false;
+        }
+
+        public static bool SlotCanHoldTripleCard(this CardSlot slot, PlayableCard existingCard = null)
+        {
+            P03Plugin.Log.LogDebug("Checking if slot can hold triple card");
+            List<CardSlot> container = BoardManager.Instance.GetSlots(slot.IsPlayerSlot);
+            int index = slot.Index;
+
+            if (index == 0)
+                return false;
+
+            if (index + 1 >= container.Count)
+                return false;
+
+            if (slot.Card != null && slot.Card != existingCard)
+                return false;
+
+            if (container[index - 1].Card != null && container[index - 1].Card != existingCard)
+                return false;
+
+            if (container[index + 1].Card != null && container[index + 1].Card != existingCard)
+                return false;
+
+            P03Plugin.Log.LogDebug("Slot can hold triple card");
+            return true;
         }
     }
 }

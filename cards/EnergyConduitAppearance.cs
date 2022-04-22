@@ -39,7 +39,7 @@ namespace Infiniscryption.P03KayceeRun.Cards
             this.ApplyAppearance();
         }
 
-        internal static void Register()
+        static EnergyConduitAppearnace()
         {
             ID = CardAppearanceBehaviourManager.Add(P03Plugin.PluginGuid, "EnergyConduitAppearance", typeof(EnergyConduitAppearnace)).Id;
         }
