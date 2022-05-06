@@ -336,7 +336,7 @@ namespace Infiniscryption.P03KayceeRun.Sequences
                 __result.mods.Add(bMod);
 
                 // Transformer info
-                __result.mods.Add(new(Ability.Transformer) { nonCopyable = true });
+                __result.mods.Add(new(Ability.Transformer));
 
                 // Set Evolve
                 __result.evolveParams = new ();

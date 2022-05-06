@@ -67,6 +67,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
         public static readonly StoryEvent TRANSFORMER_CHANGES = NewStory("P03AscensionTransformer", save:true);   
         public static readonly StoryEvent HAS_DEFEATED_P03 = NewStory("HasDefeatedP03", save:true);   
         public static readonly StoryEvent USED_LIFE_ITEM = NewStory("HasUsedLifeItem", save:true);  
+        public static readonly StoryEvent SAW_NEW_ORB = NewStory("P03HammerOrb", save:true);  
 
         public const string GAME_OVER = "GameOverZone";
 
@@ -119,6 +120,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
         internal static readonly StoryEvent MYCO_ENTRY_APPROVED = NewStory("SpecialEvent47", run: true);
         internal static readonly StoryEvent MYCO_ENTRY_DENIED = NewStory("SpecialEvent48", run: true);
         internal static readonly StoryEvent MYCO_DEFEATED = NewStory("SpecialEvent49", run: true);
+        internal static readonly StoryEvent TIPPED_SCALES_REWARD = NewStory("SpecialEvent50", run: true);
 
 
         private static void MarkRandomEventAsSelected(SpecialEvent se)
@@ -212,7 +214,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 node.SetDialogueRule("P03TooEasyQuest", "TOO EASY...", se, antiPreRequisite:TIPPED_SCALES_INTRO, completeStory:TIPPED_SCALES_INTRO);
                 node.SetDialogueRule("P03TooEasyAccepted", "TOO EASY...", se, preRequisite:TIPPED_SCALES_INTRO, completeStory:TIPPED_SCALES_ACCEPTED);
                 node.SetDialogueRule("P03TooEasyInProgress", "TOO EASY...", se, preRequisite:TIPPED_SCALES_ACCEPTED, antiPreRequisite:TIPPED_SCALES_COMPLETED);
-                node.SetDialogueRule("P03TooEasyComplete", "TOO EASY...", se, preRequisite:TIPPED_SCALES_COMPLETED, completeAfter:true, specialReward:SpecialReward.RandomCardGainsUndying);
+                node.SetDialogueRule("P03TooEasyComplete", "TOO EASY...", se, antiPreRequisite: TIPPED_SCALES_REWARD, preRequisite:TIPPED_SCALES_COMPLETED, completeAfter:true, specialReward:SpecialReward.RandomCardGainsUndying, completeStory:TIPPED_SCALES_REWARD);
             }
             if (se == SpecialEvent.BrokenGeneratorQuest)
             {
@@ -292,7 +294,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             if (StoryEventsData.EventCompleted(DONATED) && !StoryEventsData.EventCompleted(DONATION_REWARD))
                 events.Add(new (SpecialEvent.DonationPartTwo, bp => bp.color != 1 && !bp.IsDeadEnd && !bp.isSecretRoom));
 
-            if (StoryEventsData.EventCompleted(TIPPED_SCALES_ACCEPTED) && !StoryEventsData.EventCompleted(TIPPED_SCALES_COMPLETED))
+            if (StoryEventsData.EventCompleted(TIPPED_SCALES_ACCEPTED) && !StoryEventsData.EventCompleted(TIPPED_SCALES_REWARD))
                 events.Add(new (SpecialEvent.TippedScales, bp => bp.color == 2 && !bp.IsDeadEnd && !bp.isSecretRoom));
             
             if (completedZoneCount == 0)
@@ -326,6 +328,12 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 arms = (CompositeFigurine.FigurineType)Enum.Parse(typeof(CompositeFigurine.FigurineType), pieces[2]);
                 body = (CompositeFigurine.FigurineType)Enum.Parse(typeof(CompositeFigurine.FigurineType), pieces[3]);
             }
+        }
+
+        internal static bool SawCredits
+        {
+            get { return ModdedSaveManager.SaveData.GetValueAsBoolean(P03Plugin.PluginGuid, "SawCredits"); }
+            set { ModdedSaveManager.SaveData.SetValue(P03Plugin.PluginGuid, "SawCredits", value); }
         }
 
         internal static NPCDescriptor GetDescriptorForNPC(SpecialEvent se)
@@ -1071,6 +1079,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 		{
             P03Plugin.Log.LogInfo("Starting finale sequence");
 			AscensionMenuScreens.ReturningFromSuccessfulRun = success;
+            AscensionMenuScreens.ReturningFromFailedRun = !success;
             AscensionStatsData.TryIncrementStat(success ? AscensionStat.Type.Victories : AscensionStat.Type.Losses);
 
             if (success)
@@ -1087,7 +1096,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             ModdedSaveManager.SaveData.SetValue(P03Plugin.PluginGuid, P03AscensionSaveData.ASCENSION_SAVE_KEY, default(string)); 
 
             // Also delete the normal ascension current run just in case
-            AscensionSaveData.Data.currentRun = null;
+            //AscensionSaveData.Data.currentRun = null;
 
             if (EventManagement.CompletedZones.Count > 0)
                 AscensionSaveData.Data.numRunsSinceReachedFirstBoss = 0;
@@ -1102,7 +1111,11 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             SaveManager.SaveToFile(false);
 
             P03Plugin.Log.LogInfo("Loading ascension scene");
-            SceneLoader.Load("Ascension_Configure");
+
+            if (SawCredits || !success)
+                SceneLoader.Load("Ascension_Configure");
+            else
+                SceneLoader.Load("Ascension_Credits");
 		}
     }
 }

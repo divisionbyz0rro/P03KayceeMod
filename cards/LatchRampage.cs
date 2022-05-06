@@ -22,7 +22,7 @@ namespace Infiniscryption.P03KayceeRun.Cards
             info.rulebookDescription = "When [creature] perishes, its owner chooses a creature to gain the Rampager sigil. The target will immediately rampage once when the latch is applied.";
             info.canStack = false;
             info.powerLevel = 1;
-            info.opponentUsable = false;
+            info.opponentUsable = true;
             info.passive = false;
             info.metaCategories = new List<AbilityMetaCategory>() { AbilityMetaCategory.Part3Rulebook };
 

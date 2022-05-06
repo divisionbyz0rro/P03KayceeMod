@@ -36,7 +36,7 @@ namespace Infiniscryption.P03KayceeRun.Helpers
                     if (material.HasProperty("_RimColor"))
                         material.SetColor("_RimColor", color);
                     if (material.HasProperty("_Color"))
-                        material.SetColor("_Color", halfMain);
+                        material.SetColor("_Color", halfMain); 
                 }
             }
         }

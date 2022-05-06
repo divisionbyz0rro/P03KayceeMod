@@ -66,7 +66,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
         [HarmonyPatch(typeof(Part3BossOpponent), nameof(Part3BossOpponent.BossDefeatedSequence))]
         [HarmonyPostfix]
-        public static IEnumerator AscensionP03ResetLives(IEnumerator sequence)
+        public static IEnumerator AscensionP03ResetLives(IEnumerator sequence, Part3BossOpponent __instance)
         {
             if (SaveFile.IsAscension)
             {
@@ -77,6 +77,14 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                     yield return P03LivesFace.ShowChangeLives(livesToAdd, true);
                     yield return new WaitForSeconds(0.5f);
                     EventManagement.NumberOfLivesRemaining = AscensionSaveData.Data.currentRun.maxPlayerLives;
+                }
+
+                if (__instance is not P03AscensionOpponent && __instance is not MycologistAscensionBossOpponent)
+                {
+                    if (AscensionSaveData.Data.ChallengeIsActive(AscensionChallenge.NoBossRares))
+                        TurnManager.Instance.PostBattleSpecialNode = new CardChoicesNodeData();
+                    else
+                        TurnManager.Instance.PostBattleSpecialNode = new CardChoiceGenerator.Part3RareCardChoicesNodeData();
                 }
             }
 
@@ -115,21 +123,23 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
             P03Plugin.Log.LogDebug($"Defeated boss {bossDefeatedStoryEvent}");
 
+            AscensionStatsData.TryIncrementStat(AscensionStat.Type.BossesDefeated);
+
             if (bossDefeatedStoryEvent != StoryEvent.MycologistsDefeated)
             {
                 EventManagement.AddCompletedZone(bossDefeatedStoryEvent);
 
-                if (AscensionSaveData.Data.ChallengeIsActive(AscensionChallenge.NoBossRares))
-                {
-                    Part3SaveData.Data.deck.AddCard(CardLoader.GetCardByName(CustomCards.DRAFT_TOKEN));
-                    ChallengeActivationUI.TryShowActivation(AscensionChallenge.NoBossRares);
-                    yield return TextDisplayer.Instance.PlayDialogueEvent("Part3AscensionBossDraftToken", TextDisplayer.MessageAdvanceMode.Input, TextDisplayer.EventIntersectMode.Wait, null, null);
-                }
-                else
-                {
-                    Part3SaveData.Data.deck.AddCard(CardLoader.GetCardByName(CustomCards.RARE_DRAFT_TOKEN));
-                    yield return TextDisplayer.Instance.PlayDialogueEvent("Part3AscensionBossRareToken", TextDisplayer.MessageAdvanceMode.Input, TextDisplayer.EventIntersectMode.Wait, null, null);
-                }
+                // if (AscensionSaveData.Data.ChallengeIsActive(AscensionChallenge.NoBossRares))
+                // {
+                //     Part3SaveData.Data.deck.AddCard(CardLoader.GetCardByName(CustomCards.DRAFT_TOKEN));
+                //     ChallengeActivationUI.TryShowActivation(AscensionChallenge.NoBossRares);
+                //     yield return TextDisplayer.Instance.PlayDialogueEvent("Part3AscensionBossDraftToken", TextDisplayer.MessageAdvanceMode.Input, TextDisplayer.EventIntersectMode.Wait, null, null);
+                // }
+                // else
+                // {
+                //     Part3SaveData.Data.deck.AddCard(CardLoader.GetCardByName(CustomCards.RARE_DRAFT_TOKEN));
+                //     yield return TextDisplayer.Instance.PlayDialogueEvent("Part3AscensionBossRareToken", TextDisplayer.MessageAdvanceMode.Input, TextDisplayer.EventIntersectMode.Wait, null, null);
+                // }
 
                 yield return FastTravelManagement.ReturnToHomeBase();
             }

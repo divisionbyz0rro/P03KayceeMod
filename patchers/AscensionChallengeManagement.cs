@@ -159,14 +159,37 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             };
         }
 
-        // Yes, I'm fucking patching the API. Sue me.
-        [HarmonyPatch(typeof(AscensionChallengePaginator), nameof(AscensionChallengePaginator.ShowVisibleChallenges))]
+        [HarmonyPatch(typeof(AscensionChallengeScreen), nameof(AscensionChallengeScreen.OnEnable))]
         [HarmonyPostfix]
-        private static void HideLockedBossIcon(ref AscensionChallengePaginator __instance)
+        private static void HideLockedBossIcon(AscensionChallengeScreen __instance)
+        {
+            __instance.gameObject.GetComponentInChildren<ChallengeIconGrid>().Start();
+        }
+
+        [HarmonyPatch(typeof(AscensionChallengePaginator), "ShowVisibleChallenges")]
+        [HarmonyPostfix]
+        private static void MakeIconGridRecalc(AscensionChallengePaginator __instance)
         {
             if (!AscensionUnlockSchedule.ChallengeIsUnlockedForLevel(AscensionChallenge.FinalBoss, AscensionSaveData.Data.challengeLevel))
-                __instance.extraIcon.gameObject.SetActive(false);
+                __instance.gameObject.GetComponentInChildren<ChallengeIconGrid>().finalBossIcon.SetActive(false);
         }
+
+        [HarmonyPatch(typeof(ChallengeIconGrid), nameof(ChallengeIconGrid.Start))]
+        [HarmonyPrefix]
+        private static void DynamicSwapSize(ChallengeIconGrid __instance)
+        {
+            if (!AscensionUnlockSchedule.ChallengeIsUnlockedForLevel(AscensionChallenge.FinalBoss, AscensionSaveData.Data.challengeLevel))
+			{
+				__instance.finalBossIcon.SetActive(false);
+				float xStart = -1.65f;
+				for (int i = 0; i < __instance.topRowIcons.Count; i++)
+					__instance.topRowIcons[i].localPosition = new Vector2(xStart + (float)i * 0.55f, __instance.topRowIcons[i].localPosition.y);
+
+				for (int j = 0; j < __instance.bottomRowIcons.Count; j++)
+					__instance.bottomRowIcons[j].localPosition = new Vector2(xStart + (float)j * 0.55f, __instance.bottomRowIcons[j].localPosition.y);
+			}
+        }
+
 
         [HarmonyPatch(typeof(AscensionUnlockSchedule), nameof(AscensionUnlockSchedule.ChallengeIsUnlockedForLevel))]
         [HarmonyAfter(new string[] { "cyantist.inscryption.api" })]

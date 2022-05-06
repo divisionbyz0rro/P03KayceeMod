@@ -192,6 +192,8 @@ namespace Infiniscryption.P03KayceeRun.Sequences
 
             GameObject.Destroy(goobert);
 
+            AscensionStatsData.TryIncrementStat(StatManagement.EXPERIMENTS_CREATED);
+
             CardInfo bossCard = CardLoader.GetCardByName(CustomCards.MYCO_CONSTRUCT_BASE);
             yield return BoardManager.Instance.CreateCardInSlot(bossCard, BoardManager.Instance.opponentSlots[2], resolveTriggers:false);
             yield return BoardManager.Instance.opponentSlots[2].Card.TriggerHandler.OnTrigger(Trigger.ResolveOnBoard);

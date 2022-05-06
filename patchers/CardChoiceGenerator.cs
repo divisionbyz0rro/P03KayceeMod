@@ -10,6 +10,9 @@ namespace Infiniscryption.P03KayceeRun.Patchers
     [HarmonyPatch]
     public static class CardChoiceGenerator
     {
+
+        public class Part3RareCardChoicesNodeData : CardChoicesNodeData {} 
+
         private static Dictionary<RunBasedHoloMap.Zone, CardMetaCategory> selectionCategories = new()
         {
             { RunBasedHoloMap.Zone.Neutral, CustomCards.NeutralRegion },
@@ -92,10 +95,11 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 }
 
                 // We need one card specific to the region and two cards belonging to the neutral or specific region
+                Predicate<IEnumerable<CardMetaCategory>> rareMatcher = data is Part3RareCardChoicesNodeData ? x => x.Any(m => m == CardMetaCategory.Rare) : x => !x.Any(m => m == CardMetaCategory.Rare);
 
                 // Don't allow rares
-                List<CardInfo> regionCards = ScriptableObjectLoader<CardInfo>.AllData.FindAll(x => x.metaCategories.Contains(selectionCategories[region]) && !x.metaCategories.Contains(CardMetaCategory.Rare));
-                List<CardInfo> regionAndNeutralCards = ScriptableObjectLoader<CardInfo>.AllData.FindAll(x => (x.metaCategories.Contains(selectionCategories[region]) || x.metaCategories.Contains(CustomCards.NeutralRegion)) && !x.metaCategories.Contains(CardMetaCategory.Rare));
+                List<CardInfo> regionCards = ScriptableObjectLoader<CardInfo>.AllData.FindAll(x => x.metaCategories.Contains(selectionCategories[region]) && rareMatcher(x.metaCategories));
+                List<CardInfo> regionAndNeutralCards = ScriptableObjectLoader<CardInfo>.AllData.FindAll(x => (x.metaCategories.Contains(selectionCategories[region]) || x.metaCategories.Contains(CustomCards.NeutralRegion)) && rareMatcher(x.metaCategories));
 
                 if (regionCards.Count > 0)
                 {

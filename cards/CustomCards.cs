@@ -9,6 +9,7 @@ using Infiniscryption.P03KayceeRun.Cards;
 using InscryptionAPI.Card;
 using InscryptionAPI.Helpers;
 using Infiniscryption.P03KayceeRun.Helpers;
+using System.Collections;
 
 namespace Infiniscryption.P03KayceeRun.Patchers
 {
@@ -104,6 +105,12 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 else if (compName.Equals("insectodrone"))
                     __result.energyCost = 2;
 
+                else if (compName.Equals("gemripper"))
+                {
+                    __result.mods.Add(new() { gemify = true, abilities = new() { Ability.GemDependant } });
+                    __result.energyCost = 6;
+                }
+
                 else if (compName.Equals("robomice"))
                     __result.abilities = new () { Ability.DrawCopy, Ability.DrawCopy };
 
@@ -125,16 +132,16 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 __result = 3;
         }
 
-        [HarmonyPatch(typeof(Ouroboros), nameof(Ouroboros.RespondsToDie))]
-        [HarmonyPrefix]
-        private static bool OnlyIfDiedInCombat(PlayableCard killer, ref bool __result)
+        [HarmonyPatch(typeof(Ouroboros), nameof(Ouroboros.OnDie))]
+        [HarmonyPostfix]
+        private static IEnumerator OnlyIfDiedInCombat(IEnumerator sequence, PlayableCard killer)
         {
             if (SaveFile.IsAscension && SaveManager.SaveFile.IsPart3 && killer == null)
             {
-                __result = false;
-                return false;
+                yield return EventManagement.SayDialogueOnce("P03HammerOrb", EventManagement.SAW_NEW_ORB);
+                SaveManager.SaveFile.ouroborosDeaths -= 1;
             }
-            return true;
+            yield return sequence;
         }
 
         private static void UpdateExistingCard(string name, string textureKey, string pixelTextureKey, string regionCode, string decalTextureKey, string colorPortraitKey, bool isPackCard)
@@ -205,7 +212,11 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             CardManager.ModifyCardList += delegate(List<CardInfo> cards)
             {
                 if (P03AscensionSaveData.IsP03Run)
+                {
+                    cards.CardByName("EnergyConduit").AddMetaCategories(TechRegion);
+                    cards.CardByName("TechMoxTriple").AddMetaCategories(WizardRegion);
                     cards.CardByName("EnergyRoller").AddMetaCategories(CardMetaCategory.Rare);
+                }
 
                 return cards;
             };
@@ -231,7 +242,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 .AddAppearances(HighResAlternatePortrait.ID)
                 .temple = CardTemple.Tech;
 
-            CardManager.New(P03Plugin.CardPrefx, GOLLYCOIN, "GollyCoin", 0, 2)
+            CardManager.New(P03Plugin.CardPrefx, GOLLYCOIN, "GollyCoin", 0, 3)
                 .SetAltPortrait(TextureHelper.GetImageAsTexture("portrait_gollycoin.png", typeof(CustomCards).Assembly, FilterMode.Trilinear))
                 .AddAppearances(HighResAlternatePortrait.ID)
                 .temple = CardTemple.Tech;
@@ -381,6 +392,13 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                     if (ab.Id == Ability.DrawCopy && P03AscensionSaveData.IsP03Run)
                         ab.Info.canStack = true;
                 }
+
+                // Might as well do the stat icons here
+                List<SpecialStatIcon> statIcons = CardManager.AllCardsCopy.Where(c => c.temple == CardTemple.Tech).Select(c => c.specialStatIcon).Distinct().ToList();
+                foreach (var icon in StatIconManager.AllStatIcons)
+                    if (statIcons.Contains(icon.Id))
+                        icon.Info.metaCategories.Add(AbilityMetaCategory.Part3Rulebook);
+
                 return abilities;
             };
 

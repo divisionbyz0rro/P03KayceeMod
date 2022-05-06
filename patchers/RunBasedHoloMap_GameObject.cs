@@ -409,13 +409,18 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
             HoloMapDialogueNode node = nodeObject.GetComponentInChildren<HoloMapDialogueNode>();
 
-            HoloMapConditionalDialogueNode dialogue = nodeObject.AddComponent<HoloMapConditionalDialogueNode>();
-            dialogue.nodeRenderers = new(node.nodeRenderers);
-            dialogue.defaultColor = node.defaultColor;
-            dialogue.nodeType = node.nodeType;
-            dialogue.nodeId = node.nodeId;
+            Color defaultColor = new (node.defaultColor.r, node.defaultColor.g, node.defaultColor.b, node.defaultColor.a);
+            HoloMapNode.NodeDataType dataType = node.nodeType;
+            int nodeId = node.nodeId;
+            List<Renderer> renderers = new (node.nodeRenderers);
 
-            GameObject.Destroy(node);
+            GameObject.DestroyImmediate(node);
+
+            HoloMapConditionalDialogueNode dialogue = nodeObject.AddComponent<HoloMapConditionalDialogueNode>();
+            dialogue.nodeRenderers = renderers;
+            dialogue.defaultColor = defaultColor;
+            dialogue.nodeType = dataType;
+            dialogue.nodeId = nodeId;
 
             dialogue.SetDialogueForSpecialEvent(blueprint.dialogueEvent);
 

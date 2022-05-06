@@ -84,7 +84,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             });
         }
 
-        private static List<string> SplitColumn(string col, char sep = ',', char quote = '"')
+        public static List<string> SplitColumn(string col, char sep = ',', char quote = '"')
         {
             bool isQuoted = false;
             List<string> retval = new();

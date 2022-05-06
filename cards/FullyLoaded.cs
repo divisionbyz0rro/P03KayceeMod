@@ -26,7 +26,7 @@ namespace Infiniscryption.P03KayceeRun.Cards
             info.rulebookDescription = "When [creature] dies, it leaves a permanent +1 attack bonus in the lane it occupied.";
             info.canStack = false;
             info.powerLevel = 2;
-            info.opponentUsable = false;
+            info.opponentUsable = true;
             info.passive = false;
             info.metaCategories = new List<AbilityMetaCategory>() { AbilityMetaCategory.Part3Rulebook };
 

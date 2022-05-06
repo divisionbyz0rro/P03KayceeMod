@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Infiniscryption.P03KayceeRun.Items;
+using Infiniscryption.P03KayceeRun.Cards;
 
 namespace Infiniscryption.P03KayceeRun.Patchers
 {
@@ -315,11 +316,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.DRAFT_TOKEN));
                 __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.DRAFT_TOKEN));
 
-
-
-                __instance.deck.AddCard(CardLoader.GetCardByName("EnergyRoller"));
-                __instance.deck.AddCard(CardLoader.GetCardByName("PlasmaGunner"));
-
+                __instance.deck.AddCard(CardLoader.GetCardByName(ExpansionPackCards_1.EXP_1_PREFIX + "_CopyPasta"));
                 
                 // __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.UNC_TOKEN));
                 // __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.UNC_TOKEN));
@@ -328,10 +325,8 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 
                 // __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.RARE_DRAFT_TOKEN));
 
-                /*
                 __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.RARE_DRAFT_TOKEN));
                 __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.RARE_DRAFT_TOKEN));
-                */
 
                 __instance.sideDeckAbilities.Add(Ability.ConduitNull);
 
