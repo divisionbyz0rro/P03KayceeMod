@@ -348,7 +348,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             return false;
         }
 
-        private static bool DiscoverAndCreateEnemyEncounter(HoloMapBlueprint[,] map, List<HoloMapBlueprint> nodes, int tier, Zone region, HoloMapSpecialNode.NodeDataType reward, int color = -1)
+        private static bool DiscoverAndCreateEnemyEncounter(HoloMapBlueprint[,] map, List<HoloMapBlueprint> nodes, int tier, Zone region, HoloMapSpecialNode.NodeDataType reward, List<int> usedIndices, int color = -1)
         {
             // The goal here is to find four rooms that have only one entrance
             // Then back out to the first spot that doesn't have a choice
@@ -389,6 +389,24 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 enemyNode = enemyNode ?? rewardNode.GetAdjacentNode(map, rewardNode.arrowDirections);
                 enemyNode.specialDirection = DirTo(enemyNode, rewardNode);
                 enemyNode.encounterDifficulty = EventManagement.EncounterDifficulty;
+
+                if (enemyNode.color == 1)
+                {
+                    enemyNode.encounterIndex = UnityEngine.Random.Range(0, REGION_DATA[Zone.Neutral].encounters.Length);
+                    //enemyNode.encounterIndex = REGION_DATA[Zone.Neutral].encounters.Length - 1;
+                }
+                else
+                {
+                    int index = UnityEngine.Random.Range(0, REGION_DATA[region].encounters.Length);
+                    while (usedIndices.Contains(index))
+                    {
+                        index += 1;
+                        if (index == REGION_DATA[region].encounters.Length)
+                            index = 0;
+                    }
+                    enemyNode.encounterIndex = index;
+                    usedIndices.Add(index);
+                }
 
                 // 50% change of terrain
                 if (UnityEngine.Random.value < 0.5f)
@@ -788,20 +806,21 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             int seedForChoice = seed * 2 + 10;
 
             List<int> colorsWithoutEnemies = new() { 1, 2, 3, 4 };
+            List<int> usedIndices = new();
             int numberOfEncountersAdded = 0;
             while (colorsWithoutEnemies.Count > 0)
             {
                 UnityEngine.Random.InitState(seedForChoice + colorsWithoutEnemies.Count * 1000);
                 int colorToUse = colorsWithoutEnemies[UnityEngine.Random.Range(0, colorsWithoutEnemies.Count)];
                 HoloMapSpecialNode.NodeDataType type = colorsWithoutEnemies.Count <= 2 ? HoloMapSpecialNode.NodeDataType.AddCardAbility : REGION_DATA[region].defaultReward;
-                if (DiscoverAndCreateEnemyEncounter(bpBlueprint, retval, order, region, type, colorToUse))
+                if (DiscoverAndCreateEnemyEncounter(bpBlueprint, retval, order, region, type, usedIndices, colorToUse))
                     numberOfEncountersAdded += 1;
                 colorsWithoutEnemies.Remove(colorToUse);
             }
 
             int remainingEncountersToAdd = EventManagement.ENEMIES_TO_UNLOCK_BOSS - numberOfEncountersAdded;
             for (int i = 0; i < remainingEncountersToAdd; i++)
-                if (DiscoverAndCreateEnemyEncounter(bpBlueprint, retval, order, region, REGION_DATA[region].defaultReward))
+                if (DiscoverAndCreateEnemyEncounter(bpBlueprint, retval, order, region, REGION_DATA[region].defaultReward, usedIndices))
                     numberOfEncountersAdded += 1;
 
             P03Plugin.Log.LogInfo($"I have created {numberOfEncountersAdded} enemy encounters");

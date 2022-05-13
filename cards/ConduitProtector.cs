@@ -24,8 +24,11 @@ namespace Infiniscryption.P03KayceeRun.Cards
             info.rulebookDescription = "When [creature] is within a completed circuit, damage that would be dealt to the conduits is dealt to this creature instead.";
             info.canStack = false;
             info.powerLevel = 1;
-            info.opponentUsable = false;
+            info.opponentUsable = true;
+            info.conduitCell = true;
             info.passive = false;
+            info.hasColorOverride = true;
+            info.colorOverride = AbilityManager.BaseGameAbilities.AbilityByID(Ability.CellDrawRandomCardOnDeath).Info.colorOverride;
             info.metaCategories = new List<AbilityMetaCategory>() { AbilityMetaCategory.Part3Rulebook };
 
             ConduitProtector.AbilityID = AbilityManager.Add(

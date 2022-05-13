@@ -18,12 +18,27 @@ namespace Infiniscryption.P03KayceeRun.Cards
             Left = 3
         }
 
+        public const string DEFAULT_STATE_KEY = "DefaultAlarmState";
+
+        private AlarmState GetDefaultState()
+        {
+            int? defaultState = this.Card.Info.GetExtendedPropertyAsInt(DEFAULT_STATE_KEY);
+            if (defaultState.HasValue && defaultState.Value >= 0 && defaultState.Value <= 3)
+                return (AlarmState)defaultState.Value;
+            return AlarmState.Up;
+        }
+
         private AlarmState CurrentState = AlarmState.Up;
 
         public override Ability Ability => AbilityID;
         public static Ability AbilityID { get; private set; }
 
         private static Dictionary<AlarmState, Texture> Textures = new();
+
+        private RotatingAlarm()
+        {
+            CurrentState = GetDefaultState();
+        }
 
         static RotatingAlarm()
         {
@@ -33,7 +48,7 @@ namespace Infiniscryption.P03KayceeRun.Cards
             info.canStack = false;
             info.powerLevel = 1;
             info.opponentUsable = true;
-            info.flipYIfOpponent = true;
+            info.flipYIfOpponent = false;
             info.passive = false;
             info.metaCategories = new List<AbilityMetaCategory>() { AbilityMetaCategory.Part3Rulebook };
 
@@ -61,6 +76,20 @@ namespace Infiniscryption.P03KayceeRun.Cards
             return AlarmState.Up;
         }
 
+        public Texture GetTextureForAlarm(AlarmState current)
+        {
+            if (this.Card.OpponentCard)
+            {
+                if (current == AlarmState.Up)
+                    return Textures[AlarmState.Down];
+                if (current == AlarmState.Down)
+                    return Textures[AlarmState.Up];
+                return Textures[current];
+            }
+            else
+                return Textures[current];
+        }
+
         public override bool RespondsToUpkeep(bool playerUpkeep)
         {
             return playerUpkeep != this.Card.OpponentCard;
@@ -73,7 +102,7 @@ namespace Infiniscryption.P03KayceeRun.Cards
             AudioController.Instance.PlaySound3D("cuckoo_clock_open", MixerGroup.TableObjectsSFX, this.gameObject.transform.position, 1f, 0f, new AudioParams.Pitch(AudioParams.Pitch.Variation.VerySmall), null, null, null, false);
             yield return new WaitForSeconds(0.1f);
             this.CurrentState = GetNextAbility(this.CurrentState);
-            this.Card.RenderInfo.OverrideAbilityIcon(AbilityID, Textures[this.CurrentState]);
+            this.Card.RenderInfo.OverrideAbilityIcon(AbilityID, GetTextureForAlarm(this.CurrentState));
 	        this.Card.RenderCard();
             yield return new WaitForSeconds(0.3f);
             ViewManager.Instance.SwitchToView(View.Default, false, false);

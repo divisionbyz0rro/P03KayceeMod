@@ -5,6 +5,7 @@
     "description": "Had enough of Leshy? Play through Botopia and face P03 inside of Kaycee's Mod!",
     "dependencies": [
         "BepInEx-BepInExPack_Inscryption-5.4.1701",
-        "API_dev-API-2.1.0"
+        "API_dev-API-2.1.0",
+        "AllTheSigils-All_The_Sigils-2.5.4"
     ]
 }

@@ -38,15 +38,17 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
         public EventManagement.SpecialEvent dialogueEvent;
 
+        public int encounterIndex;
+
         public int distance; // used only for generation - doesn't get saved or parsed
         public int color;
 
         public override string ToString()
         {
-            return $"[{randomSeed},{x},{y},{arrowDirections},{specialDirection},{specialDirectionType},{encounterDifficulty},{(int)opponent},{(int)upgrade},{specialTerrain},{blockedDirections},{(int)blockEvent},{battleTerrainIndex},{color},{(int)dialogueEvent},{secretDirection},{isSecretRoom}]";
+            return $"[{randomSeed},{x},{y},{arrowDirections},{specialDirection},{specialDirectionType},{encounterDifficulty},{(int)opponent},{(int)upgrade},{specialTerrain},{blockedDirections},{(int)blockEvent},{battleTerrainIndex},{color},{(int)dialogueEvent},{secretDirection},{isSecretRoom},{encounterIndex}]";
         }
 
-        public HoloMapBlueprint(int randomSeed) { this.randomSeed = randomSeed; this.upgrade = HoloMapSpecialNode.NodeDataType.MoveArea; }
+        public HoloMapBlueprint(int randomSeed) { this.randomSeed = randomSeed; this.encounterIndex = -1; this.upgrade = HoloMapSpecialNode.NodeDataType.MoveArea; }
 
         public HoloMapBlueprint(string parsed)
         {
@@ -71,6 +73,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             dialogueEvent = (EventManagement.SpecialEvent)(split.Length > 14 ? int.Parse(split[14]) : 0);
             secretDirection = split.Length > 15 ? int.Parse(split[15]) : 0;
             isSecretRoom = split.Length > 16 ? bool.Parse(split[16]) : false;
+            encounterIndex = split.Length > 17 ? int.Parse(split[17]) : -1;
         }
 
         public bool EligibleForUpgrade

@@ -678,20 +678,28 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             return retval;
         }
 
-        private static EncounterBlueprintData GetBlueprintForRegion(Zone regionId, int color)
+        private static EncounterBlueprintData GetBlueprintForRegion(Zone regionId, int color, int encounterIndex)
         {
             string encounterName = default(string);
             if (color == 1) // The first encounter pulls from neutral
             {
-                string[] encounters = REGION_DATA[Zone.Neutral].encounters;
-                encounterName = encounters[UnityEngine.Random.Range(0, encounters.Length)];
+                if (encounterIndex == -1)
+                {
+                    string[] encounters = REGION_DATA[Zone.Neutral].encounters;
+                    encounterName = encounters[UnityEngine.Random.Range(0, encounters.Length)];
+                }
+                else
+                {
+                    encounterName = REGION_DATA[Zone.Neutral].encounters[encounterIndex];
+                }
             }
             else
             {
-                encounterName = REGION_DATA[regionId].encounters[color - 2];
+                if (encounterIndex == -1)
+                    encounterName = REGION_DATA[regionId].encounters[color - 2];
+                else
+                    encounterName = REGION_DATA[regionId].encounters[encounterIndex];
             }
-
-             P03Plugin.Log.LogDebug($"Hi {encounterName}");
 
             // Use EncounterBlueprintHelper to get our custom representation of the encounter blueprint
             // and convert that to a blueprint the game understands
@@ -777,7 +785,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                     newArrow.name = $"MoveArea_{DIR_LOOKUP[bp.specialDirection]}";
                     HoloMapNode node = newArrow.GetComponent<HoloMapNode>();
                     Traverse nodeTraverse = Traverse.Create(node);
-                    nodeTraverse.Field("blueprintData").SetValue(GetBlueprintForRegion(regionId, bp.color));
+                    nodeTraverse.Field("blueprintData").SetValue(GetBlueprintForRegion(regionId, bp.color, bp.encounterIndex));
                     nodeTraverse.Field("encounterDifficulty").SetValue(bp.encounterDifficulty);
                     if ((bp.specialTerrain & HoloMapBlueprint.FULL_BRIDGE) != 0)
                         nodeTraverse.Field("bridgeBattle").SetValue(true);

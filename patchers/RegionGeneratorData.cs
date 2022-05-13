@@ -41,7 +41,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             switch (regionCode)
             {
                 case RunBasedHoloMap.Zone.Neutral:
-                    this.encounters = new string[] { "neutral_alarmbots", "neutral_bombsandshields", "neutral_bridgebattle", "neutral_minecarts", "neutral_sentrywall", "neutral_swapbots"};
+                    this.encounters = new string[] { "neutral_alarmbots", "neutral_bombsandshields", "neutral_bridgebattle", "neutral_minecarts", "neutral_sentrywall", "neutral_swapbots", "neutral_clockbots", "neutral_spyplanes" };
                     this.terrainRandoms = new string[] { "NeutralEastMain_4/Scenery/HoloGrass_Small (1)", "NeutralEastMain_4/Scenery/HoloGrass_Patch (1)" };
                     this.objectRandoms = new string[] { "StartingIslandBattery/Scenery/HoloMeter","StartingIslandBattery/Scenery/HoloDrone_Broken","StartingIslandJunction/Scenery/HoloBotPiece_Leg","StartingIslandJunction/Scenery/HoloBotPiece_Head","NeutralEastMain_4/Scenery/HoloDrone_1", "NeutralEastMain_4/Scenery/HoloDrone_1", "NeutralEastMain_4/Scenery/HoloDrone_1", "NeutralEastMain_4/Scenery/HoloPowerPoll_1" };
                     this.wall = "NeutralEastMain_4/Scenery/HoloWall (1)";
@@ -87,7 +87,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                     wallOrientations.Add(RunBasedHoloMap.SOUTH, new(new(.08f, -.18f, -2.02f), new(270f, 359.2266f, .0297f)));
                     wallOrientations.Add(RunBasedHoloMap.WEST, new(new(-3.2f, -.18f, -.4f), new(270f, 89.603f, .0297f)));
                     wallOrientations.Add(RunBasedHoloMap.EAST, new(new(3.2f, -.18f, -.4f), new(270f, 270.359f, .0297f)));
-                    this.encounters = new string[] { "nature_battransformers", "nature_beartransformers", "nature_hounds" };
+                    this.encounters = new string[] { "nature_battransformers", "nature_beartransformers", "nature_hounds", "nature_wolftransformers", "nature_snaketransformers" };
                     this.terrain = new string[][] {
                         new string[] { null, "Tree_Hologram", null, "Tree_Hologram", null, null, "Tree_Hologram", null, "Tree_Hologram", null },
                         new string[] { "Tree_Hologram_SnowCovered", null, "Tree_Hologram_SnowCovered", null, "Tree_Hologram_SnowCovered", "Tree_Hologram_SnowCovered", null, "Tree_Hologram_SnowCovered", null, "Tree_Hologram_SnowCovered" }
@@ -102,7 +102,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                     this.screenPrefab = Resources.Load<GameObject>("prefabs/map/holomapscreens/HoloMapScreen_WetlandsGround");
                     break;
                 case RunBasedHoloMap.Zone.Tech:
-                    this.encounters = new string[] { "tech_attackconduits", "tech_giftcells", "tech_splintercells" };
+                    this.encounters = new string[] { "tech_attackconduits", "tech_giftcells", "tech_splintercells", "tech_stinkyconduits", "tech_protectconduits" };
                     this.terrainRandoms = new string[] { };
                     this.objectRandoms = new string[] {  };
                     this.terrain = new string[][] {
@@ -128,7 +128,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                     this.screenPrefab = Resources.Load<GameObject>("prefabs/map/holomapscreens/HoloMapScreen_TechGround");
                     break;
                 case RunBasedHoloMap.Zone.Undead:
-                    this.encounters = new string[] { "undead_bomblatchers", "undead_shieldlatchers", "undead_skeleswarm" };
+                    this.encounters = new string[] { "undead_bomblatchers", "undead_shieldlatchers", "undead_skeleswarm", "undead_strafelatchers", "undead_winglatchers" };
                     this.terrainRandoms = new string[] { "UndeadMainPath_4/Scenery/HoloDebris", "UndeadMainPath_4/Scenery/HoloGrass_Patch", "UndeadMainPath_4/Scenery/HoloGrass_Patch", "UndeadMainPath_4/Scenery/HoloGrass_Patch" };
                     this.objectRandoms = new string[] { "UndeadMainPath_4/Scenery/HoloGravestone", "UndeadMainPath_4/Scenery/HoloTreeDead (2)", "UndeadSecretPath_1/Scenery/HoloShovel", "UndeadMainPath_4/Scenery/HoloDirtPile_2", "UndeadMainPath_4/Scenery/HoloZombieArm", "UndeadMainPath_4/Scenery/HoloTreeDead (2)" };
                     this.defaultReward = HoloMapNode.NodeDataType.OverclockCard;

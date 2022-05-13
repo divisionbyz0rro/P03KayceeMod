@@ -17,7 +17,7 @@ namespace Infiniscryption.P03KayceeRun.Cards
             // Wolfbeast
             CardInfo wolfBeast = CardManager.New(EXP_1_PREFIX, "WolfBeast", "B30WULF", 2, 2)
                 .SetPortrait(TextureHelper.GetImageAsTexture("portrait_wolfbeast.png", typeof(ExpansionPackCards_1).Assembly))
-                .SetCost(energyCost:6)
+                .SetCost(energyCost:6) 
                 .AddAbilities(Ability.Transformer, Ability.DoubleStrike);
 
             // Wolfbot
@@ -253,6 +253,24 @@ namespace Infiniscryption.P03KayceeRun.Cards
                 .SetCost(energyCost:3)
                 .SetNeutralP03Card()
                 .AddAbilities(RotatingAlarm.AbilityID);
+
+            CardManager.New(EXP_1_PREFIX, "Clockbot_Right", "Mr:Clock", 0, 3)
+                .SetPortrait(TextureHelper.GetImageAsTexture("portrait_clockbot.png", typeof(ExpansionPackCards_1).Assembly))
+                .SetCost(energyCost:3)
+                .AddAbilities(RotatingAlarm.AbilityID)
+                .SetExtendedProperty(RotatingAlarm.DEFAULT_STATE_KEY, 1);
+
+            CardManager.New(EXP_1_PREFIX, "Clockbot_Down", "Mr:Clock", 0, 3)
+                .SetPortrait(TextureHelper.GetImageAsTexture("portrait_clockbot.png", typeof(ExpansionPackCards_1).Assembly))
+                .SetCost(energyCost:3)
+                .AddAbilities(RotatingAlarm.AbilityID)
+                .SetExtendedProperty(RotatingAlarm.DEFAULT_STATE_KEY, 2);
+
+            CardManager.New(EXP_1_PREFIX, "Clockbot_Left", "Mr:Clock", 0, 3)
+                .SetPortrait(TextureHelper.GetImageAsTexture("portrait_clockbot.png", typeof(ExpansionPackCards_1).Assembly))
+                .SetCost(energyCost:3)
+                .AddAbilities(RotatingAlarm.AbilityID)
+                .SetExtendedProperty(RotatingAlarm.DEFAULT_STATE_KEY, 3);
             
             // Titans
             CardManager.New(EXP_1_PREFIX, "RubyTitan", "Ruby Titan", 1, 3)
@@ -290,6 +308,24 @@ namespace Infiniscryption.P03KayceeRun.Cards
                 .SetRegionalP03Card(CardTemple.Wizard)
                 .SetRare()
                 .AddAbilities(EmeraldPower.AbilityID);
+
+            CardManager.New(EXP_1_PREFIX, "GemRotator", "Gem Cycler", 1, 2)
+                .SetPortrait(TextureHelper.GetImageAsTexture("portrait_gemcycler.png", typeof(ExpansionPackCards_1).Assembly))
+                .SetCost(energyCost:5)
+                .SetRegionalP03Card(CardTemple.Wizard)
+                .AddAbilities(GemRotator.AbilityID);
+        }    
+
+        [HarmonyPatch(typeof(CardLoader), nameof(CardLoader.Clone))]
+        [HarmonyPostfix]
+        private static void ModifyCardForAscension(ref CardInfo __result)
+        {
+            string compName = __result.name.ToLowerInvariant();
+            if (compName.StartsWith($"{EXP_1_PREFIX}_gemrotator"))
+            {
+                if (!__result.Gemified)
+                    __result.mods.Add(new() { gemify = true });
+            }
         }
     }
 }
