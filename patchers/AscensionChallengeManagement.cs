@@ -8,6 +8,7 @@ using InscryptionAPI.Ascension;
 using InscryptionAPI.Guid;
 using System.Collections;
 using System;
+using InscryptionAPI.Saves;
 
 namespace Infiniscryption.P03KayceeRun.Patchers
 {
@@ -19,10 +20,19 @@ namespace Infiniscryption.P03KayceeRun.Patchers
         public static AscensionChallenge ENERGY_HAMMER { get; private set; }
         public static AscensionChallenge ALL_CONVEYOR { get; private set; }
 
+        private static string CompatibleChallengeList
+        {
+            get 
+            {
+                return ModdedSaveManager.SaveData.GetValue(P03Plugin.PluginGuid, "P03CompatibleChallenges");
+            }
+        }
+
         public const int HAMMER_ENERGY_COST = 2;
 
         public static Dictionary<AscensionChallenge, AscensionChallengeInfo> PatchedChallengesReference;
         public static List<AscensionChallenge> ValidChallenges;
+        public static List<AscensionChallenge> ExternalValidChallenges;
 
         public static void UpdateP03Challenges()
         {
@@ -159,6 +169,26 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             };
         }
 
+        private static void BuildExternalValidChallenges()
+        {
+            ExternalValidChallenges = new();
+            P03Plugin.Log.LogInfo($"External Valid Challenge List is {CompatibleChallengeList}");
+            if (!string.IsNullOrEmpty(CompatibleChallengeList))
+            {
+                foreach (string item in CompatibleChallengeList.Split(',', '|', ';', ' '))
+                {
+                    try
+                    {
+                        int ch = 0;
+                        int.TryParse(item, out ch);
+                        if (ch > 0)
+                            ExternalValidChallenges.Add((AscensionChallenge)ch);
+                    }
+                    catch {}
+                }
+            }
+        }
+
         [HarmonyPatch(typeof(AscensionChallengeScreen), nameof(AscensionChallengeScreen.OnEnable))]
         [HarmonyPostfix]
         private static void HideLockedBossIcon(AscensionChallengeScreen __instance)
@@ -198,6 +228,15 @@ namespace Infiniscryption.P03KayceeRun.Patchers
         {
             if (ScreenManagement.ScreenState == CardTemple.Tech)
             {
+                if (ExternalValidChallenges == null)
+                    BuildExternalValidChallenges();
+
+                if (ExternalValidChallenges.Contains(challenge))
+                {
+                    __result = true;
+                    return;
+                }
+
                 if (!ValidChallenges.Contains(challenge))
                 {
                     __result = false;

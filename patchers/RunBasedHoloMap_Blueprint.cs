@@ -537,7 +537,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             secretSpaceNeighbor.arrowDirections |= adjDir;
             secretSpaceNeighbor.secretDirection |= adjDir;
 
-            if (EventManagement.CompletedZones.Count == 2)
+            if (EventManagement.CompletedZones.Count == 2 || (P03Plugin.Instance.DebugCode.ToLowerInvariant().Contains("goobert") && EventManagement.CompletedZones.Count == 0))
                 newBp.specialTerrain = HoloMapBlueprint.MYCOLOGIST_WELL;
         }
 

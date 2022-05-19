@@ -1,4 +1,5 @@
 # P03 Kaycee's Mod
+## Version 2.0: The NPC Update
 
 **Check out this super spicy 720p trailer made in a free video editor**
 
@@ -6,7 +7,8 @@
 
 If you enjoyed the energy-based robotic gameplay of Inscryption Act 3 and wished it was available as part of Kaycee's Mod, then this is the mod for you.
 
-Installing this mod will give you the option to play against either Leshy or P03 when you start a new run. Selecting Leshy will give you the standard game you're used to, but selecting P03 will send you to the land of Botopia, where you will draft robotic cards, explore procedurally generated maps, fight off bounty hunters, and purchase upgrades with your hard-earned robobucks. And at the end of it all, P03 is waiting for you in an all-new boss fight.
+Installing this mod will give you the option to play against either Leshy or P03 when you start a new run. Selecting Leshy will give you the standard game you're used to, but selecting P03 will send you to the land of Botopia, where you will draft robotic cards (including all new cards created just for this mod), explore procedurally generated maps, fight off bounty hunters, and purchase upgrades with your hard-earned robobucks. And at the end of it all, P03 is waiting for you in an all-new boss fight.
+
 
 ## Feedback
 
@@ -32,6 +34,8 @@ There are also some changes from the way P03's gameplay worked the first time th
 1) Bosses have been updated. G0lly and the Archivist are the most significantly different; both of them have completely reworked second phases. 
 2) There is a final boss fight against P03. He has...some thoughts about what you're doing.
 3) Some events work differently (see below).
+4) There are now NPCs that will give you quests with rewards for your run.
+5) And there...might be some other hidden secrets as well.
 
 The runs are still similar to Leshy in significant ways:
 
@@ -51,9 +55,42 @@ Some events play the same in this mod as they did the first time you played thro
 - **Recycle**: Instead of getting robobucks back for your recycled card, you get a draft token. Normal cards get you a standard Token, with all of the card's abilities imprinted on the token. Those abilities will transfer to the card you draft with it. Rare cards get you a Rare token, which can be exchanged for another rare card.
 - **Transformer**: You now select two cards instead of one, and the transformation causes one card to transform into the other.
 
+### NPCs
+
+New in Version 2.0 - you will now encounter NPcs scattered throughout the map who will give you optional side quests that you can complete for some additional rewards!
+
 ### Challenges
 
 Some challenges simply don't work in this context. Any challenge that doesn't work will be 'locked' and you won't be able to select it.
+
+If you've created a new custom challenge and you want it to be compatible with this mod, I have come up with a way to do it - and apologies for this being a bit of a kludge. I want to make sure that you can make your challenge compatible without having to make this mod a dependency, so here's how you're going to do this.
+
+Step one: Put this code in your plugin.cs file:
+
+```c#
+internal static string P03CompatibleChallengeList
+{
+    get { return ModdedSaveManager.SaveData.GetValue("zorro.inscryption.infiniscryption.p03kayceerun", "P03CompatibleChallenges"); }
+    set { ModdedSaveManager.SaveData.SetValue("zorro.inscryption.infiniscryption.p03kayceerun", "P03CompatibleChallenges", value); }
+}
+```
+
+This creates a static reference to a common variable which holds a list of all compatible P03 custom challenges.
+
+Step two: add the following patch to your plugin somewhere:
+
+```c#
+[HarmonyPrefix, HarmonyPatch(typeof(AscensionMenuScreens), nameof(AscensionMenuScreens.Start))]
+private static void RegisterChallenges()
+{
+    P03CompatibleChallengeList += "," + MyFirstCustomChallengeID.ToString();
+    P03CompatibleChallengeList += "," + MySecondCustomChallengeID.ToString();
+}
+```
+
+This will update the value of that common variable to add each challenge ID to the list.
+
+Once you've done this, your challenges will be unlocked when the player enters the P03 mod.
 
 ## Adding more cards to the pool
 
@@ -86,29 +123,39 @@ Unfortunately, custom encounters and regions are not currently supported by this
 
 ## Credits
 
-The pixel/GBC card arts used in the starer decks screen are taken from the [Act II Recreated](https://inscryption.thunderstore.io/package/Sire/RecreatedAct2Cards/) Mod, with art by SyntaxEvasion.
+While the full credits will play in-game when you win for the first time, I have to thank everyone that made this possible here as well:
 
-Art for the following cards were made by Makako
-- Mrs. Bomb
-- Plasma Jimmy
-- Steel Mice
-- Gamblo Bot
-- Thick Droid
-- Steam Bot
-- (secret cards)
+**Principal Artist**: Makako
 
-Art for the following cards were made by Nevernamed
-- Curve Hopper
+**Other Contributing Artists**
+- Froenzi
+- Answearing Machine
+- Nevernamed
+
+**Card Design, Balance, and Playtesting**
+- TheGreenDigi
+- Bitty45
+- Jury
+- Eye Fly
+- Froenzi
+- Atrum (Lin)
+- Sire
+- Sylvie
+- Tresh
 
 ## Requirements
 
 - [BepInEx](https://inscryption.thunderstore.io/package/BepInEx/BepInExPack_Inscryption/)
 - [API](https://inscryption.thunderstore.io/package/API_dev/API/)
+- [All The Sigils](https://inscryption.thunderstore.io/package/AllTheSigils/All_The_Sigils/)
 
 ## Changelog 
 
 <details>
 <summary>Changelog</summary>
+
+2.0
+- The NPC Update! Quests! New cards! A new boss maybe?!
 
 1.1.3
 - Okay - no more trying to be clever. The interoperability between this mod and the pack manager mod is now contained in a separate BepInEx plugin, so if it fails (because you don't have Pack Manager installed), nothing in the P03 plugin is affected.

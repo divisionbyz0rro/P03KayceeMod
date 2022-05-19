@@ -22,7 +22,7 @@ namespace Infiniscryption.P03KayceeRun.Faces
 
         private static Sprite[,] NPC_SPRITES;
 
-        private const int NUMBER_OF_CHOICES = 2;
+        private const int NUMBER_OF_CHOICES = 5;
 
         private static string[] LAYER_NAMES = new string[] { "bg", "hat", "mouth", "eyes"};
 

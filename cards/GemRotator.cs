@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace Infiniscryption.P03KayceeRun.Cards
 {
-    public class GemRotator : AbilityBehaviour, IUpkeepInHand
+    public class GemRotator : AbilityBehaviour, IOnUpkeepInHand
     {
         public override Ability Ability => AbilityID;
         public static Ability AbilityID { get; private set; }

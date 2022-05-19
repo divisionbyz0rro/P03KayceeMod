@@ -316,7 +316,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.DRAFT_TOKEN));
                 __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.DRAFT_TOKEN));
 
-                __instance.deck.AddCard(CardLoader.GetCardByName(ExpansionPackCards_1.EXP_1_PREFIX + "_GemRotator"));
+                // __instance.deck.AddCard(CardLoader.GetCardByName(ExpansionPackCards_1.EXP_1_PREFIX + "_GemRotator"));
                 
                 // __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.UNC_TOKEN));
                 // __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.UNC_TOKEN));
@@ -330,25 +330,32 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
                 __instance.sideDeckAbilities.Add(Ability.ConduitNull);
 
-                if (__instance.items == null)
-                    __instance.items = new List<string>();
+                if (IsP03Run)
+                {
 
-                if (MaxNumberOfItems >= 1)
-                    __instance.items.Add(ShockerItem.ItemData.name);
+                    if (__instance.items == null)
+                        __instance.items = new List<string>();
 
-                if (MaxNumberOfItems >= 2)
-                    __instance.items.Add("PocketWatch");
+                    if (MaxNumberOfItems >= 1)
+                        __instance.items.Add(ShockerItem.ItemData.name);
 
-                if (MaxNumberOfItems >= 3 && !AscensionSaveData.Data.ChallengeIsActive(AscensionChallenge.NoHook))
-                    __instance.items.Add("BombRemote");
+                    if (MaxNumberOfItems >= 2)
+                        __instance.items.Add("PocketWatch");
+
+                    if (MaxNumberOfItems >= 3 && !AscensionSaveData.Data.ChallengeIsActive(AscensionChallenge.NoHook))
+                        __instance.items.Add("BombRemote");
+                }
 
                 __instance.reachedCheckpoints.Add("NorthNeutralPath"); // This makes bounty hunters work properly
                                                                        // Without this, your bounty can never reach tier 1
 
                 // TEMPORARY: Force the mycologists active at the start
-                // __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.BRAIN));
-                // __instance.items[0] = GoobertHuh.ItemData.name;
-                // StoryEventsData.SetEventCompleted(EventManagement.GENERATOR_SUCCESS);
+                if (P03Plugin.Instance.DebugCode.ToLowerInvariant().Contains("goobert"))
+                {
+                    __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.BRAIN));
+                    __instance.items[0] = GoobertHuh.ItemData.name;
+                    StoryEventsData.SetEventCompleted(EventManagement.GENERATOR_SUCCESS);
+                }
 
                 if (AscensionSaveData.Data.ChallengeIsActive(AscensionChallengeManagement.BOUNTY_HUNTER))
                     __instance.bounty = 45 * AscensionSaveData.Data.GetNumChallengesOfTypeActive(AscensionChallengeManagement.BOUNTY_HUNTER); // Good fucking luck

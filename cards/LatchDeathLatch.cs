@@ -21,7 +21,7 @@ namespace Infiniscryption.P03KayceeRun.Cards
             info.rulebookName = "Death Latch";
             info.rulebookDescription = "[creature] will die at the end of the turn. When [creature] perishes, its owner chooses a creature to gain this sigil. This will repeat.";
             info.canStack = false;
-            info.powerLevel = 2;
+            info.powerLevel = -1;
             info.opponentUsable = true;
             info.passive = false;
             info.metaCategories = new List<AbilityMetaCategory>() { AbilityMetaCategory.Part3Rulebook };

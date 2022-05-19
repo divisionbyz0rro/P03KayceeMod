@@ -273,6 +273,25 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 possibles.Add(SpecialEvent.FullyUpgraded);
             }            
 
+            if (P03Plugin.Instance.DebugCode.ToLowerInvariant().Contains("Event"))
+            {
+                try
+                {
+                    int idx = P03Plugin.Instance.DebugCode.ToLowerInvariant().IndexOf("event[");
+                    int eidx = P03Plugin.Instance.DebugCode.ToUpperInvariant().IndexOf("]");
+                    string substr = P03Plugin.Instance.DebugCode.Substring(idx + 6, eidx - idx - 6);
+                    SpecialEvent dEvent = (SpecialEvent)Enum.Parse(typeof(SpecialEvent), substr);
+
+                    events.Add(new (dEvent, bp => bp.color == 1 && !bp.isSecretRoom)); // randomly selected events should appear in the first color
+                    MarkRandomEventAsSelected(dEvent);
+                    possibles.Clear();
+            
+                } 
+                catch (Exception ex)
+                {
+                    P03Plugin.Log.LogWarning($"Could not parse special event from debug string! {ex}");                    
+                }
+            }
             if (possibles.Count > 0)
             {
                 SpecialEvent randomEvent = possibles[SeededRandom.Range(0, possibles.Count, P03AscensionSaveData.RandomSeed)];
@@ -297,17 +316,17 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             if (StoryEventsData.EventCompleted(TIPPED_SCALES_ACCEPTED) && !StoryEventsData.EventCompleted(TIPPED_SCALES_REWARD))
                 events.Add(new (SpecialEvent.TippedScales, bp => bp.color == 2 && !bp.IsDeadEnd && !bp.isSecretRoom));
             
-            if (completedZoneCount == 0)
+            if (completedZoneCount == 0 && !P03Plugin.Instance.DebugCode.ToLowerInvariant().Contains("goobert"))
                 events.Add(new (SpecialEvent.GoobertQuest, bp => bp.isSecretRoom));
 
-            if (completedZoneCount == 1)
+            if (completedZoneCount == 1 && !P03Plugin.Instance.DebugCode.ToLowerInvariant().Contains("goobert"))
                 events.Add(new (SpecialEvent.BrokenGeneratorQuest, bp => bp.isSecretRoom));
 
-            if (completedZoneCount == 1)
+            if (completedZoneCount == 1 && !P03Plugin.Instance.DebugCode.ToLowerInvariant().Contains("goobert"))
                 if (zone == GoobertDropoffZone && StoryEventsData.EventCompleted(BOUGHT_GOOBERT))
                     events.Add(new (SpecialEvent.GoobertQuest, bp => bp.color != 1 && !bp.isSecretRoom));
 
-            if (completedZoneCount > 0 && Part3SaveData.Data.deck.Cards.Any(c => c.name.Equals(CustomCards.BRAIN)))
+            if (completedZoneCount > 0 && !P03Plugin.Instance.DebugCode.ToLowerInvariant().Contains("goobert") && Part3SaveData.Data.deck.Cards.Any(c => c.name.Equals(CustomCards.BRAIN)))
                 events.Add(new (SpecialEvent.ProspectorQuest, bp => bp.color != 1 && !bp.isSecretRoom));
 
             return events;
@@ -934,7 +953,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
                 if (storyEvent == RADIO_COMPLETED)
                 {
-                    __result = StoryEventsData.EventCompleted(RADIO_COMPLETED) || StoryEventsData.EventCompleted(RADIO_FAILED);
+                    __result = StoryEventsData.EventCompleted(RADIO_SUCCEEDED) || StoryEventsData.EventCompleted(RADIO_FAILED);
                     return false;
                 }
 
@@ -962,7 +981,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
                 if (storyEvent == POWER_COMPLETED)
                 {
-                    __result = StoryEventsData.EventCompleted(POWER_COMPLETED) || StoryEventsData.EventCompleted(POWER_FAILED);
+                    __result = StoryEventsData.EventCompleted(POWER_SUCCEEDED) || StoryEventsData.EventCompleted(POWER_FAILED);
                     return false;
                 }
 

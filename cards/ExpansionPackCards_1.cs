@@ -170,7 +170,7 @@ namespace Infiniscryption.P03KayceeRun.Cards
                 .AddAppearances(CardAppearanceBehaviour.Appearance.HologramPortrait)
                 .AddAbilities(Ability.PreventAttack, Ability.Evolve);
 
-            zombie.SetIceCube(gravestone);
+            zombie.SetIceCube(gravestone); 
             gravestone.SetEvolve(zombie, 3);
             gravestone.holoPortraitPrefab = CardManager.BaseGameCards.CardByName("TombStone").holoPortraitPrefab;
 

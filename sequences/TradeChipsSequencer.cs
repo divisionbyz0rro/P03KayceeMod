@@ -326,11 +326,11 @@ namespace Infiniscryption.P03KayceeRun.Sequences
             //List<CardInfo> result = CardLoader.GetDistinctCardsFromPool(randomSeed, numberOfCards, cards).Select(CustomCards.ModifyCardForAscension).ToList();
 			List<CardInfo> result = CardLoader.GetDistinctCardsFromPool(randomSeed, numberOfCards, cards).ToList();
 
-			if (token.name == CustomCards.UNC_TOKEN ) // The uncommon token adds a random ability to the card
+			if (token.name == CustomCards.UNC_TOKEN) // The uncommon token adds a random ability to the card
 			{ 
 				foreach (CardInfo info in result)
 				{
-					CardModificationInfo mod = new CardModificationInfo() { nonCopyable = true };
+					CardModificationInfo mod = new CardModificationInfo();
 					Ability ability = AbilitiesUtil.GetRandomLearnedAbility(randomSeed++, false, 0, 5, AbilityMetaCategory.Part3Modular);
 					while (info.HasAbility(ability))
 						ability = AbilitiesUtil.GetRandomLearnedAbility(randomSeed++, false, 0, 5, AbilityMetaCategory.Part3Modular);
