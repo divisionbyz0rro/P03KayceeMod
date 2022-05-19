@@ -8,6 +8,7 @@ using InscryptionAPI.Ascension;
 using InscryptionAPI.Guid;
 using System.Collections;
 using System;
+using InscryptionAPI.Saves;
 
 namespace Infiniscryption.P03KayceeRun.Patchers
 {
@@ -19,10 +20,19 @@ namespace Infiniscryption.P03KayceeRun.Patchers
         public static AscensionChallenge ENERGY_HAMMER { get; private set; }
         public static AscensionChallenge ALL_CONVEYOR { get; private set; }
 
+        private static string CompatibleChallengeList
+        {
+            get 
+            {
+                return ModdedSaveManager.SaveData.GetValue(P03Plugin.PluginGuid, "P03CompatibleChallenges");
+            }
+        }
+
         public const int HAMMER_ENERGY_COST = 2;
 
         public static Dictionary<AscensionChallenge, AscensionChallengeInfo> PatchedChallengesReference;
         public static List<AscensionChallenge> ValidChallenges;
+        public static List<AscensionChallenge> ExternalValidChallenges;
 
         public static void UpdateP03Challenges()
         {
@@ -159,14 +169,57 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             };
         }
 
-        // Yes, I'm fucking patching the API. Sue me.
-        [HarmonyPatch(typeof(AscensionChallengePaginator), nameof(AscensionChallengePaginator.ShowVisibleChallenges))]
+        private static void BuildExternalValidChallenges()
+        {
+            ExternalValidChallenges = new();
+            P03Plugin.Log.LogInfo($"External Valid Challenge List is {CompatibleChallengeList}");
+            if (!string.IsNullOrEmpty(CompatibleChallengeList))
+            {
+                foreach (string item in CompatibleChallengeList.Split(',', '|', ';', ' '))
+                {
+                    try
+                    {
+                        int ch = 0;
+                        int.TryParse(item, out ch);
+                        if (ch > 0)
+                            ExternalValidChallenges.Add((AscensionChallenge)ch);
+                    }
+                    catch {}
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(AscensionChallengeScreen), nameof(AscensionChallengeScreen.OnEnable))]
         [HarmonyPostfix]
-        private static void HideLockedBossIcon(ref AscensionChallengePaginator __instance)
+        private static void HideLockedBossIcon(AscensionChallengeScreen __instance)
+        {
+            __instance.gameObject.GetComponentInChildren<ChallengeIconGrid>().Start();
+        }
+
+        [HarmonyPatch(typeof(AscensionChallengePaginator), "ShowVisibleChallenges")]
+        [HarmonyPostfix]
+        private static void MakeIconGridRecalc(AscensionChallengePaginator __instance)
         {
             if (!AscensionUnlockSchedule.ChallengeIsUnlockedForLevel(AscensionChallenge.FinalBoss, AscensionSaveData.Data.challengeLevel))
-                __instance.extraIcon.gameObject.SetActive(false);
+                __instance.gameObject.GetComponentInChildren<ChallengeIconGrid>().finalBossIcon.SetActive(false);
         }
+
+        [HarmonyPatch(typeof(ChallengeIconGrid), nameof(ChallengeIconGrid.Start))]
+        [HarmonyPrefix]
+        private static void DynamicSwapSize(ChallengeIconGrid __instance)
+        {
+            if (!AscensionUnlockSchedule.ChallengeIsUnlockedForLevel(AscensionChallenge.FinalBoss, AscensionSaveData.Data.challengeLevel))
+			{
+				__instance.finalBossIcon.SetActive(false);
+				float xStart = -1.65f;
+				for (int i = 0; i < __instance.topRowIcons.Count; i++)
+					__instance.topRowIcons[i].localPosition = new Vector2(xStart + (float)i * 0.55f, __instance.topRowIcons[i].localPosition.y);
+
+				for (int j = 0; j < __instance.bottomRowIcons.Count; j++)
+					__instance.bottomRowIcons[j].localPosition = new Vector2(xStart + (float)j * 0.55f, __instance.bottomRowIcons[j].localPosition.y);
+			}
+        }
+
 
         [HarmonyPatch(typeof(AscensionUnlockSchedule), nameof(AscensionUnlockSchedule.ChallengeIsUnlockedForLevel))]
         [HarmonyAfter(new string[] { "cyantist.inscryption.api" })]
@@ -175,6 +228,15 @@ namespace Infiniscryption.P03KayceeRun.Patchers
         {
             if (ScreenManagement.ScreenState == CardTemple.Tech)
             {
+                if (ExternalValidChallenges == null)
+                    BuildExternalValidChallenges();
+
+                if (ExternalValidChallenges.Contains(challenge))
+                {
+                    __result = true;
+                    return;
+                }
+
                 if (!ValidChallenges.Contains(challenge))
                 {
                     __result = false;
@@ -252,7 +314,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             [HarmonyPostfix]
             private static IEnumerator Postfix(IEnumerator sequence, TargetSlotItem __state)
             {
-                if (SaveFile.IsAscension && AscensionSaveData.Data.ChallengeIsActive(ENERGY_HAMMER) && __state is HammerItem)
+                if (SaveFile.IsAscension && AscensionSaveData.Data.ChallengeIsActive(ENERGY_HAMMER) && __state is HammerItem && TurnManager.Instance.IsPlayerTurn)
                 {
                     if (ResourcesManager.Instance.PlayerEnergy < HAMMER_ENERGY_COST)
                     {
@@ -279,7 +341,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             [HarmonyPostfix]
             private static IEnumerator SpendHammerEnergy(IEnumerator sequence, HammerItem __state)
             {
-                if (SaveFile.IsAscension && AscensionSaveData.Data.ChallengeIsActive(ENERGY_HAMMER))
+                if (SaveFile.IsAscension && AscensionSaveData.Data.ChallengeIsActive(ENERGY_HAMMER) && TurnManager.Instance.IsPlayerTurn)
                 {
                     if (ResourcesManager.Instance.PlayerEnergy < HAMMER_ENERGY_COST)
                     {

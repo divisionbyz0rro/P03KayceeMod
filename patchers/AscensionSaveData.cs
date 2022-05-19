@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Infiniscryption.P03KayceeRun.Items;
+using Infiniscryption.P03KayceeRun.Cards;
 
 namespace Infiniscryption.P03KayceeRun.Patchers
 {
@@ -24,11 +25,14 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 return AscensionSaveData.Data.currentRunSeed
                        + 10 * EventManagement.CompletedZones.Count
                        + 100 * EventManagement.VisitedZones.Count
-                       + 1000 * EventManagement.NumberOfZoneEnemiesKilled;
+                       + 1000 * EventManagement.NumberOfZoneEnemiesKilled
+                       + 10000 * EventManagement.NumberOfGeneratedNPCs
+                       + Part3SaveData.Data.playerPos.gridX
+                       + 100000 * Part3SaveData.Data.playerPos.gridY;
             }
         }
 
-        public static int NumberOfItems
+        public static int MaxNumberOfItems
         {
             get
             {
@@ -218,15 +222,21 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             SaveManager.SaveFile.part3Data = data;
         }
 
+        [HarmonyPatch(typeof(AscensionMenuScreens), nameof(AscensionMenuScreens.TransitionToGame))]
+        [HarmonyPrefix]
+        private static void FixStarters(bool newRun)
+        {
+            bool cannotChooseDecks = AscensionUnlockSchedule.NumStarterDecksUnlocked(AscensionSaveData.Data.challengeLevel) <= 1;
+            if (newRun && cannotChooseDecks)
+                AscensionSaveData.Data.currentStarterDeck = IsP03Run ? StarterDecks.DEFAULT_STARTER_DECK : "Vanilla";
+        }
+
         [HarmonyPatch(typeof(AscensionSaveData), nameof(AscensionSaveData.NewRun))]
         [HarmonyPostfix]
         public static void InitializePart3Save()
         {
             if (IsP03Run)
             {
-                if (AscensionSaveData.Data.currentStarterDeck.Equals("Vanilla"))
-                    AscensionSaveData.Data.currentStarterDeck = StarterDecks.DEFAULT_STARTER_DECK;
-
                 Part3SaveData data = new Part3SaveData();
                 data.Initialize();
                 SaveManager.SaveFile.part3Data = data;
@@ -272,8 +282,8 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
             if (SaveFile.IsAscension && AscensionSaveData.Data.currentRun != null)
             {
-                string worldId = RunBasedHoloMap.GetAscensionWorldID(RunBasedHoloMap.NEUTRAL);
-                Tuple<int, int> pos = RunBasedHoloMap.GetStartingSpace(RunBasedHoloMap.NEUTRAL);
+                string worldId = RunBasedHoloMap.GetAscensionWorldID(RunBasedHoloMap.Zone.Neutral);
+                Tuple<int, int> pos = RunBasedHoloMap.GetStartingSpace(RunBasedHoloMap.Zone.Neutral);
                 Part3SaveData.WorldPosition worldPosition = new(worldId, pos.Item1, pos.Item2);
 
                 __instance.playerPos = worldPosition;
@@ -306,32 +316,46 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.DRAFT_TOKEN));
                 __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.DRAFT_TOKEN));
 
-                /*
-                __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.UNC_TOKEN));
-                __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.UNC_TOKEN));
-                __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.UNC_TOKEN));
+                // __instance.deck.AddCard(CardLoader.GetCardByName(ExpansionPackCards_1.EXP_1_PREFIX + "_GemRotator"));
+                
+                // __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.UNC_TOKEN));
+                // __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.UNC_TOKEN));
+                // __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.UNC_TOKEN));
 
-                __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.RARE_DRAFT_TOKEN));
-                __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.RARE_DRAFT_TOKEN));
-                __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.RARE_DRAFT_TOKEN));
-                */
+                
+                // __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.RARE_DRAFT_TOKEN));
+
+                // __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.RARE_DRAFT_TOKEN));
+                // __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.RARE_DRAFT_TOKEN));
 
                 __instance.sideDeckAbilities.Add(Ability.ConduitNull);
 
-                if (__instance.items == null)
-                    __instance.items = new List<string>();
+                if (IsP03Run)
+                {
 
-                if (NumberOfItems >= 1)
-                    __instance.items.Add(ShockerItem.ItemData.name);
+                    if (__instance.items == null)
+                        __instance.items = new List<string>();
 
-                if (NumberOfItems >= 2)
-                    __instance.items.Add("PocketWatch");
+                    if (MaxNumberOfItems >= 1)
+                        __instance.items.Add(ShockerItem.ItemData.name);
 
-                if (NumberOfItems >= 3 && !AscensionSaveData.Data.ChallengeIsActive(AscensionChallenge.NoHook))
-                    __instance.items.Add("BombRemote");
+                    if (MaxNumberOfItems >= 2)
+                        __instance.items.Add("PocketWatch");
+
+                    if (MaxNumberOfItems >= 3 && !AscensionSaveData.Data.ChallengeIsActive(AscensionChallenge.NoHook))
+                        __instance.items.Add("BombRemote");
+                }
 
                 __instance.reachedCheckpoints.Add("NorthNeutralPath"); // This makes bounty hunters work properly
                                                                        // Without this, your bounty can never reach tier 1
+
+                // TEMPORARY: Force the mycologists active at the start
+                if (P03Plugin.Instance.DebugCode.ToLowerInvariant().Contains("goobert"))
+                {
+                    __instance.deck.AddCard(CardLoader.GetCardByName(CustomCards.BRAIN));
+                    __instance.items[0] = GoobertHuh.ItemData.name;
+                    StoryEventsData.SetEventCompleted(EventManagement.GENERATOR_SUCCESS);
+                }
 
                 if (AscensionSaveData.Data.ChallengeIsActive(AscensionChallengeManagement.BOUNTY_HUNTER))
                     __instance.bounty = 45 * AscensionSaveData.Data.GetNumChallengesOfTypeActive(AscensionChallengeManagement.BOUNTY_HUNTER); // Good fucking luck

@@ -236,7 +236,7 @@ namespace Infiniscryption.P03KayceeRun.Sequences
             mod.nonCopyable = true;
 
             CardInfo card = this.rightSlot.Card.Info;
-            mod.transformerBeastCardId = "@" + card.name + (card.Gemified ? "+Gemified" : "") + string.Join("", card.ModAbilities.Select(a => $"+{a.ToString()}"));
+            mod.transformerBeastCardId = CustomCards.ConvertCardToCompleteCode(card);
 
             int targetCost = (leftSlot.Card.Info.EnergyCost + rightSlot.Card.Info.EnergyCost) / 2;
             if (targetCost > this.leftSlot.Card.Info.EnergyCost)
@@ -327,9 +327,7 @@ namespace Infiniscryption.P03KayceeRun.Sequences
             CardModificationInfo cardModificationInfo = __instance.Card.Info.Mods.Find(m => !string.IsNullOrEmpty(m.transformerBeastCardId));
             if (cardModificationInfo != null && cardModificationInfo.transformerBeastCardId[0] == '@')
             {
-                string[] split = cardModificationInfo.transformerBeastCardId.Split('+');
-                __result = CardLoader.GetCardByName(split[0].Replace("@", ""));
-                __result.mods = new ();
+                __result = CustomCards.ConvertCodeToCard(cardModificationInfo.transformerBeastCardId);
 
                 // Beast mod mod
                 CardModificationInfo bMod = Transformer.GetBeastModeStatsMod(__result, __instance.Card.Info);
@@ -337,16 +335,8 @@ namespace Infiniscryption.P03KayceeRun.Sequences
                 bMod.nonCopyable = true;
                 __result.mods.Add(bMod);
 
-                for (int i = 1; i < split.Length; i++)
-                {
-                    if (split[i].ToLowerInvariant() == "gemified")
-                        __result.mods.Add(new() { gemify = true, nonCopyable = true });
-                    else
-                        __result.mods.Add(new((Ability)Enum.Parse(typeof(Ability), split[i])) { nonCopyable = true });
-                }
-
                 // Transformer info
-                __result.mods.Add(new(Ability.Transformer) { nonCopyable = true });
+                __result.mods.Add(new(Ability.Transformer));
 
                 // Set Evolve
                 __result.evolveParams = new ();

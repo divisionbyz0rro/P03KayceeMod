@@ -14,6 +14,8 @@ namespace Infiniscryption.P03KayceeRun.Patchers
         public static readonly int NORTH_CABIN = 32;
         public static readonly int LOWER_TOWER_ROOM = 64;
         public static readonly int LANDMARKER = 128;
+        public static readonly int BROKEN_GENERATOR = 256;
+        public static readonly int MYCOLOGIST_WELL = 512;
 
         public static readonly int BATTLE = 0;
         public static readonly int TRADE = 1;
@@ -23,6 +25,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
         public int y;
         public int arrowDirections;
         public int specialDirection;
+        public int secretDirection;
         public int specialDirectionType;
         public Opponent.Type opponent;
         public HoloMapNode.NodeDataType upgrade;
@@ -31,16 +34,21 @@ namespace Infiniscryption.P03KayceeRun.Patchers
         public StoryEvent blockEvent;
         public int battleTerrainIndex;
         public int encounterDifficulty;
+        public bool isSecretRoom;
+
+        public EventManagement.SpecialEvent dialogueEvent;
+
+        public int encounterIndex;
 
         public int distance; // used only for generation - doesn't get saved or parsed
         public int color;
 
         public override string ToString()
         {
-            return $"[{randomSeed},{x},{y},{arrowDirections},{specialDirection},{specialDirectionType},{encounterDifficulty},{(int)opponent},{(int)upgrade},{specialTerrain},{blockedDirections},{(int)blockEvent},{battleTerrainIndex},{color}]";
+            return $"[{randomSeed},{x},{y},{arrowDirections},{specialDirection},{specialDirectionType},{encounterDifficulty},{(int)opponent},{(int)upgrade},{specialTerrain},{blockedDirections},{(int)blockEvent},{battleTerrainIndex},{color},{(int)dialogueEvent},{secretDirection},{isSecretRoom},{encounterIndex}]";
         }
 
-        public HoloMapBlueprint(int randomSeed) { this.randomSeed = randomSeed; this.upgrade = HoloMapSpecialNode.NodeDataType.MoveArea; }
+        public HoloMapBlueprint(int randomSeed) { this.randomSeed = randomSeed; this.encounterIndex = -1; this.upgrade = HoloMapSpecialNode.NodeDataType.MoveArea; }
 
         public HoloMapBlueprint(string parsed)
         {
@@ -59,6 +67,13 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             blockEvent = (StoryEvent)int.Parse(split[11]);
             battleTerrainIndex = int.Parse(split[12]);
             color = int.Parse(split[13]);
+
+            // From this point forward, extensions to the blueprint HAVE TO CHECK AND HAVE DEFAULTS
+            // because we have to be backwards compatible
+            dialogueEvent = (EventManagement.SpecialEvent)(split.Length > 14 ? int.Parse(split[14]) : 0);
+            secretDirection = split.Length > 15 ? int.Parse(split[15]) : 0;
+            isSecretRoom = split.Length > 16 ? bool.Parse(split[16]) : false;
+            encounterIndex = split.Length > 17 ? int.Parse(split[17]) : -1;
         }
 
         public bool EligibleForUpgrade
@@ -66,6 +81,14 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             get
             {
                 return this.opponent == Opponent.Type.Default && this.upgrade == HoloMapNode.NodeDataType.MoveArea && (this.specialTerrain & LANDMARKER) == 0;
+            }
+        }
+
+        public bool EligibleForDialogue
+        {
+            get
+            {
+                return this.dialogueEvent == EventManagement.SpecialEvent.None;
             }
         }
 

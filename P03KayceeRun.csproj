@@ -26,9 +26,6 @@
     <Reference Include="DeckEditor" Private="false">
       <HintPath>.\lib\DeckEditor.dll</HintPath>
     </Reference>
-    <Reference Include="PackManager" Private="false">
-      <HintPath>.\lib\Infiniscryption.PackManager.dll</HintPath>
-    </Reference>
     <Reference Include="InscryptionAPI" Private="false">
       <HintPath>.\lib\InscryptionAPI.dll</HintPath>
     </Reference>

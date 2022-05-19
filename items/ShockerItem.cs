@@ -25,6 +25,7 @@ namespace Infiniscryption.P03KayceeRun.Items
             ItemData.pickupSoundId = "teslacoil_spark";
             ItemData.rulebookCategory = AbilityMetaCategory.Part3Rulebook;
             ItemData.rulebookName = "Amplification Coil";
+            ItemData.regionSpecific = true;
             ItemData.rulebookDescription = "Increases your max energy. I suppose you can find some use for this.";
             ItemData.prefabId = "prefabs/specialnodesequences/teslacoil";
 

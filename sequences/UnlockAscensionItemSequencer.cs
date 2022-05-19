@@ -48,7 +48,7 @@ namespace Infiniscryption.P03KayceeRun.Sequences
         {
             if (SaveFile.IsAscension && __instance.nodeToBuy.nodeType == UnlockAscensionItemNodeData.UnlockItemsAscension)
             {
-                if (Part3SaveData.Data.items.Count >= P03AscensionSaveData.NumberOfItems)
+                if (Part3SaveData.Data.items.Count >= P03AscensionSaveData.MaxNumberOfItems)
                 {
                     ItemsManager.Instance.ShakeConsumableSlots(0.1f);
                     __result = false;
@@ -80,6 +80,14 @@ namespace Infiniscryption.P03KayceeRun.Sequences
             while (items.Count > 3)
                 items.RemoveAt(SeededRandom.Range(0, items.Count, randomSeed++));
 
+            if (StoryEventsData.EventCompleted(EventManagement.TALKED_TO_GOOBERTS_FRIEND) && 
+                !StoryEventsData.EventCompleted(EventManagement.SAW_GOOBERT_AT_SHOP_NODE) &&
+                EventManagement.CompletedZones.Count == 0) // Can only do this at the first zone
+            {
+                items[2] = GoobertHuh.ItemData.name;
+                StoryEventsData.SetEventCompleted(EventManagement.SAW_GOOBERT_AT_SHOP_NODE);
+            }
+
             return items.Select(ItemsUtil.GetConsumableByName).ToList();
         }
 
@@ -106,6 +114,16 @@ namespace Infiniscryption.P03KayceeRun.Sequences
             this.SetSlotCollidersEnabled(true);
 
             yield return new WaitUntil(() => selectedSlot != null);
+
+            if (selectedSlot.Item.Data.name.Equals(GoobertHuh.ItemData.name))
+            {
+                yield return TextDisplayer.Instance.PlayDialogueEvent("P03Wut", TextDisplayer.MessageAdvanceMode.Input, TextDisplayer.EventIntersectMode.Wait, null, null);
+                StoryEventsData.SetEventCompleted(EventManagement.BOUGHT_GOOBERT);
+            }
+            else if (this.slots[2].Item.Data.name.Equals(GoobertHuh.ItemData.name))
+            {
+                StoryEventsData.SetEventCompleted(EventManagement.DID_NOT_BUY_GOOBERT);
+            }
 
             RuleBookController.Instance.SetShown(false);
             Part3SaveData.Data.items.Add(selectedSlot.Item.Data.name);

@@ -10,7 +10,7 @@ redundantAbilities: []
 unlockedCardPrerequisites: []
 randomReplacementCards: []
 overclockBlueprint: []
-AttackConduit,NullConduit -> AttackConduit 3,Automaton -> Insectodrone 5,NONE -> P03KCM_FIREWALL_BATTLE 6
+AttackConduit,NullConduit -> AttackConduit 5,Automaton -> Insectodrone 5,NONE -> P03KCM_FIREWALL_BATTLE 6
 LeapBot -> Shieldbot 6,LeapBot -> Automaton 2
 Insectodrone -> Shieldbot 4,NONE -> AttackConduit 3
 LeapBot -> Automaton 2,NONE -> Bombbot 4,NONE -> LeapBot 3

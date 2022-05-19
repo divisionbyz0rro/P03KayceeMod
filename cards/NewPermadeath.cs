@@ -23,11 +23,11 @@ namespace Infiniscryption.P03KayceeRun.Cards
         public override Ability Ability => AbilityID;
         public static Ability AbilityID { get; private set; }
 
-        public static void Register()
+        static NewPermaDeath()
         {
             AbilityInfo info = ScriptableObject.CreateInstance<AbilityInfo>();
             info.rulebookName = "Skeleclocked";
-            info.rulebookDescription = "When [creature] dies, it permanently becomes an Exeskeleton with the same abilities. If [creature] has Fecundity or Unkillable, it will be unaffected.";
+            info.rulebookDescription = "When [creature] dies, it permanently becomes an Exeskeleton with the same abilities. If [creature] has Unkillable, it will be unaffected.";
             info.canStack = false;
             info.powerLevel = -1;
             info.opponentUsable = false;

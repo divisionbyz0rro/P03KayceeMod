@@ -17,22 +17,44 @@ namespace Infiniscryption.P03KayceeRun
 
         public const string PluginGuid = "zorro.inscryption.infiniscryption.p03kayceerun";
 		public const string PluginName = "Infiniscryption P03 in Kaycee's Mod";
-		public const string PluginVersion = "1.0";
+		public const string PluginVersion = "2.0";
         public const string CardPrefx = "P03KCM";
+
+        internal static P03Plugin Instance;
 
         internal static ManualLogSource Log;
 
         internal static bool Initialized = false;
+        
+        internal string DebugCode
+        {
+            get
+            {
+                return Config.Bind("P03KayceeMod", "DebugCode", "nothing", new BepInEx.Configuration.ConfigDescription("A special code to use for debugging purposes only. Don't change this unless your name is DivisionByZorro or he told you how it works.")).Value;
+            }
+        }
 
         private void Awake()
         {
+            Instance = this;
+
             Log = base.Logger;
+            Log.LogInfo($"Debug code = {DebugCode}");
 
             Harmony harmony = new Harmony(PluginGuid);
-            harmony.PatchAll();
+            harmony.PatchAll(); 
 
             foreach (Type t in typeof(P03Plugin).Assembly.GetTypes())
-                System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(t.TypeHandle);
+            {
+                try
+                {
+                    System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(t.TypeHandle);
+                } catch (TypeLoadException ex)
+                {
+                    Log.LogWarning("Failed to force load static constructor!");
+                    Log.LogWarning(ex);
+                }
+            }
             
             CustomCards.RegisterCustomCards(harmony);
             StarterDecks.RegisterStarterDecks();
@@ -58,12 +80,6 @@ namespace Infiniscryption.P03KayceeRun
         {
             if (Chainloader.PluginInfos.ContainsKey("inscryption_deckeditor"))
                 FixDeckEditor();
-        }
-
-        private void Start()
-        {
-            if (Chainloader.PluginInfos.ContainsKey("zorro.inscryption.infiniscryption.packmanager"))
-                CustomCards.WriteP03Pack();
         }
     }
 }

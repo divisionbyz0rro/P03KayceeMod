@@ -1,0 +1,17 @@
+Name: Tech_ProtectConduits
+maxDifficulty: 6
+minDifficulty: 0
+powerLevel: 0
+powerLevelString: 
+oldPreviewDifficulty: 0
+regionSpecific: True
+dominantTribes: []
+redundantAbilities: []
+unlockedCardPrerequisites: []
+randomReplacementCards: []
+overclockBlueprint: [D:3/T:0]
+P03KCMXP1_ConduitProtector
+NullConduit -> HealerConduit 1,HealerConduit
+Thickbot,Thickbot -> SwapBot 5
+HealerConduit -> AttackConduit 4,NONE -> P03KCMXP1_ConduitProtector 2
+NONE -> CloserBot 6

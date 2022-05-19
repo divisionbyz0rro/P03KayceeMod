@@ -16,7 +16,7 @@ namespace Infiniscryption.P03KayceeRun.Cards
 		public static Ability AbilityID { get; private set; }
 		public override Ability Ability => AbilityID;
 
-        public static void Register()
+        static NewConduitEnergy()
         {
             AbilityInfo info = ScriptableObject.CreateInstance<AbilityInfo>();
             info.rulebookName = "Bonus Energy Conduit";

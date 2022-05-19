@@ -17,7 +17,7 @@ namespace Infiniscryption.P03KayceeRun.Cards
 
         public static readonly Trait CodeTrait = GuidManager.GetEnumValue<Trait>(P03Plugin.PluginGuid, "IsBlockOfCode");
 
-        public static void Register()
+        static Programmer()
         {
             AbilityInfo info = ScriptableObject.CreateInstance<AbilityInfo>();
             info.rulebookName = "Programmer";

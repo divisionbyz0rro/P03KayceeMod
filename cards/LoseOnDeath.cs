@@ -12,7 +12,7 @@ namespace Infiniscryption.P03KayceeRun.Cards
         public override Ability Ability => AbilityID;
         public static Ability AbilityID { get; private set; }
 
-        public static void Register()
+        static LoseOnDeath()
         {
             AbilityInfo info = ScriptableObject.CreateInstance<AbilityInfo>();
             info.rulebookName = "Synchronized Fate";

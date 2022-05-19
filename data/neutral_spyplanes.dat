@@ -1,0 +1,21 @@
+Name: Neutral_SpyPlanes
+maxDifficulty: 6
+minDifficulty: 0
+powerLevel: 0
+powerLevelString: 
+oldPreviewDifficulty: 0
+regionSpecific: True
+dominantTribes: []
+redundantAbilities: []
+unlockedCardPrerequisites: []
+randomReplacementCards: []
+overclockBlueprint: [D:4/T:2]
+LeapBot,NONE -> P03KCM_FIREWALL_BATTLE 6,NONE -> Insectodrone 2
+Insectodrone,NONE -> Insectodrone 3
+LeapBot,NONE -> LeapBot 1
+Insectodrone,NONE -> Insectodrone 6
+P03KCMXP1_Spyplane
+NONE -> P03KCMXP1_Spyplane 3,NONE -> Insectodrone 4
+P03KCMXP1_Spyplane,NONE -> Insectodrone 3
+NONE -> P03KCMXP1_Spyplane 6
+P03KCMXP1_Spyplane

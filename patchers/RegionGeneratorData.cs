@@ -7,7 +7,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 {
     public class RegionGeneratorData
     {
-        public int regionCode;
+        public RunBasedHoloMap.Zone regionCode;
 
         public string[] encounters;
 
@@ -35,13 +35,13 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
         public Dictionary<int, string[]> wallPrefabs;
 
-        public RegionGeneratorData(int regionCode)
+        public RegionGeneratorData(RunBasedHoloMap.Zone regionCode)
         {
             this.regionCode = regionCode;
             switch (regionCode)
             {
-                case RunBasedHoloMap.NEUTRAL:
-                    this.encounters = new string[] { "neutral_alarmbots", "neutral_bombsandshields", "neutral_bridgebattle", "neutral_minecarts", "neutral_sentrywall", "neutral_swapbots"};
+                case RunBasedHoloMap.Zone.Neutral:
+                    this.encounters = new string[] { "neutral_alarmbots", "neutral_bombsandshields", "neutral_bridgebattle", "neutral_minecarts", "neutral_sentrywall", "neutral_swapbots", "neutral_clockbots", "neutral_spyplanes" };
                     this.terrainRandoms = new string[] { "NeutralEastMain_4/Scenery/HoloGrass_Small (1)", "NeutralEastMain_4/Scenery/HoloGrass_Patch (1)" };
                     this.objectRandoms = new string[] { "StartingIslandBattery/Scenery/HoloMeter","StartingIslandBattery/Scenery/HoloDrone_Broken","StartingIslandJunction/Scenery/HoloBotPiece_Leg","StartingIslandJunction/Scenery/HoloBotPiece_Head","NeutralEastMain_4/Scenery/HoloDrone_1", "NeutralEastMain_4/Scenery/HoloDrone_1", "NeutralEastMain_4/Scenery/HoloDrone_1", "NeutralEastMain_4/Scenery/HoloPowerPoll_1" };
                     this.wall = "NeutralEastMain_4/Scenery/HoloWall (1)";
@@ -56,7 +56,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                     this.audioConfig = HoloMapArea.AudioLoopsConfig.Default;
                     this.screenPrefab = Resources.Load<GameObject>("prefabs/map/holomapscreens/HoloMapScreen_DefaultGround");
                     break;
-                case RunBasedHoloMap.MAGIC:
+                case RunBasedHoloMap.Zone.Magic:
                     this.encounters = new string[] { "wizard_bigripper", "wizard_gemexploder", "wizard_shieldgems" };
                     this.terrainRandoms = new string[] { "WizardEntrance/Scenery/HoloDebris (1)" };
                     this.objectRandoms = new string[] { "WizardSidePath_1/Scenery/HoloRock_Floating", "WizardMainPath_2/Scenery/HoloRock_Floating (2)", "WizardSidePath_1/Scenery/HoloRock_Floating", "WizardMainPath_2/Scenery/HoloRock_Floating (2)", "WizardEntrance/Scenery/HoloGemGreen", "WizardEntrance/Scenery/HoloGemOrange", "WizardEntrance/Scenery/HoloGemBlue" };
@@ -75,7 +75,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                     this.audioConfig = HoloMapArea.AudioLoopsConfig.Wizard;
                     this.screenPrefab = Resources.Load<GameObject>("prefabs/map/holomapscreens/HoloMapScreen_DefaultGround");
                     break;
-                case RunBasedHoloMap.NATURE:
+                case RunBasedHoloMap.Zone.Nature:
                     this.terrainRandoms = new string[] { "NatureMainPath_2/Scenery/HoloGrass_Foliage", "NatureMainPath_2/Scenery/HoloDebris" };
                     this.objectRandoms = new string[] { "NatureMainPath_2/Scenery/HoloTree_2", "NatureMainPath_2/Scenery/HoloTree_2", "NatureMainPath_2/Scenery/HoloTree_2", "NatureMainPath_2/Scenery/HoloTree_2", "NatureMainPath_2/Scenery/HoloCage_1" };
                     this.wall = "NatureMainPath_2/Scenery/HoloTree_3";
@@ -87,7 +87,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                     wallOrientations.Add(RunBasedHoloMap.SOUTH, new(new(.08f, -.18f, -2.02f), new(270f, 359.2266f, .0297f)));
                     wallOrientations.Add(RunBasedHoloMap.WEST, new(new(-3.2f, -.18f, -.4f), new(270f, 89.603f, .0297f)));
                     wallOrientations.Add(RunBasedHoloMap.EAST, new(new(3.2f, -.18f, -.4f), new(270f, 270.359f, .0297f)));
-                    this.encounters = new string[] { "nature_battransformers", "nature_beartransformers", "nature_hounds" };
+                    this.encounters = new string[] { "nature_battransformers", "nature_beartransformers", "nature_hounds", "nature_wolftransformers", "nature_snaketransformers" };
                     this.terrain = new string[][] {
                         new string[] { null, "Tree_Hologram", null, "Tree_Hologram", null, null, "Tree_Hologram", null, "Tree_Hologram", null },
                         new string[] { "Tree_Hologram_SnowCovered", null, "Tree_Hologram_SnowCovered", null, "Tree_Hologram_SnowCovered", "Tree_Hologram_SnowCovered", null, "Tree_Hologram_SnowCovered", null, "Tree_Hologram_SnowCovered" }
@@ -101,8 +101,8 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                     this.audioConfig = HoloMapArea.AudioLoopsConfig.Nature;
                     this.screenPrefab = Resources.Load<GameObject>("prefabs/map/holomapscreens/HoloMapScreen_WetlandsGround");
                     break;
-                case RunBasedHoloMap.TECH:
-                    this.encounters = new string[] { "tech_attackconduits", "tech_giftcells", "tech_splintercells" };
+                case RunBasedHoloMap.Zone.Tech:
+                    this.encounters = new string[] { "tech_attackconduits", "tech_giftcells", "tech_splintercells", "tech_stinkyconduits", "tech_protectconduits" };
                     this.terrainRandoms = new string[] { };
                     this.objectRandoms = new string[] {  };
                     this.terrain = new string[][] {
@@ -127,8 +127,8 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                     this.audioConfig = HoloMapArea.AudioLoopsConfig.Tech;
                     this.screenPrefab = Resources.Load<GameObject>("prefabs/map/holomapscreens/HoloMapScreen_TechGround");
                     break;
-                case RunBasedHoloMap.UNDEAD:
-                    this.encounters = new string[] { "undead_bomblatchers", "undead_shieldlatchers", "undead_skeleswarm" };
+                case RunBasedHoloMap.Zone.Undead:
+                    this.encounters = new string[] { "undead_bomblatchers", "undead_shieldlatchers", "undead_skeleswarm", "undead_strafelatchers", "undead_winglatchers" };
                     this.terrainRandoms = new string[] { "UndeadMainPath_4/Scenery/HoloDebris", "UndeadMainPath_4/Scenery/HoloGrass_Patch", "UndeadMainPath_4/Scenery/HoloGrass_Patch", "UndeadMainPath_4/Scenery/HoloGrass_Patch" };
                     this.objectRandoms = new string[] { "UndeadMainPath_4/Scenery/HoloGravestone", "UndeadMainPath_4/Scenery/HoloTreeDead (2)", "UndeadSecretPath_1/Scenery/HoloShovel", "UndeadMainPath_4/Scenery/HoloDirtPile_2", "UndeadMainPath_4/Scenery/HoloZombieArm", "UndeadMainPath_4/Scenery/HoloTreeDead (2)" };
                     this.defaultReward = HoloMapNode.NodeDataType.OverclockCard;
@@ -145,6 +145,15 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                         new string[] { "TempleUndeadMain_1/Scenery/HoloLibrarianBot (1)", "TempleUndeadMain_1/Scenery/HoloLibrarianBot (2)"},
                         new string[] { "UndeadSmallDetour_2/Scenery/HoloGravestone", "UndeadSmallDetour_2/Scenery/HoloGravestone (1)", "UndeadSmallDetour_2/Scenery/HoloGravestone (2)", "UndeadSmallDetour_2/Scenery/HoloGravestone (4)"}
                     };
+                    this.audioConfig = HoloMapArea.AudioLoopsConfig.Undead;
+                    this.screenPrefab = Resources.Load<GameObject>("prefabs/map/holomapscreens/HoloMapScreen_WetlandsGround");
+                    break;
+                case RunBasedHoloMap.Zone.Mycologist:
+                    this.terrainRandoms = new string[] { "NeutralEastMain_4/Scenery/HoloGrass_Small (1)", "Mycologists_1/Scenery/HoloMushroom_1", "Mycologists_1/Scenery/HoloMushroom_2" };
+                    this.objectRandoms = new string[] { "NatureMainPath_2/Scenery/HoloTree_2", "UndeadMainPath_4/Scenery/HoloTreeDead (2)" };
+                    this.wall = null;
+                    this.lightColor = new Color(0.9057f, 0.3802f, 0.6032f);
+                    this.mainColor = new Color(0.3279f, 0f, 0.434f);
                     this.audioConfig = HoloMapArea.AudioLoopsConfig.Undead;
                     this.screenPrefab = Resources.Load<GameObject>("prefabs/map/holomapscreens/HoloMapScreen_WetlandsGround");
                     break;

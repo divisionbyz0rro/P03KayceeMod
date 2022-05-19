@@ -6,12 +6,16 @@ using System.Linq;
 using System;
 using Infiniscryption.P03KayceeRun.Sequences;
 using Infiniscryption.P03KayceeRun.Helpers;
+using UnityEngine.Events;
 
 namespace Infiniscryption.P03KayceeRun.Patchers
 {
     [HarmonyPatch]
     public static partial class RunBasedHoloMap
     {
+        internal static bool Building { get; private set; } = false;
+        internal static Zone BuildingZone { get; private set; } = Zone.Neutral;
+
         // The holographic map is absolutely bonkers
         // Each screen that you see on the map is called an 'area'
         // Think of it like a region on the paper game map.
@@ -29,14 +33,26 @@ namespace Infiniscryption.P03KayceeRun.Patchers
         public static Dictionary<HoloMapNode.NodeDataType, GameObject> SpecialNodePrefabs = new();
         private static Dictionary<int, GameObject[]> SpecialTerrainPrefabs = new();
         private static Dictionary<int, GameObject> ArrowPrefabs = new();
-        
-        public const int NEUTRAL = 0;
-        public const int TECH = 1;
-        public const int UNDEAD = 2;
-        public const int NATURE = 3;
-        public const int MAGIC = 4;
 
-        private static readonly Dictionary<int, RegionGeneratorData> REGION_DATA = new();
+        internal static readonly Part3SaveData.WorldPosition MYCOLOGIST_HOME_POSITION = new ("ascension_0_Mycologist", 0, 2);
+
+        public enum Zone
+        {
+            Neutral = 0,
+            Tech = 1,
+            Undead = 2,
+            Nature = 3,
+            Magic = 4,
+            Mycologist = 5
+        }
+        
+        // public const int NEUTRAL = 0;
+        // public const int TECH = 1;
+        // public const int UNDEAD = 2;
+        // public const int NATURE = 3;
+        // public const int MAGIC = 4;
+
+        private static readonly Dictionary<Zone, RegionGeneratorData> REGION_DATA = new();
 
         private static Dictionary<string, GameObject> objectLookups = new();
 
@@ -82,7 +98,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             if ((compound & WEST) == 0) yield return WEST;
         }
 
-        private static GameObject GetGameObject(string singleMapKey)
+        internal static GameObject GetGameObject(string singleMapKey)
         {
             if (singleMapKey == default(string))
                 return null;
@@ -91,12 +107,12 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             return GetGameObject(holoMapKey, findPath);
         }
 
-        private static GameObject[] GetGameObject(string[] multiMapKey)
+        internal static GameObject[] GetGameObject(string[] multiMapKey)
         {
             return multiMapKey.Select(s => GetGameObject(s)).ToArray();
         }
 
-        private static GameObject GetGameObject(string holomap, string findPath)
+        internal static GameObject GetGameObject(string holomap, string findPath)
         {
             string key = $"{holomap}/{findPath}";
             if (objectLookups.ContainsKey(key))
@@ -145,8 +161,8 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             P03Plugin.Log.LogInfo("Initializing world data");
 
             REGION_DATA.Clear(); // All of the actual region data is in the region data class itself
-            for (int i = 0; i < 5; i++)
-                REGION_DATA.Add(i, new(i));
+            for (int i = 0; i < 6; i++)
+                REGION_DATA.Add((Zone)i, new((Zone)i));
 
             HOLO_NODE_BASE = HOLO_NODE_BASE ?? GetGameObject("StartingIslandJunction", "Scenery/HoloNodeBase");
             HOVER_HOLO_NODE_BASE = HOVER_HOLO_NODE_BASE ?? GetGameObject("Shop", "Scenery/HoloDrone_HoldingPlatform_Undead");
@@ -160,6 +176,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             BossPrefabs.AddReplace(Opponent.Type.PhotographerBoss, () => Resources.Load<GameObject>("prefabs/map/holomapareas/HoloMapArea_TempleNatureBoss"));
             BossPrefabs.AddReplace(Opponent.Type.TelegrapherBoss, () => Resources.Load<GameObject>("prefabs/map/holomapareas/HoloMapArea_TempleTech_1"));
             BossPrefabs.AddReplace(Opponent.Type.CanvasBoss, () => Resources.Load<GameObject>("prefabs/map/holomapareas/HoloMapArea_TempleWizardBoss"));
+            BossPrefabs.AddReplace(Opponent.Type.MycologistsBoss, () => Resources.Load<GameObject>("prefabs/map/holomapareas/HoloMapArea_Mycologists_2"));
 
             // Special node prefabs
             SpecialNodePrefabs.AddReplace(HoloMapSpecialNode.NodeDataType.CardChoice, () => GetGameObject("StartingIslandJunction", "Nodes/CardChoiceNode3D"));
@@ -202,16 +219,16 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             neutralHoloPrefab.SetActive(false);
         }
 
-        private static List<int> CompletedRegions
+        private static List<Zone> CompletedRegions
         {
             get
             {
                 return EventManagement.CompletedZones.Select( s=>
-                    s.EndsWith("Undead") ? UNDEAD :
-                    s.EndsWith("Wizard") ? MAGIC : 
-                    s.EndsWith("Tech") ? TECH :
-                    s.EndsWith("Nature") ? NATURE :
-                    NEUTRAL).ToList();
+                    s.EndsWith("Undead") ? Zone.Undead :
+                    s.EndsWith("Wizard") ? Zone.Magic : 
+                    s.EndsWith("Tech") ? Zone.Tech :
+                    s.EndsWith("Nature") ? Zone.Nature :
+                    Zone.Neutral).ToList();
             }
         }
 
@@ -331,12 +348,125 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             return retval;
         }
 
-        private static void BuildSpecialNode(HoloMapBlueprint blueprint, int regionId, Transform parent, Transform sceneryParent, float x, float z)
+        private static GameObject GetGeneratorCountdownNode(Transform parent, List<GameObject> generators, List<GameObject> rubble)
+        {
+            GameObject refObject = ArrowPrefabs[WEST | ENEMY];
+            GameObject damageRageIcon = refObject.transform.Find("RendererParent/DamageRaceIcon").gameObject;
+
+            GameObject baseObject = GetGameObject("WizardMainPath_3", "Nodes/CardChoiceNode3D");
+            GameObject retval = GameObject.Instantiate(baseObject);
+            retval.transform.SetParent(parent);
+
+            // Turn this into a trade node
+            HoloMapSpecialNode oldNodeData = retval.GetComponent<HoloMapSpecialNode>();
+            GameObject.Destroy(oldNodeData);
+
+            GeneratorOverloadNode nodeData = retval.AddComponent<GeneratorOverloadNode>();
+            nodeData.nodeType = HoloMapSpecialNode.NodeDataType.CardBattle;
+            nodeData.specialEncounterId = MoveHoloMapAreaNode.DAMAGE_RACE_SEQUENCER_NAME;
+            nodeData.Data = null;
+            nodeData.blueprintData = (new EncounterBlueprintHelper(DataHelper.GetResourceString("damage_race", "dat"))).AsBlueprint();
+            nodeData.opponentTerrain = new CardInfo[] {
+                CardLoader.GetCardByName(CustomCards.GENERATOR_TOWER),
+                CardLoader.GetCardByName(CustomCards.FIREWALL_NORMAL),
+                null,
+                CardLoader.GetCardByName(CustomCards.GENERATOR_TOWER),
+                CardLoader.GetCardByName(CustomCards.FIREWALL_NORMAL)
+            };
+            nodeData.encounterDifficulty = 10;
+            nodeData.playerTerrain = new CardInfo[5];
+
+            GameObject.Destroy(retval.transform.Find("RendererParent/Renderer").gameObject);
+            GameObject.Destroy(retval.transform.Find("RendererParent/Renderer_2").gameObject);
+
+            Transform iconParent = retval.transform.Find("RendererParent");
+            GameObject instIcon = GameObject.Instantiate(damageRageIcon, iconParent);
+            instIcon.transform.localPosition = Vector3.zero;
+            instIcon.SetActive(true);
+
+            // Add an 'active only if' flag
+            ActiveIfStoryFlag flag = retval.AddComponent<ActiveIfStoryFlag>();
+            flag.storyFlag = EventManagement.GENERATOR_READY;
+            flag.activeIfConditionMet = true;
+
+            nodeData.nodeRenderers = new();
+            nodeData.nodeRenderers.Add(instIcon.GetComponentInChildren<Renderer>());
+
+            // generator rubble
+            nodeData.LivingGeneratorPieces.AddRange(generators);
+            nodeData.DeadGeneratorPieces.AddRange(rubble);
+
+            P03Plugin.Log.LogInfo($"Build draft node {retval}");
+            return retval;
+        }
+
+        private static void BuildDialogueNode(HoloMapBlueprint blueprint, Transform parent, Transform sceneryParent, float x, float z)
+        {
+            // Dialogue node
+            GameObject nodeObject = GameObject.Instantiate(Resources.Load<GameObject>("prefabs/map/mapnodespart3/DialogueNode3D"), parent);
+            nodeObject.transform.SetParent(parent);
+            nodeObject.transform.localPosition = new Vector3(x + .2f, 1.1f, z + .2f);
+
+            HoloMapDialogueNode node = nodeObject.GetComponentInChildren<HoloMapDialogueNode>();
+
+            Color defaultColor = new (node.defaultColor.r, node.defaultColor.g, node.defaultColor.b, node.defaultColor.a);
+            HoloMapNode.NodeDataType dataType = node.nodeType;
+            int nodeId = node.nodeId;
+            List<Renderer> renderers = new (node.nodeRenderers);
+
+            GameObject.DestroyImmediate(node);
+
+            HoloMapConditionalDialogueNode dialogue = nodeObject.AddComponent<HoloMapConditionalDialogueNode>();
+            dialogue.nodeRenderers = renderers;
+            dialogue.defaultColor = defaultColor;
+            dialogue.nodeType = dataType;
+            dialogue.nodeId = nodeId;
+
+            dialogue.SetDialogueForSpecialEvent(blueprint.dialogueEvent);
+
+            // NPC
+            //GameObject npcObject = GameObject.Instantiate(Resources.Load<GameObject>("prefabs/map/holomapscenery/holomapnpc"), parent);
+            GameObject npcBase = Resources.Load<GameObject>("prefabs/map/holoplayermarker");
+            GameObject npcObject = GameObject.Instantiate(npcBase.transform.Find("Anim/Model").gameObject);
+            npcObject.transform.SetParent(sceneryParent);
+            npcObject.transform.localPosition = new Vector3(x, 0.1f, z);
+
+            CompositeFigurine figure = npcObject.GetComponentInChildren<CompositeFigurine>();
+            
+            EventManagement.NPCDescriptor descriptor = EventManagement.GetDescriptorForNPC(blueprint.dialogueEvent);
+
+            figure.definedArms = descriptor.arms;
+            figure.definedHead = descriptor.head;
+            figure.definedBody = descriptor.body;
+
+            figure.armsRenderer.SetMaterial(Resources.Load<Material>("art/materials/hologram/Hologram_MapSceneryBlue"));
+            figure.bodyRenderer.SetMaterial(Resources.Load<Material>("art/materials/hologram/Hologram_MapSceneryBlue"));
+            figure.headRenderer.SetMaterial(Resources.Load<Material>("art/materials/hologram/Hologram_MapSceneryBlue"));
+            dialogue.npc = npcObject;
+
+            float yRotate = (x < 0) 
+                            ? (z < 0 ? 45f : 135f)
+                            : (z < 0 ? -45f : -135f);
+
+            npcObject.transform.localEulerAngles = new (0f, yRotate, 0f);
+
+            // Label
+            GameObject sampleObject = SpecialNodePrefabs[HoloMapSpecialNode.NodeDataType.BuildACard].transform.Find("HoloFloatingLabel").gameObject;
+            GameObject labelObject = GameObject.Instantiate(sampleObject, nodeObject.transform);
+            labelObject.transform.localPosition = new(-1f, -0.5f, 0f);
+            HoloFloatingLabel label = labelObject.GetComponent<HoloFloatingLabel>();
+            label.line.gameObject.SetActive(false);
+            label.line = null;
+            dialogue.label = label;
+
+        }
+
+        private static void BuildSpecialNode(HoloMapBlueprint blueprint, Zone regionId, Transform parent, Transform sceneryParent, float x, float z)
         {
             BuildSpecialNode(blueprint.upgrade, blueprint.specialTerrain, regionId, parent, sceneryParent, x, z);
         }
 
-        private static HoloMapNode BuildSpecialNode(HoloMapNode.NodeDataType dataType, int specialTerrain, int regionId, Transform parent, Transform sceneryParent, float x, float z)
+        private static HoloMapNode BuildSpecialNode(HoloMapNode.NodeDataType dataType, int specialTerrain, Zone regionId, Transform parent, Transform sceneryParent, float x, float z)
         {
             if (!SpecialNodePrefabs.ContainsKey(dataType))
                 return null;
@@ -401,7 +531,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             area.firstEnterDialogueId = "P03AscensionPreIntro";
 
             P03Plugin.Log.LogInfo("Building boss node");
-            HoloMapBossNode bossNode = BuildSpecialNode(HoloMapNode.NodeDataType.BossBattle, HoloMapBlueprint.NO_SPECIAL, NEUTRAL, retval.transform.Find("Nodes"), null, 0f, 0f) as HoloMapBossNode;
+            HoloMapBossNode bossNode = BuildSpecialNode(HoloMapNode.NodeDataType.BossBattle, HoloMapBlueprint.NO_SPECIAL, Zone.Neutral, retval.transform.Find("Nodes"), null, 0f, 0f) as HoloMapBossNode;
             P03Plugin.Log.LogInfo($"Making boss invisible: { bossNode }");
             foreach (Renderer rend in bossNode.gameObject.GetComponentsInChildren<Renderer>())
                 rend.enabled = false; // Hide the boss node visually - I don't want to see it
@@ -432,19 +562,18 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
             // We need to set a conditional up arrow
             HoloMapArea areaData = retval.GetComponent<HoloMapArea>();
-            Traverse areaTrav = Traverse.Create(areaData);
-            BlockDirections(retval, areaTrav, NORTH, EventManagement.ALL_BOSSES_KILLED);
+            BlockDirections(retval, areaData, NORTH, EventManagement.ALL_BOSSES_KILLED);
 
             // We need to add the draft node
             Transform nodes = retval.transform.Find("Nodes");
             Transform scenery = retval.transform.Find("Scenery");
-            HoloMapNode node = BuildSpecialNode(TradeChipsNodeData.TradeChipsForCards, 0, NEUTRAL, nodes, scenery, 1.5f, 0f);
+            HoloMapNode node = BuildSpecialNode(TradeChipsNodeData.TradeChipsForCards, 0, Zone.Neutral, nodes, scenery, 1.5f, 0f);
             
             retval.SetActive(false);
             return retval;
         }
 
-        private static void BlockDirections(GameObject area, Traverse areaTrav, int blocked, StoryEvent storyEvent)
+        private static void BlockDirections(GameObject area, HoloMapArea areaData, int blocked, StoryEvent storyEvent)
         {
             P03Plugin.Log.LogInfo($"Blocking directions");
             List<GameObject> blockIcons = new();
@@ -455,17 +584,16 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
                 GameObject blockIcon = GameObject.Instantiate(BLOCK_ICON, area.transform);
                 blockIcons.Add(blockIcon);
-                Vector3 pos = REGION_DATA[NEUTRAL].wallOrientations[direction].Item1;
+                Vector3 pos = REGION_DATA[Zone.Neutral].wallOrientations[direction].Item1;
                 blockIcon.transform.localPosition = new (pos.x, 0.3f, pos.z);
-                blockIcon.transform.localEulerAngles = REGION_DATA[NEUTRAL].wallOrientations[direction].Item2;
+                blockIcon.transform.localEulerAngles = REGION_DATA[Zone.Neutral].wallOrientations[direction].Item2;
             }
 
             BlockDirectionsAreaSequencer sequencer = area.AddComponent<BlockDirectionsAreaSequencer>();
-            Traverse blockTraverse = Traverse.Create(sequencer);
-            blockTraverse.Field("stopIcons").SetValue(blockIcons);
-            blockTraverse.Field("unblockStoryEvent").SetValue(storyEvent);
-            blockTraverse.Field("blockedDirections").SetValue(blockedDirections);
-            areaTrav.Field("specialSequencer").SetValue(sequencer);
+            sequencer.stopIcons = blockIcons;
+            sequencer.unblockStoryEvent = storyEvent;
+            sequencer.blockedDirections = blockedDirections;
+            areaData.specialSequencer = sequencer;
         }
 
         private static void CleanBattleFromArrow(GameObject room, string direction)
@@ -475,6 +603,51 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             Traverse southTraverse = Traverse.Create(southNode);
             southTraverse.Field("nodeType").SetValue(HoloMapNode.NodeDataType.MoveArea);
             southTraverse.Field("blueprintData").SetValue(null);
+        }
+
+        private static void BuildMycologistWell(Transform sceneryParent, Transform nodesParent, float x, float z)
+        {
+            // Get the well prefab
+            P03Plugin.Log.LogDebug("Building Well!");
+            GameObject well = GameObject.Instantiate(Resources.Load<GameObject>("prefabs/map/holomapinteractables/HoloWell"), nodesParent);
+            well.transform.localPosition = new (x, well.transform.localPosition.y, z);
+            
+            HoloMapWell existingWell = well.GetComponentInChildren<HoloMapWell>();
+
+            HoloMapNode node = well.GetComponentInChildren<HoloMapNode>();
+            //if (node != null)
+            //    GameObject.Destroy(node);
+
+            MycologistWell newWell = well.AddComponent<MycologistWell>();
+            newWell.anim = existingWell.anim;
+            newWell.handleDown = existingWell.handleDown;
+
+            GameObject.Destroy(existingWell);
+        }
+
+        private static void BuildBrokenGeneratorRoom(GameObject roomObject, Transform sceneryParent, Transform nodesParent)
+        {
+            // Generate the scenery 
+            GameObject generator = GameObject.Instantiate(GetGameObject("NatureEntrance/Scenery/HoloGenerator"), sceneryParent);
+            generator.transform.localPosition = new(.396f, 0f, .813f);
+            generator.transform.localEulerAngles = new(0f, 50f, 0f);
+
+            GameObject cylinder1 = GameObject.Instantiate(GetGameObject("NatureEntrance/Scenery/HoloGenerator/Generator_Cylinder"), sceneryParent);
+            GameObject cylinder2 = GameObject.Instantiate(GetGameObject("NatureEntrance/Scenery/HoloGenerator/Generator_Cylinder"), sceneryParent);
+
+            GameObject toxicSlime = GameObject.Instantiate(GetGameObject("WizardMainPath_3/Scenery/HoloSlime_Pile_2"), sceneryParent);
+            toxicSlime.transform.localPosition = new (-1.34f, toxicSlime.transform.localPosition.y, -.92f);
+            toxicSlime.transform.localEulerAngles = new (0f, 50f, 0f);
+
+            GameObject toxicSlime2 = GameObject.Instantiate(GetGameObject("WizardMainPath_3/Scenery/HoloSlime_Pile_2"), sceneryParent);
+            toxicSlime2.transform.localPosition = new (-1.86f, toxicSlime.transform.localPosition.y, -.28f);
+
+            List<GameObject> generators = new () { generator };
+            List<GameObject> rubble = new () { toxicSlime, toxicSlime2 };
+
+            // Create the damage race node
+            GameObject damageRaceNode = GetGeneratorCountdownNode(nodesParent, generators, rubble);
+            damageRaceNode.transform.localPosition = new(-0.9f, .25f, -1.45f);
         }
 
         private static GameObject BuildLowerTowerRoom()
@@ -505,27 +678,35 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             return retval;
         }
 
-        private static EncounterBlueprintData GetBlueprintForRegion(int regionId, int color)
+        private static EncounterBlueprintData GetBlueprintForRegion(Zone regionId, int color, int encounterIndex)
         {
             string encounterName = default(string);
             if (color == 1) // The first encounter pulls from neutral
             {
-                string[] encounters = REGION_DATA[NEUTRAL].encounters;
-                encounterName = encounters[UnityEngine.Random.Range(0, encounters.Length)];
+                if (encounterIndex == -1)
+                {
+                    string[] encounters = REGION_DATA[Zone.Neutral].encounters;
+                    encounterName = encounters[UnityEngine.Random.Range(0, encounters.Length)];
+                }
+                else
+                {
+                    encounterName = REGION_DATA[Zone.Neutral].encounters[encounterIndex];
+                }
             }
             else
             {
-                encounterName = REGION_DATA[regionId].encounters[color - 2];
+                if (encounterIndex == -1)
+                    encounterName = REGION_DATA[regionId].encounters[color - 2];
+                else
+                    encounterName = REGION_DATA[regionId].encounters[encounterIndex];
             }
-
-             P03Plugin.Log.LogDebug($"Hi {encounterName}");
 
             // Use EncounterBlueprintHelper to get our custom representation of the encounter blueprint
             // and convert that to a blueprint the game understands
             return (new EncounterBlueprintHelper(DataHelper.GetResourceString(encounterName, "dat"))).AsBlueprint();
         }
 
-        private static GameObject BuildMapAreaPrefab(int regionId, HoloMapBlueprint bp)
+        private static GameObject BuildMapAreaPrefab(Zone regionId, HoloMapBlueprint bp)
         {
             P03Plugin.Log.LogInfo($"Building gameobject for [{bp.x},{bp.y}]");
 
@@ -568,6 +749,10 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 return retval;
             }
 
+            RegionGeneratorData genData = REGION_DATA[regionId];
+            if (bp.specialTerrain == HoloMapBlueprint.MYCOLOGIST_WELL)
+                genData = REGION_DATA[Zone.Mycologist];
+
             if (bp.upgrade == HoloMapSpecialNode.NodeDataType.FastTravel)
                 return BuildHubNode();
 
@@ -600,14 +785,14 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                     newArrow.name = $"MoveArea_{DIR_LOOKUP[bp.specialDirection]}";
                     HoloMapNode node = newArrow.GetComponent<HoloMapNode>();
                     Traverse nodeTraverse = Traverse.Create(node);
-                    nodeTraverse.Field("blueprintData").SetValue(GetBlueprintForRegion(regionId, bp.color));
+                    nodeTraverse.Field("blueprintData").SetValue(GetBlueprintForRegion(regionId, bp.color, bp.encounterIndex));
                     nodeTraverse.Field("encounterDifficulty").SetValue(bp.encounterDifficulty);
                     if ((bp.specialTerrain & HoloMapBlueprint.FULL_BRIDGE) != 0)
                         nodeTraverse.Field("bridgeBattle").SetValue(true);
                     
                     if (bp.battleTerrainIndex > 0 && (bp.specialTerrain & HoloMapBlueprint.FULL_BRIDGE) == 0)
                     {
-                        string[] terrain = REGION_DATA[regionId].terrain[bp.battleTerrainIndex - 1];
+                        string[] terrain = genData.terrain[bp.battleTerrainIndex - 1];
                         nodeTraverse.Field("playerTerrain").SetValue(terrain.Take(5).Select(s => s == default(string) ? null : CardLoader.GetCardByName(s)).ToArray());
                         nodeTraverse.Field("opponentTerrain").SetValue(terrain.Skip(5).Select(s => s == default(string) ? null : CardLoader.GetCardByName(s)).ToArray());
                     }
@@ -621,23 +806,32 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
             P03Plugin.Log.LogInfo($"Setting arrows and walls active");
             Transform scenery = area.transform.Find("Scenery");
-            if (REGION_DATA[regionId].wallPrefabs != null && REGION_DATA[regionId].wallPrefabs.Keys.Count > 0)
+            if (genData.wallPrefabs != null && genData.wallPrefabs.Keys.Count > 0)
             {
                 foreach (int key in DIR_LOOKUP.Keys)
                 {
                     area.transform.Find($"Nodes/MoveArea_{DIR_LOOKUP[key]}").gameObject.SetActive((bp.arrowDirections & key) != 0);
 
+                    // If this is a secret arrow:
+                    if ((bp.secretDirection & key) != 0)
+                        area.transform.Find($"Nodes/MoveArea_{DIR_LOOKUP[key]}").gameObject.GetComponentInChildren<MoveHoloMapAreaNode>().secret = true;
+
                     if ((bp.arrowDirections & key) == 0)
-                        foreach (string wallPrefabKey in REGION_DATA[regionId].wallPrefabs[key])
+                        foreach (string wallPrefabKey in genData.wallPrefabs[key])
                             GameObject.Instantiate(GetGameObject(wallPrefabKey), scenery);
                 }
             }
             else
             {
-                GameObject wall = GetGameObject(REGION_DATA[regionId].wall);
+                GameObject wall = GetGameObject(genData.wall);
                 foreach (int key in DIR_LOOKUP.Keys)
                 {
+                    // Set only the correct arrows active
                     area.transform.Find($"Nodes/MoveArea_{DIR_LOOKUP[key]}").gameObject.SetActive((bp.arrowDirections & key) != 0);
+
+                    // If this is a secret arrow:
+                    if ((bp.secretDirection & key) != 0)
+                        area.transform.Find($"Nodes/MoveArea_{DIR_LOOKUP[key]}").gameObject.GetComponentInChildren<MoveHoloMapAreaNode>().secret = true;
 
                     // Walls
                     if (wall != null)
@@ -645,27 +839,41 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                         if ((bp.arrowDirections & key) == 0)
                         {
                             GameObject wallClone = GameObject.Instantiate(wall, scenery);
-                            wallClone.transform.localPosition = REGION_DATA[regionId].wallOrientations[key].Item1;
-                            wallClone.transform.localEulerAngles = REGION_DATA[regionId].wallOrientations[key].Item2;
+                            wallClone.transform.localPosition = genData.wallOrientations[key].Item1;
+                            wallClone.transform.localEulerAngles = genData.wallOrientations[key].Item2;
                         }
                     }
                 }
             }
 
+            if (bp.specialTerrain == HoloMapBlueprint.BROKEN_GENERATOR)
+                BuildBrokenGeneratorRoom(area, scenery, nodes.transform);
+
             P03Plugin.Log.LogInfo($"Generating random scenery");
 
             // Add the landmarks if necessary
             if ((bp.specialTerrain & HoloMapBlueprint.LANDMARKER) != 0)
-                foreach (string objId in REGION_DATA[regionId].landmarks[bp.color - 1])
+                foreach (string objId in genData.landmarks[bp.color - 1])
                     GameObject.Instantiate(GetGameObject(objId), scenery);
 
             // Add the normal scenery
             // For each section of the board that doesn't have an arrow on it
             List<int> directions = GetDirections(bp.arrowDirections, false).ToList(); 
-            bool firstQuadrant = true; 
+            int quadrants = directions.Count;
+
             while(directions.Count > 0)
             {
+                bool firstQuadrant = quadrants == directions.Count;
+                bool secondQuadrant = quadrants - 1 == directions.Count;
+
                 int dir = directions[UnityEngine.Random.Range(0, directions.Count)];
+
+                if (bp.specialTerrain == HoloMapBlueprint.BROKEN_GENERATOR && firstQuadrant)
+                    dir = NORTH | EAST;
+
+                if (bp.specialTerrain == HoloMapBlueprint.BROKEN_GENERATOR && secondQuadrant)
+                    dir = SOUTH | EAST;
+
                 directions.Remove(dir);
 
                 List<Tuple<float, float>> sceneryLocations = GetSpotsForQuadrant(dir);
@@ -680,7 +888,20 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                     if (firstQuadrant && firstObject && bp.upgrade != HoloMapSpecialNode.NodeDataType.MoveArea)
                     {
                         BuildSpecialNode(bp, regionId, nodes.transform, scenery.transform, specialLocation.Item1, specialLocation.Item2);
-                        firstQuadrant = false;
+                        firstObject = false;
+                        continue;
+                    }
+
+                    if (secondQuadrant && firstObject && bp.specialTerrain == HoloMapBlueprint.MYCOLOGIST_WELL)
+                    {
+                        BuildMycologistWell(scenery.transform, nodes.transform, specialLocation.Item1, specialLocation.Item2);
+                        firstObject = false;
+                        continue;
+                    }
+
+                    if (secondQuadrant && firstObject && !bp.EligibleForDialogue)
+                    {
+                        BuildDialogueNode(bp, nodes.transform, scenery.transform, specialLocation.Item1, specialLocation.Item2);
                         firstObject = false;
                         continue;
                     }
@@ -691,9 +912,8 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                         continue;
                     }
 
-                    string[] scenerySource = firstObject ? REGION_DATA[regionId].objectRandoms : REGION_DATA[regionId].terrainRandoms;
+                    string[] scenerySource = firstObject && bp.specialTerrain != HoloMapBlueprint.BROKEN_GENERATOR ? genData.objectRandoms : genData.terrainRandoms;
 
-                    firstQuadrant = false;
                     firstObject = false;
 
                     if (scenerySource.Length == 0)
@@ -714,16 +934,15 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
             P03Plugin.Log.LogInfo($"Setting grid data");
             HoloMapArea areaData = area.GetComponent<HoloMapArea>();
-            Traverse areaTrav = Traverse.Create(areaData);
             areaData.GridX = bp.x;
             areaData.GridY = bp.y;
-            areaData.audioLoopsConfig = REGION_DATA[regionId].audioConfig;
-            areaData.screenPrefab = REGION_DATA[regionId].screenPrefab;
-            areaTrav.Field("mainColor").SetValue(REGION_DATA[regionId].mainColor);
-            areaTrav.Field("lightColor").SetValue(REGION_DATA[regionId].mainColor);
+            areaData.audioLoopsConfig = genData.audioConfig;
+            areaData.screenPrefab = genData.screenPrefab;
+            areaData.mainColor = genData.mainColor;
+            areaData.lightColor = genData.mainColor;
 
             if (bp.blockedDirections != BLANK)
-                BlockDirections(area, areaTrav, bp.blockedDirections, EventManagement.ALL_ZONE_ENEMIES_KILLED);
+                BlockDirections(area, areaData, bp.blockedDirections, EventManagement.ALL_ZONE_ENEMIES_KILLED);
 
             // Give every node a unique id
             int nodeId = 10;
@@ -755,22 +974,23 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                     areaData.DirectionNodes[(int)LOOK_NAME_MAPPER[arrow.gameObject.name]] = arrow.gameObject.activeSelf ? arrow.gameObject.GetComponent<MoveHoloMapAreaNode>() : null;
         }
 
-        public static string GetAscensionWorldID(int regionCode)
+        public static string GetAscensionWorldID(Zone regionCode)
         {
-            if (regionCode == NEUTRAL)
+            if (regionCode == Zone.Neutral)
                 return $"ascension_0_{regionCode}";
 
             return $"ascension_{EventManagement.CompletedZones.Count}_{regionCode}";
         }
 
-        public static int GetRegionCodeFromWorldID(string worldId)
+        public static Zone GetRegionCodeFromWorldID(string worldId)
         {
-            return int.Parse(worldId[worldId.Length - 1].ToString());
+            string[] components = worldId.Split('_');
+            return (Zone)Enum.Parse(typeof(Zone), components[components.Length - 1]);
         }
 
-        public static Tuple<int, int> GetStartingSpace(int regionCode)
+        public static Tuple<int, int> GetStartingSpace(Zone regionCode)
         {
-            return regionCode == NEUTRAL ? new(0, 1) : new(0, 2);
+            return regionCode == Zone.Neutral ? new(0, 1) : new(0, 2);
         }
 
         public static HoloMapWorldData GetAscensionWorldbyId(string id)
@@ -782,7 +1002,11 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
             string[] idSplit = id.Split('_');
             int regionCount = int.Parse(idSplit[1]);
-            int regionCode = int.Parse(idSplit[2]);
+            Zone regionCode = (Zone)Enum.Parse(typeof(Zone), idSplit[2]);
+
+            // Start the process
+            Building = true;
+            BuildingZone = regionCode;
 
             List<HoloMapBlueprint> blueprints = BuildBlueprint(regionCount, regionCode, P03AscensionSaveData.RandomSeed);
 
@@ -795,7 +1019,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             {
                 GameObject mapArea = BuildMapAreaPrefab(regionCode, bp);
 
-                if (regionCode != NEUTRAL)
+                if (regionCode != Zone.Neutral)
                     Minimap.CreateMinimap(mapArea.transform, blueprints, $"ProceduralMapArea_{regionCode}");
                 
                 data.areas[bp.x, bp.y] = new() { prefab = mapArea };
@@ -872,12 +1096,20 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                     return false;
                 }
 
-                Initialize();
-                if (worldDataCache.ContainsKey(id))
-                    worldDataCache.Remove(id);
-                worldDataCache.Add(id, GetAscensionWorldbyId(id));
-                __result = worldDataCache[id];
-                return false;
+                try
+                {
+                    Initialize();
+                    if (worldDataCache.ContainsKey(id))
+                        worldDataCache.Remove(id);
+                    worldDataCache.Add(id, GetAscensionWorldbyId(id));
+                    __result = worldDataCache[id];
+                    return false;
+
+                }
+                finally
+                {
+                    Building = false;
+                }
             }                
             return true;        
         }

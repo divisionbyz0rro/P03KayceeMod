@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using Infiniscryption.P03KayceeRun.Helpers;
+using Infiniscryption.P03KayceeRun.Faces;
 
 namespace Infiniscryption.P03KayceeRun.Patchers
 {
@@ -18,12 +19,22 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 return Emotion.Curious;
             // if (face == P03AnimationController.Face.Happy)
             //     return Emotion.Laughter;
+            if (face == P03AnimationController.Face.MycologistAngry)
+                return Emotion.Anger;
+            if (face == P03AnimationController.Face.MycologistLaughing)
+                return Emotion.Laughter;
             return Emotion.Neutral;
         }
 
         private static P03AnimationController.Face ParseFace(this string face)
         {
-            return (P03AnimationController.Face)Enum.Parse(typeof(P03AnimationController.Face), (String.IsNullOrEmpty(face) ? "NoChange" : face));
+            if (String.IsNullOrEmpty(face))
+                return P03AnimationController.Face.NoChange;
+
+            if (face.ToLowerInvariant().StartsWith("npc"))
+                return P03ModularNPCFace.ModularNPCFace;
+
+            return (P03AnimationController.Face)Enum.Parse(typeof(P03AnimationController.Face), face);
         }
 
         private static void AddDialogue(string id, List<string> lines, List<string> faces, List<string> dialogueWavies)
@@ -43,8 +54,14 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 speaker = DialogueEvent.Speaker.P03Canvas;
             else if (faces.Exists(s => s.ToLowerInvariant().Contains("goo")))
                 speaker = DialogueEvent.Speaker.Goo;
+            else if (faces.Exists(s => s.ToLowerInvariant().Contains("side")))
+                speaker = DialogueEvent.Speaker.P03MycologistSide;
+            else if (faces.Exists(s => s.ToLowerInvariant().Contains("mycolo")))
+                speaker = DialogueEvent.Speaker.P03MycologistMain;
 
             bool leshy = speaker == DialogueEvent.Speaker.Leshy || speaker == DialogueEvent.Speaker.Goo;
+
+            Emotion leshyEmotion = faces.Exists(s => s.ToLowerInvariant().Contains("goocurious")) ? Emotion.Curious : Emotion.Neutral;
 
             if (string.IsNullOrEmpty(id))
                 return;
@@ -55,9 +72,9 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 mainLines = new(faces.Zip(lines, (face, line) => new DialogueEvent.Line() {
                     text = line,
                     specialInstruction = "",
-                    p03Face = leshy ? (P03AnimationController.Face)0 : ParseFace(face),
+                    p03Face = leshy ? P03AnimationController.Face.NoChange : ParseFace(face),
                     speakerIndex = 1,
-                    emotion = leshy ? Emotion.Neutral : ParseFace(face).FaceEmotion()
+                    emotion = leshy ? leshyEmotion : ParseFace(face).FaceEmotion()
                 })
                 .Zip(dialogueWavies, delegate(DialogueEvent.Line line, string wavy) {
                     if (!string.IsNullOrEmpty(wavy) && wavy.ToLowerInvariant() == "y")
@@ -67,7 +84,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             });
         }
 
-        private static List<string> SplitColumn(string col, char sep = ',', char quote = '"')
+        public static List<string> SplitColumn(string col, char sep = ',', char quote = '"')
         {
             bool isQuoted = false;
             List<string> retval = new();
@@ -108,7 +125,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
             string dialogueId = string.Empty;
             List<string> dialogueLines = new();
-            List<string> dialogueWavies = new ();
+            List<string> dialogueWavies = new();
             List<string> dialogueFaces = new();
             foreach(string line in lines.Skip(1))
             {
@@ -131,6 +148,11 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             }
 
             AddDialogue(dialogueId, dialogueLines, dialogueFaces, dialogueWavies);
+
+            AudioHelper.LoadAudioClip("goovoice_curious#1", group:"SFX");
+            AudioHelper.LoadAudioClip("goovoice_curious#2", group:"SFX");
+            AudioHelper.LoadAudioClip("goovoice_curious#3", group:"SFX");
+            AudioHelper.LoadAudioClip("bottle_break", group:"SFX");
         }
     }
 }

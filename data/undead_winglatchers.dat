@@ -1,0 +1,19 @@
+Name: Undead_WingLatchers
+maxDifficulty: 6
+minDifficulty: 0
+powerLevel: 0
+powerLevelString: 
+oldPreviewDifficulty: 0
+regionSpecific: True
+dominantTribes: []
+redundantAbilities: []
+unlockedCardPrerequisites: []
+randomReplacementCards: []
+overclockBlueprint: [D:4/T:1,D:2/T:4,D:3/T:3]
+P03KCMXP1_FlyingLatcher,NONE -> P03KCM_FIREWALL_BATTLE 6,NONE -> Bombbot 2
+P03KCMXP1_FlyingLatcher,NONE -> P03KCMXP1_FlyingLatcher 1,NONE -> LatcherBrittle 3
+P03KCMXP1_FlyingLatcher,Automaton -> Thickbot 2,Bombbot
+P03KCMXP1_FlyingLatcher,NONE -> P03KCMXP1_FlyingLatcher 2,NONE -> P03KCMXP1_FlyingLatcher 5,NONE -> LatcherBrittle 4
+P03KCMXP1_FlyingLatcher,NONE -> P03KCMXP1_FlyingLatcher 1,Thickbot
+Thickbot -> CloserBot 3,NONE -> LatcherBrittle 4
+Thickbot -> CloserBot 6,MineCart
