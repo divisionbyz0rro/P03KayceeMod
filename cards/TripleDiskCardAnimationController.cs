@@ -108,6 +108,34 @@ namespace Infiniscryption.P03KayceeRun.Cards
             activeTweens.Add(Tween.Position(mushroomContainer.transform, targetSpot, .4f, 0f));
         }
         
+        private static IEnumerator UnrollWithWait(IEnumerator sequence, TripleDiskCardAnimationController controller)
+        {
+            while (sequence.MoveNext())
+            {
+                if (sequence.Current is IEnumerator ies)
+                {
+                    yield return UnrollWithWait(ies, controller);
+                    continue;
+                }
+
+                if (sequence.Current is WaitForSeconds wfs)
+                {
+                    if (wfs.m_Seconds == 0.05f)
+                    {
+                        yield return new WaitUntil(() => !controller.attacking);
+                    }
+                    else
+                    {
+                        yield return sequence.Current;
+                    }
+                }
+                else
+                {
+                    yield return sequence.Current;
+                }   
+            }
+        }
+
         [HarmonyPatch(typeof(CombatPhaseManager), nameof(CombatPhaseManager.SlotAttackSlot))]
         [HarmonyPostfix]
         private static IEnumerator SmarterSlotAttackSlot(IEnumerator sequence, CombatPhaseManager __instance, CardSlot attackingSlot, CardSlot opposingSlot, float waitAfter = 0f)
@@ -134,31 +162,7 @@ namespace Infiniscryption.P03KayceeRun.Cards
             }
 
             TripleDiskCardAnimationController controller = attackingSlot.Card.Anim as TripleDiskCardAnimationController;
-
-            while (sequence.MoveNext())
-            {
-                if (sequence.Current is IEnumerator ies && sequence.Current.GetType().ToString().Contains("SlotAttackSlot"))
-                {
-                    yield return SmarterSlotAttackSlot(ies,__instance,  attackingSlot, opposingSlot, waitAfter);
-                    yield break;
-                }
-
-                if (sequence.Current is WaitForSeconds wfs)
-                {
-                    if (wfs.m_Seconds == 0.05f)
-                    {
-                        yield return new WaitUntil(() => !controller.attacking);
-                    }
-                    else
-                    {
-                        yield return sequence.Current;
-                    }
-                }
-                else
-                {
-                    yield return sequence.Current;
-                }   
-            }
+            yield return UnrollWithWait(sequence, controller);
         }
 
 		public override void PlayTransformAnimation()

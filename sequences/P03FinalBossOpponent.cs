@@ -86,6 +86,18 @@ namespace Infiniscryption.P03KayceeRun.Sequences
             return null;
         }
 
+        public override IEnumerator IntroSequence(EncounterData encounter)
+        {
+            yield return TextDisplayer.Instance.PlayDialogueEvent(this.PreIntroDialogueId, TextDisplayer.MessageAdvanceMode.Input, TextDisplayer.EventIntersectMode.Wait, null, null);
+            ViewManager.Instance.SwitchToView(View.P03Face, false, true);
+            yield return new WaitForSeconds(0.1f);
+            this.SetSceneEffectsShown(true);
+            AudioController.Instance.SetLoopAndPlay($"P03_Phase1", 0, true, true);
+            AudioController.Instance.SetLoopVolumeImmediate(0.35f, 0);
+            yield return this.StartBattleSequence();
+            yield break;
+        }
+
         public override IEnumerator StartBattleSequence()
         {
             this.NumLives = 3;
@@ -119,6 +131,10 @@ namespace Infiniscryption.P03KayceeRun.Sequences
                 ViewManager.Instance.SwitchToView(View.Default, false, false);
                 P03AnimationController.Instance.SwitchToFace(P03AnimationController.Face.Angry, true, true);
                 yield return TextDisplayer.Instance.PlayDialogueEvent("P03PhaseTwo", TextDisplayer.MessageAdvanceMode.Input, TextDisplayer.EventIntersectMode.Wait, null, null);
+
+                AudioController.Instance.SetLoopAndPlay($"P03_Phase2", 1, true, true);
+                AudioController.Instance.SetLoopVolume(0f, 1f, 0, false);
+                AudioController.Instance.SetLoopVolume(0.35f, 1f, 1, false);
                 
                 ViewManager.Instance.SwitchToView(View.P03Face, false, false);
                 yield return TextDisplayer.Instance.PlayDialogueEvent("P03PhaseTwoInControl", TextDisplayer.MessageAdvanceMode.Input, TextDisplayer.EventIntersectMode.Wait, null, null);
@@ -286,7 +302,7 @@ namespace Infiniscryption.P03KayceeRun.Sequences
             P03AnimationController.Instance.SwitchToFace(P03AnimationController.Face.Angry, true, true);
             yield return TextDisplayer.Instance.PlayDialogueEvent("P03PhaseThree", TextDisplayer.MessageAdvanceMode.Input, TextDisplayer.EventIntersectMode.Wait, null, null);
 
-            List<AudioHelper.AudioState> audioState = AudioHelper.PauseAllLoops();
+            AudioController.Instance.SetLoopVolumeImmediate(0f, 1);
 
             yield return new WaitForSeconds(FasterEvents ? 0.6f : 1.5f);
             P03AnimationController.Instance.SwitchToFace(P03AnimationController.Face.Happy, true, true);
@@ -338,7 +354,8 @@ namespace Infiniscryption.P03KayceeRun.Sequences
             source.Stop();
             yield return new WaitForSeconds(1f);
 
-            AudioHelper.ResumeAllLoops(audioState);
+            AudioController.Instance.SetLoopAndPlay($"P03_Phase3", 2, true, true);
+            AudioController.Instance.SetLoopVolumeImmediate(0.35f, 2);
             yield return new WaitForSeconds(1f);
 
             yield return TextDisplayer.Instance.PlayDialogueEvent("P03PhaseThreeBehold", TextDisplayer.MessageAdvanceMode.Input, TextDisplayer.EventIntersectMode.Wait, null, null);

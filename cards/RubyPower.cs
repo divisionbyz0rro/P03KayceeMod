@@ -37,7 +37,7 @@ namespace Infiniscryption.P03KayceeRun.Cards
 
         public int GetPassiveAttackBuff(PlayableCard target)
         {
-            return target.OpponentCard == this.Card.OpponentCard ? 1 : 0;
+            return this.Card.OnBoard && target.OpponentCard == this.Card.OpponentCard ? 1 : 0;
         }
     }
 }

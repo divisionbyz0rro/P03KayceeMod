@@ -153,6 +153,10 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             AudioHelper.LoadAudioClip("goovoice_curious#2", group:"SFX");
             AudioHelper.LoadAudioClip("goovoice_curious#3", group:"SFX");
             AudioHelper.LoadAudioClip("bottle_break", group:"SFX");
+
+            AudioHelper.LoadAudioClip("P03_Phase1", group:"Loops");
+            AudioHelper.LoadAudioClip("P03_Phase2", group:"Loops");
+            AudioHelper.LoadAudioClip("P03_Phase3", group:"Loops");
         }
     }
 }

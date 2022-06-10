@@ -96,13 +96,23 @@ namespace Infiniscryption.P03KayceeRun.Cards
                 if (parent.Find("DefaultIcons_4Abilities").gameObject.GetComponent<InverseStretch>() == null)
                     parent.Find("DefaultIcons_4Abilities").gameObject.AddComponent<InverseStretch>();
 
-                MaterialHelper.RecolorAllMaterials(parent.gameObject, GameColors.Instance.brightLimeGreen, "Standard", true, forceEnable:true);
+                if (__instance is PlayableCard pcard && pcard.OnBoard)
+                {
+                    MaterialHelper.RecolorAllMaterials(parent.gameObject, GameColors.Instance.brightLimeGreen, "Standard", true, forceEnable:true);
+                }
+                else
+                {
+                    foreach (Renderer r in parent.gameObject.GetComponentsInChildren<Renderer>())
+                    {
+                        r.enabled = false;
+                    }
+                }
             }
         }
 
         [HarmonyPatch(typeof(DiskScreenCardDisplayer), nameof(DiskScreenCardDisplayer.DisplayInfo))]
         [HarmonyPrefix]
-        private static void UpdateCamera(ref DiskScreenCardDisplayer __instance, CardRenderInfo renderInfo)
+        private static void UpdateCamera(ref DiskScreenCardDisplayer __instance, CardRenderInfo renderInfo, PlayableCard playableCard)
         {
             Transform cardBase = __instance.gameObject.transform;
             if (renderInfo.baseInfo.specialAbilities.Contains(GoobertCenterCardBehaviour.AbilityID))
@@ -120,9 +130,16 @@ namespace Infiniscryption.P03KayceeRun.Cards
                 if (parent.Find("DefaultIcons_4Abilities").gameObject.GetComponent<InverseStretch>() == null)
                     parent.Find("DefaultIcons_4Abilities").gameObject.AddComponent<InverseStretch>();
 
-                foreach (Renderer r in parent.gameObject.GetComponentsInChildren<Renderer>())
+                if (playableCard == null || !playableCard.OnBoard)
                 {
-                    r.enabled = false;
+                    MaterialHelper.RecolorAllMaterials(parent.gameObject, GameColors.Instance.brightLimeGreen, "Standard", true, forceEnable:true);
+                }
+                else
+                {
+                    foreach (Renderer r in parent.gameObject.GetComponentsInChildren<Renderer>())
+                    {
+                        r.enabled = false;
+                    }
                 }
             }
         }

@@ -41,7 +41,8 @@ namespace Infiniscryption.P03KayceeRun.Cards
             if (mod == null)
             {
                 mod = new ();
-                card.temporaryMods.Add(mod);
+                mod.singletonId = "ConduitGainAbilityMod";
+                card.AddTemporaryMod(mod);
                 ConduitAbilityMods.Add(card, mod);
             }
 
@@ -53,9 +54,8 @@ namespace Infiniscryption.P03KayceeRun.Cards
             if (ConduitAbilityMods.ContainsKey(card))
             {
                 CardModificationInfo info = ConduitAbilityMods[card];
-                card.temporaryMods.Remove(info);
+                card.RemoveTemporaryMod(info);
                 ConduitAbilityMods.Remove(card);
-                card.SetInfo(card.Info);
                 card.UpdateFaceUpOnBoardEffects();
             }
         }
@@ -64,7 +64,7 @@ namespace Infiniscryption.P03KayceeRun.Cards
         {
             List<Ability> retval = new();
             List<PlayableCard> conduits = ConduitCircuitManager.Instance.GetConduitsForSlot(slot);
-            foreach (ConduitGainAbility ability in ActiveAbilities)
+            foreach (ConduitGainAbility ability in ActiveAbilities.Where(ab => ab != null))
                 foreach (PlayableCard card in conduits)
                     if (ability.Card == card)
                         retval.Add(ability.AbilityToGive);
@@ -90,7 +90,7 @@ namespace Infiniscryption.P03KayceeRun.Cards
                 {
                     info.abilities.Clear();
                     info.abilities.AddRange(conduitAbilities);
-                    slot.Card.SetInfo(slot.Card.Info);
+                    slot.Card.AddTemporaryMod(info);
                     slot.Card.UpdateFaceUpOnBoardEffects();
                 }
             }
@@ -115,12 +115,19 @@ namespace Infiniscryption.P03KayceeRun.Cards
                 ClearConduitAbilityMods(card);
         }
 
+        private static void CleanList()
+        {
+            ActiveAbilities.RemoveAll(ab => ab == null);
+        }
+
         [HarmonyPatch(typeof(ConduitCircuitManager), nameof(ConduitCircuitManager.ManagedUpdate))]
         [HarmonyPostfix]
         private static void ManageAllActiveAbilityMods()
         {
             if (!GameFlowManager.Instance || GameFlowManager.Instance.CurrentGameState != GameState.CardBattle)
                 return;
+
+            CleanList();
 
             if (ActiveAbilities.Count == 0)
                 ClearAllCards();

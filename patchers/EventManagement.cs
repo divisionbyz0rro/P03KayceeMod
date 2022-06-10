@@ -121,6 +121,8 @@ namespace Infiniscryption.P03KayceeRun.Patchers
         internal static readonly StoryEvent MYCO_ENTRY_DENIED = NewStory("SpecialEvent48", run: true);
         internal static readonly StoryEvent MYCO_DEFEATED = NewStory("SpecialEvent49", run: true);
         internal static readonly StoryEvent TIPPED_SCALES_REWARD = NewStory("SpecialEvent50", run: true);
+        internal static readonly StoryEvent RADIO_READY = NewStory("SpecialEvent51");
+        internal static readonly StoryEvent POWER_READY = NewStory("SpecialEvent52");
 
 
         private static void MarkRandomEventAsSelected(SpecialEvent se)
@@ -154,7 +156,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 if (CompletedZones.Count == 1)
                 {
                     node.SetDialogueRule("P03LostGoobert", "MY FRIEND IS LOST", se, preRequisite:LOST_GOOBERT);
-                    node.SetDialogueRule("P03GoobertHome", "YOU FOUND HIM!", se, preRequisite:BOUGHT_GOOBERT, antiPreRequisite:HAS_NO_GOOBERT, completeStory:SAVED_GOOBERT, completedCurrencyReward:13, loseItemReward:GoobertHuh.ItemData.name, completeAfter:true);
+                    node.SetDialogueRule("P03GoobertHome", "YOU FOUND HIM!", se, preRequisite:BOUGHT_GOOBERT, antiPreRequisite:HAS_NO_GOOBERT, completeStory:SAVED_GOOBERT, completedCurrencyReward:13, loseItemReward:GoobertHuh.ItemData.name, gainItemReward:LifeItem.ItemData.name, completeAfter:true);
                 }
 
                 if (CompletedZones.Count == 0)
@@ -162,13 +164,13 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                     node.SetDialogueRule("P03LostGoobert", "MY FRIEND IS LOST", se, preRequisite:LOST_GOOBERT);
                     node.SetDialogueRule("P03DidNotBuyGoobert", "MY FRIEND IS LOST", se, preRequisite:DID_NOT_BUY_GOOBERT);
                     node.SetDialogueRule("P03WhereIsGoobert", "MY FRIEND IS LOST", se, antiPreRequisite:SAW_GOOBERT_AT_SHOP_NODE, completeStory:TALKED_TO_GOOBERTS_FRIEND);
-                    node.SetDialogueRule($"P03FoundGoobert{GoobertDropoffZone}", "YOU FOUND HIM!", se, preRequisite:BOUGHT_GOOBERT, antiPreRequisite:HAS_NO_GOOBERT, completeStory:GOT_GOOBERT_MAP_HINT, completeAfter:true);
+                    node.SetDialogueRule($"P03FoundGoobert{GoobertDropoffZone.ToString()}", "YOU FOUND HIM!", se, preRequisite:BOUGHT_GOOBERT, antiPreRequisite:HAS_NO_GOOBERT, completeStory:GOT_GOOBERT_MAP_HINT, completeAfter:true);
                 }
             }
             if (se == SpecialEvent.ProspectorQuest)
             {
-                node.SetDialogueRule("P03ProspectorPrepareGold", "GOLD!", se, preRequisite:HAS_BOUNTY_HUNTER_BRAIN, completeStory:TOLD_ABOUT_BRAIN_UPGRADE);
                 node.SetDialogueRule("P03ProspectorReplaceGold", "GOLD!", se, preRequisite:READY_TO_UPGRADE_BRAIN, completeAfter:true, completedCardReward:CustomCards.BOUNTY_HUNTER_SPAWNER, loseCardReward:CustomCards.BRAIN);
+                node.SetDialogueRule("P03ProspectorPrepareGold", "GOLD!", se, preRequisite:HAS_BOUNTY_HUNTER_BRAIN, completeStory:TOLD_ABOUT_BRAIN_UPGRADE);
                 node.SetDialogueRule("P03ProspectorWantGold", "GOLD!", se);
             }
             if (se == SpecialEvent.WhiteFlag)
@@ -199,7 +201,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             if (se == SpecialEvent.ListenToTheRadio)
             {
                 node.SetDialogueRule("P03RadioQuestStart", "LETS DO SCIENCE", se, antiPreRequisite:RADIO_INTRO, completeStory:RADIO_INTRO);
-                node.SetDialogueRule("P03RadioQuestAccepted", "LETS DO SCIENCE", se, antiPreRequisite:RADIO_COMPLETED, preRequisite:RADIO_INTRO, completeStory:RADIO_ACCEPTED, completedCardReward:CustomCards.RADIO_TOWER);
+                node.SetDialogueRule("P03RadioQuestAccepted", "LETS DO SCIENCE", se, antiPreRequisite:RADIO_COMPLETED, preRequisite:RADIO_READY, completeStory:RADIO_ACCEPTED, completedCardReward:CustomCards.RADIO_TOWER);
                 node.SetDialogueRule("P03RadioQuestInProgress", "LETS DO SCIENCE", se, preRequisite:RADIO_IN_PROGRESS);
                 node.SetDialogueRule("P03RadioQuestFailed", "YOU BROKE IT?", se, preRequisite:RADIO_FAILED, completeAfter: true);
                 node.SetDialogueRule("P03RadioQuestSucceeded", "A WIN FOR SCIENCE", se, preRequisite:RADIO_SUCCEEDED, completeAfter:true, loseCardReward:CustomCards.RADIO_TOWER, completedCardReward:CustomCards.UNC_TOKEN);
@@ -219,13 +221,13 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             if (se == SpecialEvent.BrokenGeneratorQuest)
             {
                 node.SetDialogueRule("P03DamageRaceFailed", "OH NO...", se, preRequisite:GENERATOR_FAILURE, completeAfter:true);
-                node.SetDialogueRule("P03DamageRaceSuccess", "PHEW!", se, preRequisite:GENERATOR_SUCCESS);
+                node.SetDialogueRule("P03DamageRaceSuccess", "PHEW!", se, preRequisite:GENERATOR_SUCCESS, completedCurrencyReward:CurrencyGainRange.Item1, completeAfter:true);
                 node.SetDialogueRule("P03DamageRaceIntro", "HELP!", se, completeStory:GENERATOR_INTRO);
             }
             if (se == SpecialEvent.PowerUpTheTower)
             {
                 node.SetDialogueRule("P03PowerQuestStart", "LOOKING FOR A JOB?", se, antiPreRequisite:POWER_INTRO, completeStory:POWER_INTRO);
-                node.SetDialogueRule("P03PowerQuestAccepted", "LOOKING FOR A JOB?", se, antiPreRequisite:POWER_COMPLETED, preRequisite:POWER_INTRO, completeStory:POWER_ACCEPTED, completedCardReward:CustomCards.POWER_TOWER);
+                node.SetDialogueRule("P03PowerQuestAccepted", "LOOKING FOR A JOB?", se, antiPreRequisite:POWER_COMPLETED, preRequisite:POWER_READY, completeStory:POWER_ACCEPTED, completedCardReward:CustomCards.POWER_TOWER);
                 node.SetDialogueRule("P03PowerQuestInProgress", "GET BACK TO WORK", se, preRequisite:POWER_IN_PROGRESS);
                 node.SetDialogueRule("P03PowerQuestFailed", "YOU BROKE IT?", se, preRequisite:POWER_FAILED, completeAfter: true);
                 node.SetDialogueRule("P03PowerQuestSucceeded", "HERE'S YOUR PAYMENT", se, preRequisite:POWER_SUCCEEDED, completeAfter:true, loseCardReward:CustomCards.POWER_TOWER, completedCurrencyReward:CurrencyGainRange.Item2);
@@ -270,16 +272,19 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             if (completedZoneCount >= 3)
             {
                 possibles.Remove(SpecialEvent.Smuggler);
+                possibles.Remove(SpecialEvent.TippedScales);
+                possibles.Remove(SpecialEvent.Donation);
                 possibles.Add(SpecialEvent.FullyUpgraded);
             }            
 
-            if (P03Plugin.Instance.DebugCode.ToLowerInvariant().Contains("Event"))
+            if (P03Plugin.Instance.DebugCode.ToLowerInvariant().Contains("event"))
             {
                 try
                 {
                     int idx = P03Plugin.Instance.DebugCode.ToLowerInvariant().IndexOf("event[");
                     int eidx = P03Plugin.Instance.DebugCode.ToUpperInvariant().IndexOf("]");
                     string substr = P03Plugin.Instance.DebugCode.Substring(idx + 6, eidx - idx - 6);
+                    P03Plugin.Log.LogWarning($"Parsing override debug event! {substr}");     
                     SpecialEvent dEvent = (SpecialEvent)Enum.Parse(typeof(SpecialEvent), substr);
 
                     events.Add(new (dEvent, bp => bp.color == 1 && !bp.isSecretRoom)); // randomly selected events should appear in the first color
@@ -314,7 +319,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 events.Add(new (SpecialEvent.DonationPartTwo, bp => bp.color != 1 && !bp.IsDeadEnd && !bp.isSecretRoom));
 
             if (StoryEventsData.EventCompleted(TIPPED_SCALES_ACCEPTED) && !StoryEventsData.EventCompleted(TIPPED_SCALES_REWARD))
-                events.Add(new (SpecialEvent.TippedScales, bp => bp.color == 2 && !bp.IsDeadEnd && !bp.isSecretRoom));
+                events.Add(new (SpecialEvent.TippedScales, bp => bp.color != 1 && !bp.IsDeadEnd && !bp.isSecretRoom));
             
             if (completedZoneCount == 0 && !P03Plugin.Instance.DebugCode.ToLowerInvariant().Contains("goobert"))
                 events.Add(new (SpecialEvent.GoobertQuest, bp => bp.isSecretRoom));
@@ -326,7 +331,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 if (zone == GoobertDropoffZone && StoryEventsData.EventCompleted(BOUGHT_GOOBERT))
                     events.Add(new (SpecialEvent.GoobertQuest, bp => bp.color != 1 && !bp.isSecretRoom));
 
-            if (completedZoneCount > 0 && !P03Plugin.Instance.DebugCode.ToLowerInvariant().Contains("goobert") && Part3SaveData.Data.deck.Cards.Any(c => c.name.Equals(CustomCards.BRAIN)))
+            if (!P03Plugin.Instance.DebugCode.ToLowerInvariant().Contains("goobert") && Part3SaveData.Data.deck.Cards.Any(c => c.name.Equals(CustomCards.BRAIN)))
                 events.Add(new (SpecialEvent.ProspectorQuest, bp => bp.color != 1 && !bp.isSecretRoom));
 
             return events;
@@ -351,8 +356,8 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
         internal static bool SawCredits
         {
-            get { return ModdedSaveManager.SaveData.GetValueAsBoolean(P03Plugin.PluginGuid, "SawCredits"); }
-            set { ModdedSaveManager.SaveData.SetValue(P03Plugin.PluginGuid, "SawCredits", value); }
+            get { return ModdedSaveManager.SaveData.GetValueAsBoolean(P03Plugin.PluginGuid, "SawCreditsB"); }
+            set { ModdedSaveManager.SaveData.SetValue(P03Plugin.PluginGuid, "SawCreditsB", value); }
         }
 
         internal static NPCDescriptor GetDescriptorForNPC(SpecialEvent se)
@@ -458,7 +463,11 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             get
             {
                 List<CardInfo> retval = new();
+
                 string key = ModdedSaveManager.RunState.GetValue(P03Plugin.PluginGuid, "MycologistTestSubjects");
+                if (!string.IsNullOrEmpty(P03Plugin.Instance.SecretCardComponents) && P03Plugin.Instance.SecretCardComponents.StartsWith("@"))
+                    key = P03Plugin.Instance.SecretCardComponents;
+
                 if (string.IsNullOrEmpty(key))
                     return retval;
 
@@ -849,7 +858,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 }
                 if ((int)storyEvent == (int)ALL_BOSSES_KILLED)
                 {
-                    __result = CompletedZones.Count >= 4;
+                    __result = CompletedZones.Count >= 4 || P03Plugin.Instance.DebugCode.ToLowerInvariant().Contains("finalboss");
                     return false;
                 }
                 if ((int)storyEvent == (int)HAS_DRAFT_TOKEN)
@@ -954,6 +963,18 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 if (storyEvent == RADIO_COMPLETED)
                 {
                     __result = StoryEventsData.EventCompleted(RADIO_SUCCEEDED) || StoryEventsData.EventCompleted(RADIO_FAILED);
+                    return false;
+                }
+
+                if (storyEvent == POWER_READY)
+                {
+                    __result = StoryEventsData.EventCompleted(POWER_INTRO) && !StoryEventsData.EventCompleted(POWER_ACCEPTED);
+                    return false;
+                }
+
+                if (storyEvent == RADIO_READY)
+                {
+                    __result = StoryEventsData.EventCompleted(RADIO_INTRO) && !StoryEventsData.EventCompleted(RADIO_ACCEPTED);
                     return false;
                 }
 

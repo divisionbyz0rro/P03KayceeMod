@@ -441,6 +441,8 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
             // Now we've found the space
             bossIntroRoom.specialTerrain |= HoloMapBlueprint.NORTH_BUILDING_ENTRANCE;
+            bossIntroRoom.specialTerrain |= HoloMapBlueprint.FAST_TRAVEL_NODE;
+            bossIntroRoom.specialTerrain &= ~HoloMapBlueprint.LANDMARKER;
             bossIntroRoom.arrowDirections |= NORTH;
             bossIntroRoom.blockedDirections |= NORTH;
             bossIntroRoom.blockEvent = EventManagement.ALL_ZONE_ENEMIES_KILLED;
@@ -557,6 +559,8 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             List<HoloMapBlueprint> bossPossibles = nodes.Where(bp => bp.y >= 1 && map[bp.x, bp.y - 1] == null && bp.color != nodes[0].color).ToList();
             HoloMapBlueprint bossIntroRoom = bossPossibles[UnityEngine.Random.Range(0, bossPossibles.Count)];
             bossIntroRoom.specialTerrain |= (region == Zone.Nature ? HoloMapBlueprint.NORTH_CABIN : HoloMapBlueprint.NORTH_BUILDING_ENTRANCE);
+            bossIntroRoom.specialTerrain |= HoloMapBlueprint.FAST_TRAVEL_NODE;
+            bossIntroRoom.specialTerrain &= ~HoloMapBlueprint.LANDMARKER;
             bossIntroRoom.arrowDirections |= NORTH;
             bossIntroRoom.blockedDirections |= NORTH;
             bossIntroRoom.blockEvent = EventManagement.ALL_ZONE_ENEMIES_KILLED;

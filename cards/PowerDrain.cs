@@ -11,6 +11,7 @@ using UnityEngine;
 
 namespace Infiniscryption.P03KayceeRun.Cards
 {
+    [HarmonyPatch]
     public class PowerDrain : AbilityBehaviour
 	{
         public override Ability Ability => AbilityID;
@@ -39,38 +40,24 @@ namespace Infiniscryption.P03KayceeRun.Cards
 
 		[HarmonyPatch(typeof(ResourcesManager), nameof(ResourcesManager.AddEnergy))]
         [HarmonyPostfix]
-        private static IEnumerator StopAddEnergy(ResourcesManager __instance, IEnumerator sequence)
+        private static IEnumerator StopAddEnergy(IEnumerator sequence, ResourcesManager __instance)
         {
+            yield return sequence;
             if (ShouldStopEnergyGain)
             {
-                int oldEnergy = __instance.PlayerEnergy;
-                __instance.PlayerEnergy = 0;
-                if (oldEnergy > 0)
-                {
-                    yield return __instance.ShowSpendEnergy(oldEnergy);
-                }
-                yield break;
+                yield return __instance.SpendEnergy(__instance.PlayerEnergy);
             }
-
-            yield return sequence;
         }
 
         [HarmonyPatch(typeof(ResourcesManager), nameof(ResourcesManager.RefreshEnergy))]
         [HarmonyPostfix]
-        private static IEnumerator StopRefreshEnergy(ResourcesManager __instance, IEnumerator sequence)
+        private static IEnumerator StopRefreshEnergy(IEnumerator sequence, ResourcesManager __instance)
         {
+            yield return sequence;
             if (ShouldStopEnergyGain)
             {
-                int oldEnergy = __instance.PlayerEnergy;
-                __instance.PlayerEnergy = 0;
-                if (oldEnergy > 0)
-                {
-                    yield return __instance.ShowSpendEnergy(oldEnergy);
-                }
-                yield break;
+                yield return __instance.SpendEnergy(__instance.PlayerEnergy);
             }
-
-            yield return sequence;
         }
     }
 }

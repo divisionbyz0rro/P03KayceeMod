@@ -37,7 +37,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             // Instead, we will dynamically create a world based on that node
             if (SaveFile.IsAscension)
             {
-                if (fastTravelNodes[__instance.gameObject.name] == RunBasedHoloMap.Zone.Neutral)
+                if (fastTravelNodes[__instance.gameObject.name] == EventManagement.CurrentZone)
                 {
                     HoloGameMap.Instance.ToggleFastTravelActive(false, false);
                     return false; 
@@ -74,7 +74,13 @@ namespace Infiniscryption.P03KayceeRun.Patchers
         public static void SetFastTravelNodeActive(ref FastTravelNode __instance)
         {
             if (SaveFile.IsAscension)
-                __instance.gameObject.SetActive(fastTravelNodes.Keys.Contains(__instance.gameObject.name) && !EventManagement.CompletedZones.Contains(__instance.gameObject.name));
+                __instance.gameObject.SetActive(
+                    fastTravelNodes.Keys.Contains(__instance.gameObject.name) && 
+                    (
+                        !EventManagement.CompletedZones.Contains(__instance.gameObject.name) ||
+                        fastTravelNodes[__instance.gameObject.name] == EventManagement.CurrentZone
+                    )
+                );
         }
 
         [HarmonyPatch(typeof(HoloMapWaypointNode), nameof(HoloMapWaypointNode.OnCursorSelectEnd))]
@@ -166,6 +172,18 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             P03Plugin.Log.LogInfo($"Current area gameobject {HoloMapAreaManager.Instance.CurrentArea.gameObject}");
             P03Plugin.Log.LogInfo($"Current area marker {HoloMapPlayerMarker.Instance}");
             P03Plugin.Log.LogInfo($"Current area marker gameobject {HoloMapPlayerMarker.Instance.gameObject}");
+        }
+
+        [HarmonyPatch(typeof(MoveHoloMapAreaNode), nameof(MoveHoloMapAreaNode.WillResetBots), MethodType.Getter)]
+        [HarmonyPrefix]
+        private static bool NeverResetBotsOnMoveInAscension(ref bool __result)
+        {
+            if (SaveFile.IsAscension)
+            {
+                __result = false;
+                return false;
+            }
+            return true;
         }
     }
 }

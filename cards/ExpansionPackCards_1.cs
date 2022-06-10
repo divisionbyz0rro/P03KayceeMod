@@ -175,12 +175,12 @@ namespace Infiniscryption.P03KayceeRun.Cards
             gravestone.holoPortraitPrefab = CardManager.BaseGameCards.CardByName("TombStone").holoPortraitPrefab;
 
             // Recycle Angel
-            CardManager.New(EXP_1_PREFIX, "RoboAngel", "AngelBot", 1, 1)
+            CardManager.New(EXP_1_PREFIX, "RoboAngel", "AngelBot", 1, 3)
                 .SetPortrait(TextureHelper.GetImageAsTexture("portrait_recyclenangel.png", typeof(ExpansionPackCards_1).Assembly))
                 .SetCost(energyCost:4)
                 .SetRegionalP03Card(CardTemple.Undead)
                 .SetRare()
-                .AddAbilities(AcceleratedLifecycle.AbilityID);
+                .AddAbilities(AcceleratedLifecycle.AbilityID, Ability.Flying);
 
             // Conduit protector
             CardManager.New(EXP_1_PREFIX, "ConduitProtector", "Conduit Protector", 0, 4)
@@ -314,7 +314,7 @@ namespace Infiniscryption.P03KayceeRun.Cards
                 .SetCost(energyCost:5)
                 .SetRegionalP03Card(CardTemple.Wizard)
                 .AddAbilities(GemRotator.AbilityID);
-        }    
+        }     
 
         [HarmonyPatch(typeof(CardLoader), nameof(CardLoader.Clone))]
         [HarmonyPostfix]

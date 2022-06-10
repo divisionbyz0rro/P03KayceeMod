@@ -28,6 +28,7 @@ namespace Infiniscryption.P03KayceeRun.Items
             ItemData.regionSpecific = true;
             ItemData.rulebookDescription = "Increases your max energy. I suppose you can find some use for this.";
             ItemData.prefabId = "prefabs/specialnodesequences/teslacoil";
+            ItemData.notRandomlyGiven = true;
 
             ItemSlotPatches.KNOWN_ITEMS.Add(ItemData, FixGameObject);
         }

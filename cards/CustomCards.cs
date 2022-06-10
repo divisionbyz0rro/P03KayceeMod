@@ -139,7 +139,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             if (SaveFile.IsAscension && SaveManager.SaveFile.IsPart3 && killer == null)
             {
                 yield return EventManagement.SayDialogueOnce("P03HammerOrb", EventManagement.SAW_NEW_ORB);
-                SaveManager.SaveFile.ouroborosDeaths -= 1;
+                SaveManager.SaveFile.OuroborosDeaths = SaveManager.SaveFile.OuroborosDeaths - 1;
             }
             yield return sequence;
         }
@@ -362,11 +362,6 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 .SetPortrait(TextureHelper.GetImageAsTexture("portrait_skeleton_lord.png", typeof(CustomCards).Assembly))
                 .AddAbilities(BrittleGainsUndying.AbilityID)
                 .SetCost(energyCost:2)
-                .AddDecal(
-                    TextureHelper.GetImageAsTexture("portrait_triplemox_color_decal_1.png", typeof(CustomCards).Assembly),
-                    TextureHelper.GetImageAsTexture("portrait_triplemox_color_decal_1.png", typeof(CustomCards).Assembly),
-                    TextureHelper.GetImageAsTexture("portrait_skeleton_lord_decal.png", typeof(CustomCards).Assembly)
-                )
                 .temple = CardTemple.Tech;
 
             // CardManager.New(P03Plugin.CardPrefx, MYCO_CONSTRUCT_PONTOON, "PONTOON", 0, 1)
@@ -469,6 +464,10 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             }
             if (info.gemify)
                 retval += "+Gemify";
+            if (info.attackAdjustment > 0 || info.healthAdjustment > 0)
+                retval += $"+!{info.attackAdjustment},{info.healthAdjustment}";
+            if (info.nameReplacement != null)
+                retval += $"+;{info.nameReplacement}";
             return retval;
         }
 
@@ -477,13 +476,29 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             CardModificationInfo retval = new();
             retval.nonCopyable = true;
             retval.abilities = new();
+
+            if (modCode.StartsWith(";"))
+            {
+                retval.nameReplacement = modCode.Replace(";", "");
+                return retval;
+            }
+
+            if (modCode.StartsWith("!"))
+            {
+                string[] pieces = modCode.Replace("!", "").Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries);
+                retval.attackAdjustment = int.Parse(pieces[0]);
+                retval.healthAdjustment = int.Parse(pieces[1]);
+                return retval;
+            }
+
             if (modCode.Contains("("))
             {
-                string[] codePieces = modCode.Replace(")", "'").Split('(');
+                string[] codePieces = modCode.Replace(")", "").Split('(');
                 Ability ab = (Ability)Enum.Parse(typeof(Ability), codePieces[0]);
                 if (ab == Ability.Transformer)
                 {
-                    string newCode = codePieces[1].Replace('&', '+').Replace('#', '@');
+                    string newCode = codePieces[1].Replace("&", "+").Replace("#", "@");
+                    P03Plugin.Log.LogInfo($"Setting {newCode} as beast code");
                     retval.transformerBeastCardId = newCode;
                 }
                 retval.abilities.Add(ab);
@@ -507,10 +522,16 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
         public static CardInfo ConvertCodeToCard(string code)
         {
+            P03Plugin.Log.LogInfo($"Converting code {code} to a card");
             string[] codePieces = code.Replace("@", "").Split('+');
             CardInfo retval = CardLoader.GetCardByName(codePieces[0]);
+            P03Plugin.Log.LogInfo($"Successfully found card {retval.name}");
+            retval.mods = new();
             for (int i = 1; i < codePieces.Length; i++)
+            {
                 retval.mods.Add(GetMod(codePieces[i]));
+                P03Plugin.Log.LogInfo($"Successfully found converted {codePieces[i]} to a card mod");
+            }
             return retval;
         }
 

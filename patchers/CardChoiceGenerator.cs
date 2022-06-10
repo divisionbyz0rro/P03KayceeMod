@@ -43,6 +43,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
         {
             List<CardInfo> allCards = ScriptableObjectLoader<CardInfo>.AllData.FindAll(x => TradeChipsSequencer.IsValidDraftCard(x) && !x.metaCategories.Contains(CardMetaCategory.Rare)).ToList();
             CardInfo left = allCards[SeededRandom.Range(0, allCards.Count, randomSeed++)];
+            allCards.Remove(left);
             CardInfo right = allCards[SeededRandom.Range(0, allCards.Count, randomSeed++)];
 
             string name = GetNameContribution(left) + "-" + GetNameContribution(right);

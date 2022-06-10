@@ -41,6 +41,7 @@ namespace Infiniscryption.P03KayceeRun.Items
             ItemData.regionSpecific = true;
             ItemData.rulebookDescription = "Please! You've got to help me get out of here!";
             ItemData.prefabId = "Prefabs/Items/GooBottleItem";
+            ItemData.notRandomlyGiven = true;
             ItemSlotPatches.KNOWN_ITEMS.Add(ItemData, FixGameObject);
         }
 

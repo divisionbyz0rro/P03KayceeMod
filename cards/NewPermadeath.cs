@@ -55,13 +55,19 @@ namespace Infiniscryption.P03KayceeRun.Cards
             // Create an exeskeleton
             DeckInfo deck = SaveManager.SaveFile.CurrentDeck;
 
+            CardInfo card = deck.Cards.Find((CardInfo x) => x.HasAbility(NewPermaDeath.AbilityID) && x.name == base.Card.Info.name);
+
+            // If there is no card with this name in your deck, it's probably because it's a transformer and it's
+            // currently on its other side
+            if (card == null && base.Card.HasAbility(Ability.Transformer) && base.Card.Info.evolveParams != null)
+                card = deck.Cards.Find(x => x.HasAbility(NewPermaDeath.AbilityID) && x.name == base.Card.Info.evolveParams.evolution.name);
+
             CardInfo replacement = CardLoader.GetCardByName("RoboSkeleton");
             CardModificationInfo mod = new ();
-            mod.abilities = new (this.Card.Info.Abilities.Where(ab => ab != NewPermaDeath.AbilityID && !NOT_COPYABLE_ABILITIES.Contains(ab)).Take(3));
+            mod.abilities = new (card.Abilities.Where(ab => ab != NewPermaDeath.AbilityID && !NOT_COPYABLE_ABILITIES.Contains(ab)).Take(3));
             replacement.mods.Add(mod);
             deck.AddCard(replacement);
 
-			CardInfo card = deck.Cards.Find((CardInfo x) => x.HasAbility(NewPermaDeath.AbilityID) && x.name == base.Card.Info.name);
 			deck.RemoveCard(card);
 			yield return base.LearnAbility(0.5f);
 			yield break;

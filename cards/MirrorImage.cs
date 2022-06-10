@@ -42,18 +42,38 @@ namespace Infiniscryption.P03KayceeRun.Cards
             return possibles;
         }
 
-        public override bool RespondsToPlayFromHand() => true;
+        public override bool RespondsToPlayFromHand() => GetCopyableSlots().Count > 0;
 
         public override IEnumerator OnPlayFromHand()
         {
             ViewManager.Instance.SwitchToView(View.Board, false, false);
             yield return new WaitForSeconds(0.2f);
 
-            yield return TextDisplayer.Instance.PlayDialogueEvent("MirrorImage", TextDisplayer.MessageAdvanceMode.Input, TextDisplayer.EventIntersectMode.Wait, null, null);
-            yield return BoardManager.Instance.ChooseSlot(GetCopyableSlots(), false);
+            
 
-            CardInfo clone = CardLoader.Clone(BoardManager.Instance.LastSelectedSlot.Card.Info);
-            foreach (CardModificationInfo mod in BoardManager.Instance.LastSelectedSlot.Card.Info.mods)
+            CardSlot target = null;
+            List<CardSlot> copyableSlots = GetCopyableSlots();
+
+            if (copyableSlots.Count == 0)
+            {
+                yield return TextDisplayer.Instance.PlayDialogueEvent("MirrorImageFail", TextDisplayer.MessageAdvanceMode.Input, TextDisplayer.EventIntersectMode.Wait, null, null);
+                yield break;
+            }                
+
+            yield return TextDisplayer.Instance.PlayDialogueEvent("MirrorImage", TextDisplayer.MessageAdvanceMode.Input, TextDisplayer.EventIntersectMode.Wait, null, null);
+
+            yield return BoardManager.Instance.ChooseTarget(
+                copyableSlots,
+                copyableSlots,
+                slot => target = slot,
+                null,
+                null,
+                null,
+                CursorType.Target
+            );
+
+            CardInfo clone = CardLoader.Clone(target.Card.Info);
+            foreach (CardModificationInfo mod in target.Card.Info.mods)
                 clone.mods.Add(mod.Clone() as CardModificationInfo);
 
             foreach (CardModificationInfo mod in this.Card.Info.mods)

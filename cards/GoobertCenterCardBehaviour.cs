@@ -75,12 +75,16 @@ namespace Infiniscryption.P03KayceeRun.Cards
                     }
                     else if (ab == Ability.Transformer)
                     {
-                        info.healthAdjustment -= card.Health;
-                        info.attackAdjustment -= card.Attack;
-                        CardInfo transformer = CustomCards.ConvertCodeToCard(info.transformerBeastCardId);
-                        info.healthAdjustment += transformer.Health;
-                        info.attackAdjustment += transformer.Attack;
-                        info.abilities.AddRange(transformer.abilities.Where(a => a != Ability.Transformer));
+                        CardModificationInfo beastTransformer = card.mods.FirstOrDefault(m => !string.IsNullOrEmpty(m.transformerBeastCardId));
+                        if (beastTransformer != null)
+                        {
+                            info.healthAdjustment -= card.Health;
+                            info.attackAdjustment -= card.Attack;
+                            CardInfo transformer = CustomCards.ConvertCodeToCard(beastTransformer.transformerBeastCardId);
+                            info.healthAdjustment += transformer.Health;
+                            info.attackAdjustment += transformer.Attack;
+                            info.abilities.AddRange(transformer.abilities.Where(a => a != Ability.Transformer));
+                        }
                     }
                     else
                     {
@@ -287,6 +291,9 @@ namespace Infiniscryption.P03KayceeRun.Cards
             if (IsInsideCombatPhase)
                 return true;
 
+            if (TurnManager.Instance != null && TurnManager.Instance.GameIsOver())
+                return true;
+
             List<CardSlot> slotsToCheck = BoardManager.Instance.GetSlots(slot.IsPlayerSlot);
 			
             if (slotsToCheck.Any(s => s.SlotHasTripleCard()))
@@ -382,6 +389,13 @@ namespace Infiniscryption.P03KayceeRun.Cards
         {
             if (!SaveManager.SaveFile.IsPart3)
                 return;
+
+            // This is a bit of a hacky coverup to deal with the fact that when you ask the table manager
+            // to reset colors when the boss dies, sometimes you do this while there are still cards on the
+            // table. So if the game is essentially over, we can just leave the list of slots alone
+
+            if (TurnManager.Instance != null && TurnManager.Instance.GameIsOver())
+                return;             
 
             __result.RemoveAll(cs => cs.SlotCoveredByTripleCard());
         }
@@ -483,7 +497,7 @@ namespace Infiniscryption.P03KayceeRun.Cards
             if (!SaveManager.SaveFile.IsPart3)
                 return;
 
-            ResolveOpposingSlotsForTripleCard();
+            ResolveOpposingSlotsForTripleCard(reset:true);
         }
 
         [HarmonyPatch(typeof(BoardManager), nameof(BoardManager.AssignCardToSlot))]
@@ -515,7 +529,10 @@ namespace Infiniscryption.P03KayceeRun.Cards
                     }
 
                     // We could not find a way to assign the card's location!
-                    // We will simply not move
+                    // We will move right back to the slot we were in before!
+                    if (card.Slot != null)
+                        yield return BoardManager.Instance.AssignCardToSlot(card, card.Slot, transitionDuration, tweenCompleteCallback, resolveTriggers);
+
                     yield break;
                 }   
 
