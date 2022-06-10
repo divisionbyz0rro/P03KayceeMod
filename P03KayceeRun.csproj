@@ -41,7 +41,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="$(ProjectDir)\assets\*.png" />
-    <EmbeddedResource Include="$(ProjectDir)\assets\*.wav" />
+    <!--<EmbeddedResource Include="$(ProjectDir)\assets\*.wav" />-->
     <EmbeddedResource Include="$(ProjectDir)\data\*.csv" />
     <EmbeddedResource Include="$(ProjectDir)\data\*.dat" />
   </ItemGroup>
@@ -53,10 +53,12 @@
     <Exec Command="$(PkgILRepack)\tools\ILRepack /out:$(ProjectDir)\Compiled\Infiniscryption.P03KayceeRun.dll $(TargetPath) $(ProjectDir)../Core/Compiled/Infiniscryption.Core.dll /lib:$(TargetDir)" />
     -->
     <Exec Command="xcopy /Y $(TargetPath) &quot;C:\Program Files (x86)\Steam\steamapps\common\Inscryption\BepInEx\plugins&quot;" />
+    <Exec Command="xcopy /Y $(ProjectDir)\assets\*.wav &quot;C:\Program Files (x86)\Steam\steamapps\common\Inscryption\BepInEx\plugins\wavs&quot;" />
     <!--
     <Exec Command="xcopy /Y $(ProjectDir)\assets\*.png &quot;C:\Program Files (x86)\Steam\steamapps\common\Inscryption\BepInEx\plugins\Infiniscryption\assets&quot;" />
     <Exec Command="xcopy /Y $(ProjectDir)\assets\*.wav &quot;C:\Program Files (x86)\Steam\steamapps\common\Inscryption\BepInEx\plugins\Infiniscryption\assets&quot;" />
     -->
+    <Exec Command="xcopy /Y $(ProjectDir)\assets\*.wav $(ProjectDir)\package\plugins\wavs" />
     <Exec Command="xcopy /Y $(TargetPath) $(ProjectDir)\package" />
     <!--
     <Exec Command="xcopy /Y $(ProjectDir)\assets\*.png $(ProjectDir)\package\BepInEx\plugins\Infiniscryption\assets" />

@@ -141,7 +141,10 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 //     yield return TextDisplayer.Instance.PlayDialogueEvent("Part3AscensionBossRareToken", TextDisplayer.MessageAdvanceMode.Input, TextDisplayer.EventIntersectMode.Wait, null, null);
                 // }
 
-                yield return FastTravelManagement.ReturnToHomeBase();
+                // yield return FastTravelManagement.ReturnToHomeBase();
+                yield return new WaitForSeconds(0.65f);
+                HoloMapAreaManager.Instance.MoveAreas(HoloMapAreaManager.Instance.CurrentArea, LookDirection.South, 1);
+
             }
             else
             {

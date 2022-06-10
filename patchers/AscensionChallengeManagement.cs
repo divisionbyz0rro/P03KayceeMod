@@ -32,7 +32,6 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
         public static Dictionary<AscensionChallenge, AscensionChallengeInfo> PatchedChallengesReference;
         public static List<AscensionChallenge> ValidChallenges;
-        public static List<AscensionChallenge> ExternalValidChallenges;
 
         public static void UpdateP03Challenges()
         {
@@ -158,35 +157,20 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 ALL_CONVEYOR
             };
 
-            ChallengeManager.ModifyChallenges += delegate(List<AscensionChallengeInfo> challenges)
+            ChallengeManager.ModifyChallenges += delegate(List<ChallengeManager.FullChallenge> challenges)
             {
                 if (P03AscensionSaveData.IsP03Run)
                     for (int i = 0; i < challenges.Count; i++)
-                        if (PatchedChallengesReference.ContainsKey(challenges[i].challengeType))
-                            challenges[i] = PatchedChallengesReference[challenges[i].challengeType];
+                        if (PatchedChallengesReference.ContainsKey(challenges[i].Challenge.challengeType))
+                            //challenges[i] = PatchedChallengesReference[challenges[i].challengeType];
+                            challenges[i] = new () { 
+                                Challenge = PatchedChallengesReference[challenges[i].Challenge.challengeType],
+                                AppearancesInChallengeScreen = 1,
+                                UnlockLevel = challenges[i].UnlockLevel
+                            };
 
                 return challenges;
             };
-        }
-
-        private static void BuildExternalValidChallenges()
-        {
-            ExternalValidChallenges = new();
-            P03Plugin.Log.LogInfo($"External Valid Challenge List is {CompatibleChallengeList}");
-            if (!string.IsNullOrEmpty(CompatibleChallengeList))
-            {
-                foreach (string item in CompatibleChallengeList.Split(',', '|', ';', ' '))
-                {
-                    try
-                    {
-                        int ch = 0;
-                        int.TryParse(item, out ch);
-                        if (ch > 0)
-                            ExternalValidChallenges.Add((AscensionChallenge)ch);
-                    }
-                    catch {}
-                }
-            }
         }
 
         [HarmonyPatch(typeof(AscensionChallengeScreen), nameof(AscensionChallengeScreen.OnEnable))]
@@ -196,13 +180,13 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             __instance.gameObject.GetComponentInChildren<ChallengeIconGrid>().Start();
         }
 
-        [HarmonyPatch(typeof(AscensionChallengePaginator), "ShowVisibleChallenges")]
-        [HarmonyPostfix]
-        private static void MakeIconGridRecalc(AscensionChallengePaginator __instance)
-        {
-            if (!AscensionUnlockSchedule.ChallengeIsUnlockedForLevel(AscensionChallenge.FinalBoss, AscensionSaveData.Data.challengeLevel))
-                __instance.gameObject.GetComponentInChildren<ChallengeIconGrid>().finalBossIcon.SetActive(false);
-        }
+        // [HarmonyPatch(typeof(AscensionChallengePaginator), nameof(AscensionChallengePaginator.ShowVisibleChallenges))]
+        // [HarmonyPostfix]
+        // private static void MakeIconGridRecalc(AscensionChallengePaginator __instance)
+        // {
+        //     if (!AscensionUnlockSchedule.ChallengeIsUnlockedForLevel(AscensionChallenge.FinalBoss, AscensionSaveData.Data.challengeLevel))
+        //         __instance.gameObject.GetComponentInChildren<ChallengeIconGrid>().finalBossIcon.SetActive(false);
+        // }
 
         [HarmonyPatch(typeof(ChallengeIconGrid), nameof(ChallengeIconGrid.Start))]
         [HarmonyPrefix]
@@ -228,21 +212,6 @@ namespace Infiniscryption.P03KayceeRun.Patchers
         {
             if (ScreenManagement.ScreenState == CardTemple.Tech)
             {
-                if (ExternalValidChallenges == null)
-                    BuildExternalValidChallenges();
-
-                if (ExternalValidChallenges.Contains(challenge))
-                {
-                    __result = true;
-                    return;
-                }
-
-                if (!ValidChallenges.Contains(challenge))
-                {
-                    __result = false;
-                    return;
-                }
-
                 if (PatchedChallengesReference.Any(kvp => kvp.Value.challengeType == challenge))
                 {
                     var kvp = PatchedChallengesReference.First(kvp => kvp.Value.challengeType == challenge);
@@ -252,6 +221,25 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                         return;
                     }
                 }
+
+                if (ValidChallenges.Contains(challenge))
+                    return;
+
+                var fullChallenge = ChallengeManager.AllChallenges.FirstOrDefault(fc => fc.Challenge.challengeType == challenge);
+                if (fullChallenge != null)
+                {
+                    if (fullChallenge.Flags == null)
+                    {
+                        __result = false;
+                        return;
+                    }
+
+                    if (!fullChallenge.Flags.Any(f => f != null && f.ToString().ToLowerInvariant().Equals("p03")))
+                    {
+                        __result = false;
+                        return;
+                    }
+                }                
             }
         }
 

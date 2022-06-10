@@ -605,6 +605,24 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             southTraverse.Field("blueprintData").SetValue(null);
         }
 
+        private static void BuildFastTravelNode(Transform sceneryParent, Transform nodesParent, float x, float z, Zone currentZone)
+        {
+            P03Plugin.Log.LogInfo($"Creating fast travel node");
+            // GameObject hubNodeBase = Resources.Load<GameObject>("prefabs/map/holomapareas/HoloMapArea_StartingIslandWaypoint");
+            // GameObject waypointBase = hubNodeBase.transform.Find("WaypointStation").gameObject;
+            
+            GameObject newWaypoint = GameObject.Instantiate(Resources.Load<GameObject>("prefabs/map/holomapinteractables/WaypointStation"), nodesParent);
+            Animator anim = newWaypoint.GetComponentInChildren<Animator>();
+            GameObject.DestroyImmediate(anim);
+            ConditionalWaypointController cwc = newWaypoint.AddComponent<ConditionalWaypointController>();
+            cwc.StoryFlag = currentZone == Zone.Magic ? StoryEvent.CanvasDefeated : 
+                            currentZone == Zone.Tech ? StoryEvent.TelegrapherDefeated :
+                            currentZone == Zone.Nature ? StoryEvent.PhotographerDefeated :
+                            StoryEvent.ArchivistDefeated;
+
+            newWaypoint.transform.localPosition = new(x - 0.5f, newWaypoint.transform.localPosition.y, z);
+        }
+
         private static void BuildMycologistWell(Transform sceneryParent, Transform nodesParent, float x, float z)
         {
             // Get the well prefab
@@ -727,8 +745,8 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                     CleanBattleFromArrow(retval, "S");
                 }
 
-                FlyBackToCenterIfBossDefeated returnToCenter = retval.AddComponent<FlyBackToCenterIfBossDefeated>();
-                retval.GetComponent<HoloMapArea>().specialSequencer = returnToCenter;
+                //FlyBackToCenterIfBossDefeated returnToCenter = retval.AddComponent<FlyBackToCenterIfBossDefeated>();
+                //retval.GetComponent<HoloMapArea>().specialSequencer = returnToCenter;
 
                 // This is a bit of a CYA
                 // We want to make sure the battle id and the opponent always match - this can get out of sync with some of our custom patches
@@ -874,6 +892,9 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                 if (bp.specialTerrain == HoloMapBlueprint.BROKEN_GENERATOR && secondQuadrant)
                     dir = SOUTH | EAST;
 
+                if ((bp.specialTerrain & HoloMapBlueprint.FAST_TRAVEL_NODE) > 0 && firstQuadrant)
+                    dir = SOUTH | EAST;
+
                 directions.Remove(dir);
 
                 List<Tuple<float, float>> sceneryLocations = GetSpotsForQuadrant(dir);
@@ -884,6 +905,13 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                     int spIdx = firstObject ? 0 : UnityEngine.Random.Range(0, sceneryLocations.Count);
                     Tuple<float, float> specialLocation = sceneryLocations[spIdx];
                     sceneryLocations.RemoveAt(spIdx);
+
+                    if (firstQuadrant && firstObject && (bp.specialTerrain & HoloMapBlueprint.FAST_TRAVEL_NODE) > 0)
+                    {
+                        BuildFastTravelNode(scenery.transform, nodes.transform, specialLocation.Item1, specialLocation.Item2, regionId);
+                        firstObject = false;
+                        break; // Nothing else goes in this quadrant
+                    }
 
                     if (firstQuadrant && firstObject && bp.upgrade != HoloMapSpecialNode.NodeDataType.MoveArea)
                     {

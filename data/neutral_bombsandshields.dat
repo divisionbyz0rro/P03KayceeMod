@@ -13,8 +13,8 @@ overclockBlueprint: [D:3/T:2,D:5/T:4]
 Shieldbot,NONE -> SentryBot 4,NONE -> Bombbot 6,NONE -> P03KCM_FIREWALL_BATTLE 6
 Automaton -> Shieldbot 6,Bombbot,NONE -> Shieldbot 2
 Bombbot -> CloserBot 6,NONE -> Bombbot 1
-NONE -> Bombbot 2,NONE -> Bombbot 4,NONE -> Bombbot 3,NONE -> Bombbot 3
+NONE -> Bombbot 2,NONE -> Bombbot 4,NONE -> Bombbot 3
 Shieldbot -> CloserBot 4,NONE -> Shieldbot 3
-NONE -> CloserBot 2,Shieldbot,NONE -> Bombbot 4
+NONE -> CloserBot 2,Shieldbot
 EMPTY TURN
 NONE -> CloserBot 6

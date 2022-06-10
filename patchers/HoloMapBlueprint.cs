@@ -16,6 +16,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
         public static readonly int LANDMARKER = 128;
         public static readonly int BROKEN_GENERATOR = 256;
         public static readonly int MYCOLOGIST_WELL = 512;
+        public static readonly int FAST_TRAVEL_NODE = 1024;
 
         public static readonly int BATTLE = 0;
         public static readonly int TRADE = 1;
@@ -80,7 +81,13 @@ namespace Infiniscryption.P03KayceeRun.Patchers
         {
             get
             {
-                return this.opponent == Opponent.Type.Default && this.upgrade == HoloMapNode.NodeDataType.MoveArea && (this.specialTerrain & LANDMARKER) == 0;
+                return this.opponent == Opponent.Type.Default && 
+                       this.upgrade == HoloMapNode.NodeDataType.MoveArea && 
+                       (this.specialTerrain & LANDMARKER) == 0 && 
+                       (this.specialTerrain & BROKEN_GENERATOR) == 0 && 
+                       (this.specialTerrain & MYCOLOGIST_WELL) == 0 && 
+                       (this.specialTerrain & LOWER_TOWER_ROOM) == 0 && 
+                       (this.specialTerrain & FAST_TRAVEL_NODE) == 0;
             }
         }
 

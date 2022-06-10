@@ -28,7 +28,7 @@ namespace Infiniscryption.P03KayceeRun.Cards
             info.powerLevel = 1;
             info.opponentUsable = false;
             info.passive = false;
-            info.metaCategories = new List<AbilityMetaCategory>() { AbilityMetaCategory.Part3Rulebook };
+            info.metaCategories = new List<AbilityMetaCategory>() { AbilityMetaCategory.Part3Rulebook, AbilityMetaCategory.Part3Modular };
 
             GemRotator.AbilityID = AbilityManager.Add(
                 P03Plugin.PluginGuid,
@@ -45,18 +45,27 @@ namespace Infiniscryption.P03KayceeRun.Cards
 
 		public override IEnumerator OnDrawn()
 		{
-			(PlayerHand.Instance as PlayerHand3D).MoveCardAboveHand(this.Card);
-			yield return base.Card.FlipInHand(new Action(this.AddMod));
+            if (this.Card.InHand)
+            {
+			    yield return base.Card.FlipInHand(new Action(this.AddMod));
+                yield return new WaitForSeconds(0.3f);
+            }
+            else
+            {
+                base.Card.SetFaceDown(true, false);
+                yield return new WaitForSeconds(0.3f);
+                this.AddMod();
+                base.Card.SetFaceDown(false, false);
+                yield return new WaitForSeconds(0.3f);
+            }
+            base.Card.Anim.LightNegationEffect();
 			yield return base.LearnAbility(0.5f);
 			yield break;
 		}
 
         private static bool IsTargetMod(CardModificationInfo mod)
         {
-            if (string.IsNullOrEmpty(mod.singletonId))
-                return false;
-
-            return mod.singletonId.Equals(SINGLETON_ID);
+            return String.Equals(mod.singletonId, SINGLETON_ID);
         }
 
 		private void AddMod()
@@ -68,6 +77,14 @@ namespace Infiniscryption.P03KayceeRun.Cards
                 mod = new();
                 int randomSeed = SaveManager.SaveFile.GetCurrentRandomSeed() + TurnManager.Instance.TurnNumber;
                 mod.abilities.Add(GemAbilities[SeededRandom.Range(0, GemAbilities.Count, randomSeed)]);
+                mod.singletonId = SINGLETON_ID;
+            } else {
+                base.Card.RemoveTemporaryMod(mod);
+                int index = GemAbilities.IndexOf(mod.abilities[0]) + 1;
+                if (index == GemAbilities.Count)
+                    index = 0;
+                
+                mod = new (GemAbilities[index]);
                 mod.singletonId = SINGLETON_ID;
             }
             
@@ -84,21 +101,7 @@ namespace Infiniscryption.P03KayceeRun.Cards
 
         public IEnumerator OnUpkeepInHand(bool playerUpkeep)
         {
-            CardModificationInfo mod = this.Card.TemporaryMods.FirstOrDefault(IsTargetMod);
-
-            if (mod == null)
-            {
-                yield return OnDrawn();
-                yield break;
-            }
-
-            int index = GemAbilities.IndexOf(mod.abilities[0]) + 1;
-            if (index == GemAbilities.Count)
-                index = 0;
-            
-            CardModificationInfo newMod = new (GemAbilities[index]);
-            newMod.singletonId = SINGLETON_ID;
-            this.Card.AddTemporaryMod(newMod);
+            yield return OnDrawn();
         }
     }
 }

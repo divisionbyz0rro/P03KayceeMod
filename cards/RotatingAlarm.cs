@@ -50,7 +50,7 @@ namespace Infiniscryption.P03KayceeRun.Cards
             info.opponentUsable = true;
             info.flipYIfOpponent = false;
             info.passive = false;
-            info.metaCategories = new List<AbilityMetaCategory>() { AbilityMetaCategory.Part3Rulebook };
+            info.metaCategories = new List<AbilityMetaCategory>() { AbilityMetaCategory.Part3Rulebook, AbilityMetaCategory.Part3Modular };
 
             RotatingAlarm.AbilityID = AbilityManager.Add(
                 P03Plugin.PluginGuid,
@@ -90,6 +90,15 @@ namespace Infiniscryption.P03KayceeRun.Cards
                 return Textures[current];
         }
 
+        public override bool RespondsToResolveOnBoard() => true;
+
+        public override IEnumerator OnResolveOnBoard()
+        {
+            this.Card.RenderInfo.OverrideAbilityIcon(AbilityID, GetTextureForAlarm(this.CurrentState));
+	        this.Card.RenderCard();
+            yield return new WaitForEndOfFrame();
+        }
+
         public override bool RespondsToUpkeep(bool playerUpkeep)
         {
             return playerUpkeep != this.Card.OpponentCard;
@@ -111,14 +120,17 @@ namespace Infiniscryption.P03KayceeRun.Cards
 
         public int GetPassiveAttackBuff(PlayableCard target)
         {
-            if (this.CurrentState == AlarmState.Up && target.Slot == this.Card.Slot.opposingSlot)
-                return 1;
-            if (this.CurrentState == AlarmState.Down && target == this.Card)
-                return 1;
-            if (this.CurrentState == AlarmState.Left && target.Slot == BoardManager.Instance.GetAdjacent(this.Card.Slot, true))
-                return 1;
-            if (this.CurrentState == AlarmState.Right && target.Slot == BoardManager.Instance.GetAdjacent(this.Card.Slot, false))
-                return 1;
+            if (this.Card.Slot != null && target.Slot != null)
+            {
+                if (this.CurrentState == AlarmState.Up && target.Slot == this.Card.Slot.opposingSlot)
+                    return 1;
+                if (this.CurrentState == AlarmState.Down && target == this.Card)
+                    return 1;
+                if (this.CurrentState == AlarmState.Left && target.Slot == BoardManager.Instance.GetAdjacent(this.Card.Slot, true))
+                    return 1;
+                if (this.CurrentState == AlarmState.Right && target.Slot == BoardManager.Instance.GetAdjacent(this.Card.Slot, false))
+                    return 1;
+            }
             return 0;
         }
     }

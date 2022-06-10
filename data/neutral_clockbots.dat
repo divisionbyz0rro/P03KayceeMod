@@ -11,11 +11,11 @@ unlockedCardPrerequisites: []
 randomReplacementCards: []
 overclockBlueprint: [D:3/T:2,D:6/T:4]
 P03KCMXP1_Clockbot -> P03KCMXP1_Clockbot_Down 4,NONE -> P03KCM_FIREWALL_BATTLE 6
-P03KCMXP1_Clockbot -> P03KCMXP1_Clockbot_Right 2,P03KCMXP1_Clockbot -> P03KCMXP1_Clockbot_Left 1
-P03KCMXP1_Clockbot,P03KCMXP1_Clockbot,NONE -> P03KCMXP1_Clockbot 3
-P03KCMXP1_Clockbot -> P03KCMXP1_Clockbot_Down 4,NONE -> P03KCMXP1_Clockbot_Right 5
-P03KCMXP1_Clockbot,P03KCMXP1_Clockbot -> P03KCMXP1_Clockbot_Left 2
+NONE -> P03KCMXP1_Clockbot_Right 2,P03KCMXP1_Clockbot -> P03KCMXP1_Clockbot_Left 1
+P03KCMXP1_Clockbot,NONE -> P03KCMXP1_Clockbot 5,NONE -> P03KCMXP1_Clockbot 3
+NONE -> P03KCMXP1_Clockbot_Down 4,NONE -> P03KCMXP1_Clockbot_Right 5
+NONE -> P03KCMXP1_Clockbot 3,P03KCMXP1_Clockbot -> P03KCMXP1_Clockbot_Left 2
 P03KCMXP1_Clockbot_Down
-P03KCMXP1_Clockbot,P03KCMXP1_Clockbot -> P03KCMXP1_Clockbot_Right 3
-P03KCMXP1_Clockbot
+P03KCMXP1_Clockbot,NONE -> P03KCMXP1_Clockbot_Right 3
+P03KCMXP1_Clockbot,NONE -> P03KCMXP1_Clockbot_Down 6
 P03KCMXP1_Clockbot

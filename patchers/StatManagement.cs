@@ -71,7 +71,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
         [HarmonyPrefix]
         private static void P03Stats(AscensionStatsScreen __instance)
         {
-            if (P03AscensionSaveData.IsP03Run)
+            if (__instance.gameObject.GetComponent<AscensionRunEndScreen>() != null)
             {
                 __instance.displayedStatTypes.RemoveAll(st => InvalidP03Stats.Contains(st));
                 __instance.displayedStatTypes.Add(ENERGY_SPENT);
@@ -105,12 +105,19 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
         }
 
-        [HarmonyPatch(typeof(AscensionStatsScreen), nameof(AscensionStatsScreen.FillStatsText))]
+        [HarmonyPatch(typeof(AscensionStatsScreen), nameof(AscensionStatsScreen.OnEnable))]
         [HarmonyPostfix]
         private static void HideUnusedStats(AscensionStatsScreen __instance)
         {
-            foreach(var obj in __instance.statsText.Skip(__instance.displayedStatTypes.Count))
-                obj.gameObject.transform.parent.gameObject.SetActive(false);
+            foreach(PixelText obj in __instance.statsText)
+            {
+                P03Plugin.Log.LogInfo(obj.Text);
+                if (obj.Text.ToLowerInvariant().StartsWith("statistic"))
+                {
+                    P03Plugin.Log.LogInfo("Setting ^ inactive");
+                    obj.gameObject.transform.parent.gameObject.SetActive(false);
+                }
+            }
         }
     }
 }

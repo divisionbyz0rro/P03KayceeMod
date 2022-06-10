@@ -17,12 +17,12 @@ namespace Infiniscryption.P03KayceeRun
 
         public const string PluginGuid = "zorro.inscryption.infiniscryption.p03kayceerun";
 		public const string PluginName = "Infiniscryption P03 in Kaycee's Mod";
-		public const string PluginVersion = "2.0";
-        public const string CardPrefx = "P03KCM";
+		public const string PluginVersion = "2.3";   
+        public const string CardPrefx = "P03KCM"; 
 
-        internal static P03Plugin Instance;
+        internal static P03Plugin Instance;  
 
-        internal static ManualLogSource Log;
+        internal static ManualLogSource Log; 
 
         internal static bool Initialized = false;
         
@@ -31,6 +31,14 @@ namespace Infiniscryption.P03KayceeRun
             get
             {
                 return Config.Bind("P03KayceeMod", "DebugCode", "nothing", new BepInEx.Configuration.ConfigDescription("A special code to use for debugging purposes only. Don't change this unless your name is DivisionByZorro or he told you how it works.")).Value;
+            }
+        }
+
+        internal string SecretCardComponents
+        {
+            get
+            {
+                return Config.Bind("P03KayceeMod", "SecretCardComponents", "nothing", new BepInEx.Configuration.ConfigDescription("The secret code for the secret card")).Value;
             }
         }
 

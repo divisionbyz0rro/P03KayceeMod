@@ -38,6 +38,7 @@ namespace Infiniscryption.P03KayceeRun.Items
             ItemData.rulebookName = "Data Cube";
             ItemData.rulebookDescription = "Can be placed on the scales for some damage, if you're into that sort of thing.";
             ItemData.prefabId = $"Prefabs/Environment/ScaleWeights/{PREFAB}";
+            ItemData.notRandomlyGiven = true;
             ItemSlotPatches.KNOWN_ITEMS.Add(ItemData, FixGameObject);
         }
 

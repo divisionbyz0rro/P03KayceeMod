@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using DiskCardGame;
 using Infiniscryption.P03KayceeRun.Patchers;
@@ -49,7 +50,9 @@ namespace Infiniscryption.P03KayceeRun.Cards
             if (offsetSplit.Length != 3)
                 return zeroDefault ? Vector3.zero : Vector3.one;
 
-            return new Vector3(float.Parse(offsetSplit[0]), float.Parse(offsetSplit[1]), float.Parse(offsetSplit[2]));
+            return new Vector3(float.Parse(offsetSplit[0], CultureInfo.InvariantCulture), 
+                               float.Parse(offsetSplit[1], CultureInfo.InvariantCulture), 
+                               float.Parse(offsetSplit[2], CultureInfo.InvariantCulture));
         }
 
         public static void HolofyGameObject(GameObject obj, Color color, string shaderKey = "SFHologram/HologramShader")

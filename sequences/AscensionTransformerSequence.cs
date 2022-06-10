@@ -345,6 +345,17 @@ namespace Infiniscryption.P03KayceeRun.Sequences
 
                 return false;
             }
+
+            if (__instance.Card.Info.evolveParams != null && __instance.Card.Info.evolveParams.evolution != null)
+            {
+                __result = __instance.Card.Info.evolveParams.evolution.Clone() as CardInfo;
+                CardModificationInfo evolutionTargetTransformationMod = __instance.Card.Info.evolveParams.evolution.Mods.Find(m => !string.IsNullOrEmpty(m.transformerBeastCardId));
+                if (evolutionTargetTransformationMod != null)
+                    __result.mods.Add(evolutionTargetTransformationMod);
+
+                return false;
+            }
+
             return true;
         }
     }

@@ -6,6 +6,7 @@ using System.IO;
 using BepInEx.Logging;
 using UnityEngine.Networking;
 using System;
+using BepInEx;
 
 namespace Infiniscryption.P03KayceeRun.Helpers
 {
@@ -102,15 +103,25 @@ namespace Infiniscryption.P03KayceeRun.Helpers
             }
         }
 
-        private static string WriteWavToFile(string wavname)
+        // private static string WriteWavToFile(string wavname)
+        // {
+        //     byte[] wavBytes = GetResourceBytes(wavname, "wav", Assembly.GetExecutingAssembly());
+        //     string tempPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), $"{wavname}.wav");
+        //     File.WriteAllBytes(tempPath, wavBytes);
+        //     return tempPath;
+        // }
+
+        private static string FindAudioClip(string clipName)
         {
-            byte[] wavBytes = GetResourceBytes(wavname, "wav", Assembly.GetExecutingAssembly());
-            string tempPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), $"{wavname}.wav");
-            File.WriteAllBytes(tempPath, wavBytes);
-            return tempPath;
+            string fname = $"{clipName}.wav";
+            string[] found = Directory.GetFiles(Paths.PluginPath, $"{clipName}.wav", SearchOption.AllDirectories);
+            if (found.Length > 0)
+                return found[0];
+
+            throw new InvalidOperationException($"Could not find any file matching {clipName}");
         }
 
-        public static void LoadAudioClip(string clipname, ManualLogSource log = null, string group = "Loops")
+        public static void LoadAudioClip(string clipname, string group = "Loops")
         {
             // Is this a hack?
             // Hell yes, this is a hack.
@@ -121,35 +132,29 @@ namespace Infiniscryption.P03KayceeRun.Helpers
             if (clips.Find(clip => clip.name.Equals(clipname)) != null)
                 return;
 
-            string manualPath = WriteWavToFile(clipname);
+            //string manualPath = WriteWavToFile(clipname);
+            string manualPath = FindAudioClip(clipname);
 
-            try
+            string url = $"file://{manualPath.Replace("#", "%23")}";
+
+            P03Plugin.Log.LogInfo($"About to get audio clip at {url}");
+
+            using (UnityWebRequest request = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.WAV))
             {
-                string url = $"file://{manualPath.Replace("#", "%23")}";
+                request.SendWebRequest();
+                while (request.IsExecuting()); // Wait for this thing to finish
 
-                if (log != null)
-                    log.LogInfo($"About to get audio clip at {url}");
-
-                using (UnityWebRequest request = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.WAV))
+                if (request.isHttpError)
                 {
-                    request.SendWebRequest();
-                    while (request.IsExecuting()); // Wait for this thing to finish
-
-                    if (request.isHttpError)
-                    {
-                        throw new InvalidOperationException($"Bad request getting audio clip {request.error}");
-                    }
-                    else
-                    {
-                        AudioClip clip = DownloadHandlerAudioClip.GetContent(request);
-                        clip.name = clipname;
-                        
-                        clips.Add(clip);
-                    }
+                    throw new InvalidOperationException($"Bad request getting audio clip {request.error}");
                 }
-            } finally {
-                if (File.Exists(manualPath))
-                    File.Delete(manualPath);
+                else
+                {
+                    AudioClip clip = DownloadHandlerAudioClip.GetContent(request);
+                    clip.name = clipname;
+                    
+                    clips.Add(clip);
+                }
             }
         }
     }

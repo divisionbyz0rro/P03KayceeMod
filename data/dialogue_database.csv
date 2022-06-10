@@ -119,21 +119,22 @@ P03GoobertAnnoyed,Default,,I have no idea how he managed to escape the sewers
 ,,,Don’t worry - I'll put him back for you
 P03GoobertShutUp,Angry,,[c:bR]SILENCE![c:]
 ,,,You have no purpose here!
-P03WhereIsGoobert,NPC,,Ho! A traveller like myself! I haven't seen one like you for a long time.
+P03WhereIsGoobert,NPC,,A traveller like myself! I haven't seen one like you for a long time.
 ,,,"Have you seen my [c:blGr]friend[c:] around here, traveller?"
 ,,,I thought I heard his [c:blGr]distinctive voice[c:] somewhere around here…
+,,,If you could make room in your [c:G]pack[c:] and bring him to me I would greatly appreciate it.
 P03Wut,Default,,…
 P03FoundGoobertTech,NPC,,Ho! You found my friend!
 ,,,It's not safe here. I'll meet you [c:bG]where he would least expect[c:].
 ,,,Don't delay!
 P03FoundGoobertNature,NPC,,Ho! You found my friend!
-,,,It's not safe here. I'll meet you [c:bG]beneath the canopy[c:].
+,,,It's not safe here. I'll meet you [c:bG]beneath the green canopy[c:].
 ,,,Don't delay!
 P03FoundGoobertUndead,NPC,,Ho! You found my friend!
-,,,It's not safe here. I'll meet you [c:bG]in the rubble[c:].
+,,,It's not safe here. I'll meet you [c:bG]in the dying rubble[c:].
 ,,,Don't delay!
-P03FoundGoobertWizard,NPC,,Ho! You found my friend!
-,,,It's not safe here. I'll meet you [c:bG]back home[c:].
+P03FoundGoobertMagic,NPC,,Ho! You found my friend!
+,,,It's not safe here. I'll meet you [c:bG]where his master came from[c:].
 ,,,Don't delay!
 P03DidNotBuyGoobert,NPC,,I can no longer hear my [c:blGr]friend's[c:] voice anywhere…
 P03LostGoobert,NPC,,Did you really give my [c:blGr]friend[c:] to [c:bR]him?[c:]
@@ -229,6 +230,7 @@ P03DamageRaceIntro,NPC,,This is bad…this is real bad…
 ,,,This [c:bR]power generator[c:] has gone critical.
 ,,,Someone is going to have to go in there and shut it down.
 P03DamageRaceSuccess,NPC,,"I don't know how you did that, but that was incredibly impressive."
+,,,"I don't have much to give you, but please take this."
 P03DamageRaceFailed,NPC,,"Ohhh, [c:G]they[c:] are not going to like this…"
 ,,,I've gotta get out of here before they turn me into one of their [c:G]experiments[c:]
 P03PowerTower1,NPC,,The device is starting to power up. [c:bR]Three[c:] more turns should do it.
@@ -324,3 +326,4 @@ P03WTFDidYouDo,Angry,,That was disgusting
 P03Yuck,Angry,,I hope we never see this place again
 MirrorImage,Default,,Choose a creature to copy
 P03HammerOrb,Happy,,That's not going to do what you want it to do here…
+MirrorImageFail,Default,,There is nothing to copy. How unfortunate.

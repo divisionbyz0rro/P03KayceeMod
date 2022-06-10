@@ -12,8 +12,6 @@ Installing this mod will give you the option to play against either Leshy or P03
 
 ## Feedback
 
-A handful of people have played this mod, but I expect the number of bugs discovered to grow pretty quickly now that it has been officially released!
-
 Please feel free to give me feedback on the Inscryption modding discord - @divisionbyzorro
 
 Or submit issues on GitHub: [P03 Issues List](https://github.com/divisionbyz0rro/P03KayceeMod/issues)
@@ -63,34 +61,15 @@ New in Version 2.0 - you will now encounter NPcs scattered throughout the map wh
 
 Some challenges simply don't work in this context. Any challenge that doesn't work will be 'locked' and you won't be able to select it.
 
-If you've created a new custom challenge and you want it to be compatible with this mod, I have come up with a way to do it - and apologies for this being a bit of a kludge. I want to make sure that you can make your challenge compatible without having to make this mod a dependency, so here's how you're going to do this.
+If you've created a new custom challenge and you want it to be compatible with this mod, you need to set a flag named "P03" on the challenge using the Challenge Manager in API 2.4+
 
-Step one: Put this code in your plugin.cs file:
-
-```c#
-internal static string P03CompatibleChallengeList
-{
-    get { return ModdedSaveManager.SaveData.GetValue("zorro.inscryption.infiniscryption.p03kayceerun", "P03CompatibleChallenges"); }
-    set { ModdedSaveManager.SaveData.SetValue("zorro.inscryption.infiniscryption.p03kayceerun", "P03CompatibleChallenges", value); }
-}
-```
-
-This creates a static reference to a common variable which holds a list of all compatible P03 custom challenges.
-
-Step two: add the following patch to your plugin somewhere:
 
 ```c#
-[HarmonyPrefix, HarmonyPatch(typeof(AscensionMenuScreens), nameof(AscensionMenuScreens.Start))]
-private static void RegisterChallenges()
-{
-    P03CompatibleChallengeList += "," + MyFirstCustomChallengeID.ToString();
-    P03CompatibleChallengeList += "," + MySecondCustomChallengeID.ToString();
-}
+ChallengeManager.FullChallenge fch = ChallengeManager.AddSpecific(...)
+fch.SetFlags("P03");
 ```
 
-This will update the value of that common variable to add each challenge ID to the list.
-
-Once you've done this, your challenges will be unlocked when the player enters the P03 mod.
+If the challenge does not have this flag set, it will always be locked when the player is setting up a P03 run.
 
 ## Adding more cards to the pool
 
@@ -143,6 +122,9 @@ While the full credits will play in-game when you win for the first time, I have
 - Sylvie
 - Tresh
 
+**Kickass Final Boss Music**
+- Purist, the Specter
+
 ## Requirements
 
 - [BepInEx](https://inscryption.thunderstore.io/package/BepInEx/BepInExPack_Inscryption/)
@@ -153,6 +135,86 @@ While the full credits will play in-game when you win for the first time, I have
 
 <details>
 <summary>Changelog</summary>
+
+2.3.3
+- There was a really silly bug in the audio import code - this should hopefully solve the modman compatibility issue.
+- You'll know if the audio bug is fixed because this will be the last time you see me talk about it.
+- If there's another mention of it, it means I didn't fix it this time either.
+
+2.3.2
+- Repackaged to hopefully fix modman compatibility issues
+
+2.3.1
+- Rewrote the audio importing code to not assume the location of the audio files.
+
+2.3
+- Added some kick-ass new music from Purist to the final boss fight
+- Fixed an issue with holographic cards breaking due to floating point parsing in certain locales
+- Rewrote the Gem Cycler ability to fix breaking portraits
+- Fixed a couple of miscellaneous visual defects
+- Fixed defect in transformer cards where cards eventually transformed permanently into Add3rs
+
+2.2.8
+- Prevent upgrades from being assigned to the lower level of the tower in Gaudy Gem Land
+- Updated dialogue for some quests
+
+2.2.7
+- I goofed and screwed up the packaging for version 2.2.6. This will fix that.
+
+2.2.6
+- Changed how challenge compatibility works
+
+2.2.4
+- Prevent Too Easy and Donation quests from appearing in the final zone.
+- Fixed the dialogue for the Lost Friend quest and buffed the reward for that quest.
+- Added a small additional reward for the broken generator quest
+
+2.2.3
+- Balance tweaks to Recycle Angel
+- Fixed visual issue where card slots would not properly reset their colors in certain situations.
+- Tweaked the Gembound Ripper encounter
+- Compatibility with API 2.4+
+
+2.2.2
+- Fixed the orange and green blessings to not work when the cards are in your hand.
+
+2.2.1
+- Fixed the interaction between Transform and Permadeath - cards should permadie even if they are on their opposite side when they die now
+- Fixed the interaction between Transform and Build-A-Card - custom cards should no longer lose their attack/health when merged in a transform node
+- Fixed the attack animation of REDACTED
+- Fixed the REDACTED ability of REDCATED to actually do what it says
+- Fixed the interaction of Guard Dog and REDACTED
+
+2.2.0
+- Fast travel between zones is less restricted - you can now continue exploring a region after you beat the boss. You still cannot travel back to a region you have cleared and left, however.
+- Fixed a visual defect with Zombie Process
+- Fixed a visual defect with ability icons on REDACTED
+- Fixed a defect with board slots not properly resetting after REDACTED
+- Updated artwork for Skeleton Master
+
+2.1.4
+- Fixed defect with Skeleton Master
+- Fixed defect with CopyPasta (opposing slots are now properly selectable)
+- Fixed defect with ability conduits erroneously duplicating existing abilities on cards
+- Tweaked the Spyplane encounter
+
+2.1.3
+- Fixed Mr:Clock to show the correct state of the rotation when it enters the battlefield.
+- Fixed a defect with trading cards with Transformer to REDACTED
+- Made some more of the new abilities able to be acquired in Add Ability nodes
+
+2.1.2
+- Set the 'not randomly selectable' flag for the new custom items so that they won't be picked by the Pack Rat in Act 1
+- Hopefully fixed issues with the 'ConduitGainAbility' manager
+- Fixed the Radio and Power Tower quests to not accidentally give you duplicate copies of the quest cards.
+- Replaced the art for Executor
+- Tweaked the Wing Latcher encounter, the Mr:Clock encounter, and the Bombs and Shields encounter.
+
+2.1.1
+- Fixed defect with the GOLD!! quest
+
+2.1
+- Fixed defects with Mr:Clock, Oroboros, and Gem Cycler
 
 2.0
 - The NPC Update! Quests! New cards! A new boss maybe?!
