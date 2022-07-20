@@ -94,6 +94,7 @@ namespace Infiniscryption.P03KayceeRun.Cards
         {
             yield return sequence;
 
+            P03Plugin.Log.LogDebug($"Seeing if I should refresh energy");
             foreach (CardSlot slot in BoardManager.Instance.GetSlots(true).Where(s => s.Card != null))
                 if (slot.Card.HasAbility(NewConduitEnergy.AbilityID))
                     yield return slot.Card.GetComponent<NewConduitEnergy>().TryRestoreEnergy();

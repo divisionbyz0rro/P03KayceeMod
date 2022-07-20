@@ -89,6 +89,11 @@ namespace Infiniscryption.P03KayceeRun.Cards
             }
             
             base.Card.AddTemporaryMod(mod);
+
+            // Make sure the gems actually update in the resources manager.
+            ResourcesManager manager = ResourcesManager.Instance;
+            if (manager != null)
+                manager.ForceGemsUpdate();
 		}
 
         public override bool RespondsToUpkeep(bool playerUpkeep) => playerUpkeep;

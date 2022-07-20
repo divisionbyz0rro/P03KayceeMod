@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Linq;
 using DiskCardGame;
@@ -76,7 +77,7 @@ namespace Infiniscryption.P03KayceeRun.Sequences
             yield return TextDisplayer.Instance.PlayDialogueEvent("MycologistWellIntro", TextDisplayer.MessageAdvanceMode.Input, TextDisplayer.EventIntersectMode.Wait, null, null);
 
             // Check to see if the player has the organic material
-            if (Part3SaveData.Data.items.Contains(GoobertHuh.ItemData.name))
+            if (Part3SaveData.Data.items.Contains(GoobertHuh.ItemData.name, StringComparer.OrdinalIgnoreCase))
             {
                 ViewManager.Instance.SwitchToView(View.ConsumablesOnly, false, true);
                 yield return new WaitForSeconds(0.5f);

@@ -16,6 +16,9 @@ namespace Infiniscryption.P03KayceeRun.Cards
             TextureHelper.ConvertTexture(TextureHelper.GetImageAsTexture("portrait_conduitenergy_3.png", typeof(EnergyConduitAppearnace).Assembly), TextureHelper.SpriteType.CardPortrait)
         };
 
+        // This is a bit of a hack to deal with an infinite loop that can happen with this appearance
+        private int renderStackSize = 0;
+
         public override void ApplyAppearance()
         {
             if (this.Card is PlayableCard pCard)
@@ -27,10 +30,17 @@ namespace Infiniscryption.P03KayceeRun.Cards
                 if (behaviour == null)
                     return;
 
-                if (!behaviour.CompletesCircuit())
-                    pCard.renderInfo.portraitOverride = PORTRAITS[0];
-                else
-                    pCard.renderInfo.portraitOverride = PORTRAITS[behaviour.RemainingEnergy];
+                renderStackSize += 1;
+
+                if (renderStackSize <= 2)
+                {
+                    if (!behaviour.CompletesCircuit())
+                        pCard.renderInfo.portraitOverride = PORTRAITS[0];
+                    else
+                        pCard.renderInfo.portraitOverride = PORTRAITS[behaviour.RemainingEnergy];
+                }
+                
+                renderStackSize -= 1;
             }
         }
 
