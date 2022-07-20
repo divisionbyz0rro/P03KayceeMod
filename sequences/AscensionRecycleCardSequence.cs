@@ -107,7 +107,7 @@ namespace Infiniscryption.P03KayceeRun.Sequences
         {
             if (this.selectedCardValue >= 3)
             {
-                CardInfo rareCard = CardLoader.GetCardByName(CustomCards.DRAFT_TOKEN);
+                CardInfo rareCard = CardLoader.GetCardByName(CustomCards.RARE_DRAFT_TOKEN);
                 if (this.selectedCardInfo.ModAbilities.Count > 0)
                 {
                     CardModificationInfo cardMod = new();

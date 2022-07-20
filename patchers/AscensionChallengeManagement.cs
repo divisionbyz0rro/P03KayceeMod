@@ -104,14 +104,7 @@ namespace Infiniscryption.P03KayceeRun.Patchers
 
             PatchedChallengesReference.Add(
                 AscensionChallenge.NoHook,
-                new() {
-                    challengeType = AscensionChallenge.NoHook,
-                    title = "No Remote",
-                    description = "You do not start with Mrs. Bomb's Remote",
-                    iconSprite = TextureHelper.ConvertTexture(TextureHelper.GetImageAsTexture("ascensionicon_nohook.png", typeof(AscensionChallengeManagement).Assembly), TextureHelper.SpriteType.ChallengeIcon),
-                    activatedSprite = TextureHelper.ConvertTexture(Resources.Load<Texture2D>("art/ui/ascension/ascensionicon_activated_default"), TextureHelper.SpriteType.ChallengeIcon),
-                    pointValue = 5
-                }
+                ChallengeManager.BaseGameChallenges.First(fc => fc.Challenge.challengeType == AscensionChallenge.LessConsumables)
             );
 
             PatchedChallengesReference.Add(

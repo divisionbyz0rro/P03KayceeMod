@@ -52,15 +52,23 @@ namespace Infiniscryption.P03KayceeRun.Cards
             if (this.Card.HasAbility(Ability.DrawCopy) || this.Card.HasAbility(Ability.DrawCopyOnDeath))
                 yield break;
 
+            if (this.Card.Slot != null && this.Card.HasAbility(CellUndying.AbilityID) && ConduitCircuitManager.Instance.SlotIsWithinCircuit(this.Card.Slot))
+                yield break;
+
             // Create an exeskeleton
             DeckInfo deck = SaveManager.SaveFile.CurrentDeck;
 
-            CardInfo card = deck.Cards.Find((CardInfo x) => x.HasAbility(NewPermaDeath.AbilityID) && x.name == base.Card.Info.name);
+            CardInfo card = deck.Cards.Find((CardInfo x) => x.HasAbility(NewPermaDeath.AbilityID) && x.name == this.Card.Info.name);
 
             // If there is no card with this name in your deck, it's probably because it's a transformer and it's
             // currently on its other side
-            if (card == null && base.Card.HasAbility(Ability.Transformer) && base.Card.Info.evolveParams != null)
-                card = deck.Cards.Find(x => x.HasAbility(NewPermaDeath.AbilityID) && x.name == base.Card.Info.evolveParams.evolution.name);
+            if (card == null && this.Card.HasAbility(Ability.Transformer) && this.Card.Info.evolveParams != null)
+                card = deck.Cards.Find(x => x.HasAbility(NewPermaDeath.AbilityID) && x.name == this.Card.Info.evolveParams.evolution.name);
+
+            // If the card is STILL null, then congratulations - you've managed to find some sort of weird edge case.
+            // We will just let the game play out without erroring
+            if (card == null)
+                yield break;
 
             CardInfo replacement = CardLoader.GetCardByName("RoboSkeleton");
             CardModificationInfo mod = new ();
