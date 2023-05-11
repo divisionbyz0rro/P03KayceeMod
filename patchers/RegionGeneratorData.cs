@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using DiskCardGame;
 using UnityEngine;
+using Infiniscryption.P03KayceeRun.Sequences;
 
 namespace Infiniscryption.P03KayceeRun.Patchers
 {
@@ -79,7 +80,12 @@ namespace Infiniscryption.P03KayceeRun.Patchers
                     this.terrainRandoms = new string[] { "NatureMainPath_2/Scenery/HoloGrass_Foliage", "NatureMainPath_2/Scenery/HoloDebris" };
                     this.objectRandoms = new string[] { "NatureMainPath_2/Scenery/HoloTree_2", "NatureMainPath_2/Scenery/HoloTree_2", "NatureMainPath_2/Scenery/HoloTree_2", "NatureMainPath_2/Scenery/HoloTree_2", "NatureMainPath_2/Scenery/HoloCage_1" };
                     this.wall = "NatureMainPath_2/Scenery/HoloTree_3";
-                    this.defaultReward = HoloMapNode.NodeDataType.CreateTransformer;
+
+                    // Hey you, do you want to change the transformer back to behave like it used to? And go back to normal
+                    // beast mode instead of what we have now? Well all you've gotta do is change the default reward for this
+                    // region back to CreateTransformer
+                    //this.defaultReward = HoloMapNode.NodeDataType.CreateTransformer;
+                    this.defaultReward = AscensionTransformerCardNodeData.AscensionTransformCard;
                     this.lightColor = new Color(.4078f, .698f, .4549f);
                     this.mainColor = new Color(.4431f, .448f, .1922f);
                     wallOrientations = new();
