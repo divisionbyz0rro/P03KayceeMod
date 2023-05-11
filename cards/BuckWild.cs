@@ -48,8 +48,15 @@ namespace Infiniscryption.P03KayceeRun.Cards
             yield return new WaitForSeconds(0.2f);
             if (source.OpponentCard)
             {
-                BoardManager.Instance.ReturnCardToQueue(source);
-                yield return new WaitForSeconds(0.75f);
+                if (TurnManager.Instance.Opponent is not null)
+                {
+                    yield return TurnManager.Instance.Opponent.ReturnCardToQueue(source, 0.25f);
+                }
+                else
+                {
+                    BoardManager.Instance.ReturnCardToQueue(source);
+                    yield return new WaitForSeconds(0.75f);
+                }
             }
             else
             {
