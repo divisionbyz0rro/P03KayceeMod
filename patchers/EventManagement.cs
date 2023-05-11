@@ -214,9 +214,9 @@ namespace Infiniscryption.P03KayceeRun.Patchers
             if (se == SpecialEvent.TippedScales)
             {
                 node.SetDialogueRule("P03TooEasyQuest", "TOO EASY...", se, antiPreRequisite:TIPPED_SCALES_INTRO, completeStory:TIPPED_SCALES_INTRO);
-                node.SetDialogueRule("P03TooEasyAccepted", "TOO EASY...", se, preRequisite:TIPPED_SCALES_INTRO, completeStory:TIPPED_SCALES_ACCEPTED);
-                node.SetDialogueRule("P03TooEasyInProgress", "TOO EASY...", se, preRequisite:TIPPED_SCALES_ACCEPTED, antiPreRequisite:TIPPED_SCALES_COMPLETED);
-                node.SetDialogueRule("P03TooEasyComplete", "TOO EASY...", se, antiPreRequisite: TIPPED_SCALES_REWARD, preRequisite:TIPPED_SCALES_COMPLETED, completeAfter:true, specialReward:SpecialReward.RandomCardGainsUndying, completeStory:TIPPED_SCALES_REWARD);
+                node.SetDialogueRule("P03TooEasyAccepted", "TOO EASY...", se, preRequisite:TIPPED_SCALES_INTRO, completeStory:TIPPED_SCALES_ACCEPTED, antiPreRequisite: TIPPED_SCALES_ACCEPTED);
+                node.SetDialogueRule("P03TooEasyInProgress", "KEEP GOING...", se, preRequisite:TIPPED_SCALES_ACCEPTED, antiPreRequisite:TIPPED_SCALES_COMPLETED);
+                node.SetDialogueRule("P03TooEasyComplete", "IMPRESSIVE...", se, antiPreRequisite: TIPPED_SCALES_REWARD, preRequisite:TIPPED_SCALES_COMPLETED, completeAfter:true, specialReward:SpecialReward.RandomCardGainsUndying, completeStory:TIPPED_SCALES_REWARD);
             }
             if (se == SpecialEvent.BrokenGeneratorQuest)
             {
