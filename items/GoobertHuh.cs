@@ -3,6 +3,10 @@ using System.Collections;
 using DiskCardGame;
 using Infiniscryption.P03KayceeRun.Patchers;
 using UnityEngine;
+using InscryptionAPI.Items;
+using InscryptionAPI.Items.Extensions;
+using InscryptionAPI.Helpers;
+using InscryptionAPI.Resource;
 
 namespace Infiniscryption.P03KayceeRun.Items
 {
@@ -29,26 +33,33 @@ namespace Infiniscryption.P03KayceeRun.Items
             return new (GameColors.Instance.brightLimeGreen, "Please! You've got to help me get out of here!");
         }
 
-        static GoobertHuh()
+        public static GameObject GetGameObject()
         {
-            ItemData = ScriptableObject.CreateInstance<ConsumableItemData>();
-            ItemData.name = $"{P03Plugin.CardPrefx}_GoobertHuh";
-            ItemData.placedSoundId = "eyeball_drop_metal";
-            ItemData.examineSoundId = "eyeball_squish";
-            ItemData.pickupSoundId = "eyeball_squish";
-            ItemData.rulebookCategory = AbilityMetaCategory.Part3Rulebook;
-            ItemData.rulebookName = "Goobert";
-            ItemData.regionSpecific = true;
-            ItemData.rulebookDescription = "Please! You've got to help me get out of here!";
-            ItemData.prefabId = "Prefabs/Items/GooBottleItem";
-            ItemData.notRandomlyGiven = true;
-            ItemSlotPatches.KNOWN_ITEMS.Add(ItemData, FixGameObject);
+            GameObject gameObject = ShockerItem.GetBaseGameObject("Prefabs/Items/GooBottleItem", "GoobertBottle");
+            GameObject.Destroy(gameObject.GetComponentInChildren<GooBottleItem>());
+            gameObject.AddComponent<GoobertHuh>();
+            return gameObject;
         }
 
-        public static ConsumableItem FixGameObject(GameObject obj)
+        static GoobertHuh()
         {
-            GameObject.Destroy(obj.GetComponentInChildren<GooBottleItem>());
-            return obj.AddComponent<GoobertHuh>();
+            string prefabPathKey = "p03kayceemodgoobert";
+            ResourceBankManager.Add(P03Plugin.PluginGuid, $"Prefabs/Items/{prefabPathKey}", GetGameObject());
+
+            ItemData = ConsumableItemManager.New(
+                P03Plugin.PluginGuid,
+                "Goobert",
+                "Please! You've got to help me get out of here!",
+                TextureHelper.GetImageAsTexture("ability_full_of_oil.png", typeof(ShockerItem).Assembly), // TODO: get a proper texture so this can be used in Part 1 maybe?
+                typeof(LifeItem),
+                GetGameObject() // Make another copy for the manager
+            ).SetAct3()
+            .SetExamineSoundId("eyeball_squish")
+            .SetPickupSoundId("eyeball_squish")
+            .SetPlacedSoundId("eyeball_drop_metal")
+            .SetRegionSpecific(true)
+            .SetPrefabID(prefabPathKey)
+            .SetNotRandomlyGiven(true);
         }
 
         public override IEnumerator ActivateSequence()

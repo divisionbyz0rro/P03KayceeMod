@@ -113,8 +113,9 @@ namespace Infiniscryption.P03KayceeRun.Cards
                 ViewManager.Instance.SwitchToView(View.Default, false, true);
 
             // Get the goobert face
-            GameObject goobert = GameObject.Instantiate(Resources.Load<GameObject>(GoobertHuh.ItemData.prefabId), dcac.holoPortraitParent);
-            ConsumableItem itemcontroller = GoobertHuh.FixGameObject(goobert);
+            GameObject goobert = GoobertHuh.GetGameObject();
+            goobert.transform.SetParent(dcac.holoPortraitParent);
+            ConsumableItem itemcontroller = goobert.GetComponentInChildren<ConsumableItem>();
             GameObject.Destroy(itemcontroller);
             GameObject.Destroy(goobert.GetComponentInChildren<GooWizardAnimationController>());
             GameObject.Destroy(goobert.GetComponentInChildren<Animator>());

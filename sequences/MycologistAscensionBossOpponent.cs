@@ -135,9 +135,11 @@ namespace Infiniscryption.P03KayceeRun.Sequences
 
             yield return TextDisplayer.Instance.PlayDialogueEvent("MycologistSummonGoo", TextDisplayer.MessageAdvanceMode.Input, TextDisplayer.EventIntersectMode.Wait, null, null);
             
-            GameObject goobert = GameObject.Instantiate(Resources.Load<GameObject>(GoobertHuh.ItemData.prefabId), centerSlot.gameObject.transform);
-            ConsumableItem itemcontroller = GoobertHuh.FixGameObject(goobert);
+            GameObject goobert = GoobertHuh.GetGameObject();
+            goobert.transform.SetParent(centerSlot.gameObject.transform);
+            ConsumableItem itemcontroller = goobert.GetComponentInChildren<ConsumableItem>();
             GameObject.Destroy(itemcontroller);
+            
             //GameObject.Destroy(goobert.GetComponentInChildren<GooWizardAnimationController>());
             //GameObject.Destroy(goobert.GetComponentInChildren<Animator>());
             Vector3 target = new Vector3(0f, .6f, 0f);
