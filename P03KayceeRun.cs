@@ -12,6 +12,8 @@ namespace Infiniscryption.P03KayceeRun
 {
     [BepInPlugin(PluginGuid, PluginName, PluginVersion)]
     [BepInDependency("cyantist.inscryption.api")]
+    [BepInIncompatibility("silenceman.inscryption.magnificusmod")]
+    [BepInIncompatibility("arackulele.inscryption.grimoramod")]
     public class P03Plugin : BaseUnityPlugin
     {
 
